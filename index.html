@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ibtisam – Infrastructure Engineer</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">Ibtisam</div>
+
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="https://docs.ibtisam-iq.com" target="_blank">Docs</a>
+
+    <!-- Portfolio Dropdown -->
+    <div class="dropdown">
+      <button class="dropbtn">Portfolio ▾</button>
+      <div class="dropdown-content">
+        <a href="https://skills.ibtisam-iq.com" target="_blank">Skills</a>
+        <a href="https://projects.ibtisam-iq.com" target="_blank">Projects</a>
+        <a href="https://certs.ibtisam-iq.com" target="_blank">Certificates</a>
+        <a href="https://achievements.ibtisam-iq.com" target="_blank">Achievements</a>
+      </div>
+    </div>
+
+    <!-- Resources Dropdown -->
+    <div class="dropdown">
+      <button class="dropbtn">Resources ▾</button>
+      <div class="dropdown-content">
+        <a href="#" target="_blank">Blogs</a>
+        <a href="#" target="_blank">Roadmaps</a>
+        <a href="#" target="_blank">Certificates Prep</a>
+      </div>
+    </div>
+
+    <a href="https://ibtisamx.com" target="_blank">Services</a>
+    <a href="#contact">Contact</a>
+    <a class="cv-btn" href="/cv.pdf" download>Download CV</a>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>From Non-Tech to Infrastructure Engineer</h1>
+    <p>
+      I built myself from scratch through systems, discipline, and real engineering work.
+      This platform represents how I think, build, and document infrastructure.
+    </p>
+  </div>
+</section>
+
+<!-- JOURNEY SECTION -->
+<section class="story">
+  <div class="story-content">
+    <h2>My Journey</h2>
+
+    <p>
+      I started without coding background. No shortcuts. No fake motivation.
+      Only hard structure and real learning systems.
+    </p>
+
+    <p>
+      I chose DevOps because I believe real engineers build foundations, not trends.
+    </p>
+
+    <p>
+      This website is not for show. It is documentation of struggle and structure.
+    </p>
+  </div>
+</section>
+
+<!-- VISION SECTION -->
+<section class="vision">
+  <div class="vision-content">
+    <h2>Vision</h2>
+    <p>I don’t build to impress. I build to solve.</p>
+    <p>I focus on real infrastructure, automation, and deep engineering mindset.</p>
+    <p>This platform is not a trend. It is a long-term system.</p>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="contact">
+    <h2>Contact</h2>
+    <div class="contact-buttons">
+      <a href="mailto:hi@ibtisam-iq.com">Email Me</a>
+      <a href="https://linkedin.com/in/ibtisam-iq" target="_blank">LinkedIn</a>
+      <a href="https://calendly.com/" target="_blank">Book Meeting</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-box">
+    <h3>About</h3>
+    <p>Muhammad Ibtisam Iqbal</p>
+    <p>Infrastructure Engineer</p>
+    <p>Building systems with discipline</p>
+  </div>
+
+  <div class="footer-box">
+    <h3>Social</h3>
+    <a href="https://www.linkedin.com/in/ibtisam-iq/" target="_blank">LinkedIn</a>
+    <a href="https://www.facebook.com/ibtisam.xq/" target="_blank">Facebook</a>
+    <a href="https://x.com/ibtisam_iq/" target="_blank" >X</a>
+  </div>
+
+  <div class="footer-box">
+    <h3>Developer</h3>
+    <a href="https://github.com/ibtisam-iq" target="_blank">GitHub</a>
+    <a href="#" target="_blank">Medium</a>
+    <a href="https://hub.docker.com/u/mibtisam" target="_blank">Docker Hub</a>
+    <a href="https://www.credly.com/users/ibtisam-iq/" target="_blank">Credly</a>
+    <a href="https://orcid.org/0000-0002-6655-7624" target="_blank">ORCID</a>
+  </div>
+
+  <div class="footer-box">
+    <h3>Productivity</h3>
+    <a href="https://raindrop.io/ibtisam-iq" target="_blank">Raindrop.io</a>
+  </div>
+
+  <div class="footer-box">
+    <h3>Quick Links</h3>
+    <a href="https://docs.ibtisam-iq.com" target="_blank">Docs</a>
+    <a href="https://projects.ibtisam-iq.com" target="_blank">Projects</a>
+    <a href="https://blogs.ibtisam-iq.com" target="_blank">Blogs</a>
+  </div>
+</footer>
+
+<script>
+  // Fix dropdown disappearing issue
+  const dropdowns = document.querySelectorAll('.dropdown');
+
+  dropdowns.forEach(dropdown => {
+    const menu = dropdown.querySelector('ul, .dropdown-menu, div');
+
+    if (!menu) return;
+
+    dropdown.addEventListener('mouseenter', () => {
+      menu.style.display = 'block';
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+      menu.style.display = 'none';
+    });
+  });
+</script>
+
+
+
+</body>
+</html>
+
+
