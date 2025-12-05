@@ -1,0 +1,28 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+nav a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+section {
+  padding: 80px 60px;
+}
+
+section h1 {
+  font-size: 3rem;
+}
+
+section h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
