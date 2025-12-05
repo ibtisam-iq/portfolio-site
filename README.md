@@ -1,95 +1,73 @@
-# Project Architecture – Frontend Portfolio
+# React + TypeScript + Vite
 
-This project is a modern single-page application (SPA) built using Vite, React, TypeScript, React Router, and Tailwind CSS.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Core Architecture Pattern
+Currently, two official plugins are available:
 
-The project follows a component-based, route-driven architecture.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Key principles:
+## React Compiler
 
-- Each UI section is built as an isolated component
-- Pages are composed by assembling components
-- Routing is handled client-side
-- Styling is utility-first and scoped through Tailwind CSS
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Stack Overview
+## Expanding the ESLint configuration
 
-- Vite → Development server and build tool
-- React → UI library for component composition
-- TypeScript → Type safety layer
-- React Router → Client-side navigation system
-- Tailwind CSS → Utility-based styling framework
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Folder Structure Philosophy
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-The project is organized to separate responsibilities:
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-- `components/` → Reusable UI blocks (Navbar, Hero, Sections)
-- `pages/` → Route-level components
-- `assets/` → Static files (images, icons)
-- `styles/` → Global CSS and Tailwind base styles
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-## Routing Architecture
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-Routing is centralized inside `App.tsx`.
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-Each route maps to a page component:
-
-- `/` → HomePage
-- `/how-it-started` → HowItStarted page
-- `/contact` → Contact page
-
-Navigation inside the app never reloads the browser.
-It uses client-side routing for fast transitions.
-
-## State Management Philosophy
-
-State is kept as local as possible.
-
-- UI-related state lives inside components
-- No heavy global state until required
-- Hooks (`useState`, `useEffect`) are used carefully
-
-## Styling Strategy
-
-Tailwind CSS is used instead of traditional CSS files.
-
-- Styles are applied directly inside JSX
-- No global CSS pollution
-- Utility classes ensure consistency and maintainability
-
-## Build and Deployment Architecture
-
-Development:
-- `vite` runs the dev server
-- Hot reload updates UI instantly
-
-Production:
-- `vite build` generates an optimized static build
-- Output can be deployed to Cloudflare Pages or any CDN
-
-## Deployment Flow
-
-1. Code pushed to GitHub
-2. Cloudflare pulls the repo
-3. Static build is generated
-4. CDN serves the site globally
-
-## Engineering Philosophy
-
-The architecture prioritizes:
-
-- Clear separation of concerns
-- Predictable behavior
-- Fast build times
-- Simple debugging
-- Real-world deployment patterns
-
-## Status
-
-This project is actively evolving and will serve as a long-term engineering platform.
-
-## License
-
-MIT License
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
