@@ -1,6 +1,10 @@
 # Blueprint
 
-
+```bash
+npm install
+npm run build
+npm run dev
+```
 
 ## 1. MAIN GOAL
 
