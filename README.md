@@ -1,73 +1,135 @@
-# React + TypeScript + Vite
+# Ibtisam IQ — Engineering Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Build](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/deploy.yml/badge.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-0F172A?logo=tailwindcss)
+![Infrastructure](https://img.shields.io/badge/Infrastructure-0B0F19)
+![Cloud](https://img.shields.io/badge/Cloud-0B0F19)
+![DevOps](https://img.shields.io/badge/DevOps-0B0F19)
+![Systems](https://img.shields.io/badge/Systems-0B0F19)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Personal engineering portfolio of **Muhammad Ibtisam Iqbal**, focused on cloud infrastructure, Kubernetes, and production-style system design.
 
-## React Compiler
+This repository powers the main portfolio site and acts as the **entry point** to a larger engineering knowledge ecosystem.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🌐 **Live site:** https://ibtisam-iq.com
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Engineering Ecosystem Overview
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+This portfolio is intentionally split into **multiple subdomains**, each serving a clear engineering purpose.  
+The main site provides context and navigation — detailed content lives in the respective domains.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Subdomains
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Subdomain | Purpose |
+|---------|--------|
+| **docs.ibtisam-iq.com** | Long-form technical documentation, system breakdowns, design notes |
+| **projects.ibtisam-iq.com** | Production-style infrastructure and cloud projects |
+| **blogs.ibtisam-iq.com** | Engineering articles and technical reflections |
+| **achievements.ibtisam-iq.com** | Milestones, and professional achievements |
+| **roadmaps.ibtisam-iq.com** | Engineering career paths and learning roadmaps |
+| **cert-prep.ibtisam-iq.com** | Deep certification preparation notes (CKA, CKAD, etc.) |
+
+Each subdomain is deployed independently to keep concerns isolated and scalable.
+
+---
+
+## Tech Stack
+
+**Frontend**
+- React (TypeScript)
+- Vite
+- Tailwind CSS
+
+**Routing**
+- React Router
+
+**Hosting & Delivery**
+- GitHub Pages (subdomains)
+- Cloudflare DNS
+
+**Tooling**
+- ESLint
+- PostCSS
+- GitHub Actions (build & deploy)
+
+---
+
+## Project Structure
+
+```text
+portfolio-site/
+├── public/                # Static assets, favicon, manifest
+├── src/
+│   ├── components/        # Reusable UI components
+│   ├── pages/             # Route-level pages
+│   ├── data/              # Structured data (certificates, etc.)
+│   ├── App.tsx            # App shell
+│   ├── main.tsx           # Entry point
+│   └── index.css          # Global styles
+├── index.html             # HTML entry (SEO, meta, favicon)
+├── tailwind.config.js
+├── vite.config.ts
+└── package.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The structure is intentionally **flat and explicit** to keep navigation, maintenance, and scalability predictable.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Design Philosophy
+
+* Systems before tools
+* Clarity over cleverness
+* Explicit structure over abstraction
+* Documentation is part of the system, not an afterthought
+* Production-style decisions even in personal projects
+
+This site evolves incrementally — unfinished sections are intentional, not neglected.
+
+---
+
+## Local Development
+
+```bash
+npm install
+npm run dev
 ```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+---
+
+## Deployment Model
+
+* Main site and subdomains are deployed independently
+* Static builds served via GitHub Pages
+* DNS and HTTPS handled by Cloudflare
+* No server-side rendering by design (predictable, fast, simple)
+
+---
+
+## Project Status
+
+This portfolio is **actively evolving**.
+
+New systems, documentation, and projects are added incrementally as they reach
+a production-ready standard.
+
+---
+
+## License
+
+MIT License
+
+### Muhammad Ibtisam
