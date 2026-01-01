@@ -3,11 +3,11 @@ import { useState } from "react";
 import { certificates, type Certificate } from "../data/certificates.ts";
 
 const FILTERS: { key: "all" | Certificate["category"]; label: string }[] = [
-  { key: "all", label: "ALL" },
-  { key: "kubernetes", label: "KUBERNETES" },
-  { key: "cloud", label: "CLOUD" },
+  { key: "all", label: "All" },
+  { key: "kubernetes", label: "Kubernetes" },
+  { key: "cloud", label: "Cloud" },
   { key: "iac", label: "IaC" },
-  { key: "devops", label: "DEVOPS" },
+  { key: "devops", label: "DevOps" },
 ];
 
 export default function Certificates() {
@@ -116,20 +116,6 @@ export default function Certificates() {
               <p className="text-gray-500 text-xs mt-1 tracking-wide">
                 Certificate ID: {cert.id}
               </p>
-            )}
-
-            {/* VERIFY */}
-            {cert.verificationLink && (
-              <div className="mt-6">
-                <a
-                  href={cert.verificationLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block text-green-400 font-semibold text-sm border-b border-green-500 hover:text-green-300 hover:border-green-300 transition"
-                >
-                  {cert.verificationText}
-                </a>
-              </div>
             )}
 
             {/* DESCRIPTION / NOTES */}

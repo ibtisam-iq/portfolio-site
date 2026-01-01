@@ -12,52 +12,42 @@ export type Certificate = {
   id: string;
   title: string;
   issuer: string;
-  date: string; // e.g. "2024"
+  date: string; // e.g. "2025"
   category: CertificateCategory;
   badge: string; // emoji/icon
-  notes: string; // short description (you can refine later)
-  verificationText: string;
-  verificationLink: string;
+  notes: string; // short description
   credlyLink: string;
   prepNotesLink: string;
   isTop: boolean; // 👈 used for "Top Certifications"
 };
 
-// ⚠️ Fill / adjust these as you like.
-// I’m only setting minimal placeholders where needed.
-// You’ll replace issuer, links, notes, etc. with your real data.
-
 export const certificates: Certificate[] = [
   {
-    id: "cka",
+    id: "LF-gjlveemoqf",
     title: "Certified Kubernetes Administrator (CKA)",
     issuer: "Cloud Native Computing Foundation (CNCF)",
-    date: "2024",
+    date: "Nov 2025",
     category: "kubernetes",
     badge: "🏅",
     notes: "Hands-on Kubernetes cluster administration, troubleshooting, and production-style scenarios.",
-    verificationText: "Verify on CNCF Registry",
-    verificationLink: "https://www.cncf.io/certification/verify/",
-    credlyLink: "https://www.credly.com/",
-    prepNotesLink: "https://github.com/yourusername/cka-prep",
+    credlyLink: "https://www.credly.com/badges/0f1fd462-102e-42e8-932c-ebd4222d5587",
+    prepNotesLink: "https://cert-prep.ibtisam-iq.com/",
     isTop: true,
   },
   {
-    id: "ckad",
+    id: "LF-l6qqde7lal",
     title: "Certified Kubernetes Application Developer (CKAD)",
     issuer: "Cloud Native Computing Foundation (CNCF)",
-    date: "2024",
+    date: "Nov 2025",
     category: "kubernetes",
     badge: "🏅",
     notes: "Real-world Kubernetes application design, troubleshooting, and hands-on workload scenarios.",
-    verificationText: "Verify on CNCF Registry",
-    verificationLink: "https://www.cncf.io/certification/verify/",
-    credlyLink: "https://www.credly.com/",
-    prepNotesLink: "https://github.com/yourusername/ckad-prep",
+    credlyLink: "https://www.credly.com/badges/13e7993c-8bc1-4f82-822d-7382322f7b88",
+    prepNotesLink: "https://cert-prep.ibtisam-iq.com/",
     isTop: true,
   },
 
-  // ⬇️ Example placeholders – you can uncomment + adjust when ready
+  // Example placeholders – uncomment + adjust when ready
 
   // {
   //   id: "aws-saa",

@@ -1,13 +1,212 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!--
+      Character encoding
+      Ensures correct rendering of all characters (names, symbols, etc.)
+      This should ALWAYS be first.
+    -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!--
+      Page title
+      This is the PRIMARY source for:
+      - Browser tab title
+      - Search engine result title (blue clickable text)
+      - Bookmarks
+
+      Format rule (professional):
+      Full Name | Primary Role
+    -->
+    <title>Muhammad Ibtisam Iqbal | Infrastructure Engineer & Cloud Systems</title>
+
+    <!--
+      Meta description
+      This is the PRIMARY source for:
+      - Search engine result description (snippet)
+      - Sometimes social previews if OG description is missing
+
+      IMPORTANT:
+      - This does NOT guarantee exact text in Google
+      - But without it, search engines guess (bad)
+    -->
+    <meta
+      name="description"
+      content="Portfolio of Muhammad Ibtisam Iqbal, Infrastructure Engineer focused on cloud systems, Kubernetes, and scalable infrastructure."
+    />
+
+    <!--
+      Viewport configuration
+      Makes the site responsive on mobile devices
+      Mandatory for modern websites
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>portfolio</title>
+
+    <!--
+      Robots directive
+      Explicitly tells search engines:
+      - This page CAN be indexed
+      - Links CAN be followed
+
+      Defensive best practice
+    -->
+    <meta name="robots" content="index, follow" />
+
+    <!--
+      Canonical URL
+      Tells search engines:
+      "This is the ONE authoritative URL for this page"
+
+      Prevents SEO issues like:
+      - http vs https
+      - www vs non-www
+      - duplicate indexing
+    -->
+    <link rel="canonical" href="https://ibtisam-iq.com/" />
+
+    <!-- =====================================================
+         FAVICON SECTION
+         ===================================================== -->
+
+    <!--
+      Favicon (.ico)
+      This is the MOST important favicon.
+      Used by:
+      - Browser tabs
+      - Search results (sometimes)
+      - Bookmarks
+
+      Best practice:
+      - Simple
+      - High contrast
+      - Initials-based (IQ)
+    -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!--
+      PNG favicon (optional but safe)
+      Used by some browsers as a fallback
+    -->
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+
+    <!--
+      SVG favicon (modern browsers)
+      Optional, but fine to keep
+    -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!--
+      Apple touch icon
+      Used when someone saves your site to iOS home screen
+    -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!--
+      Apple web app title
+      Name shown under icon if added to home screen on iOS
+    -->
+    <meta name="apple-mobile-web-app-title" content="Ibtisam" />
+
+    <!--
+      Web app manifest
+      Not critical now, but harmless to keep
+      Useful later if PWA features are added
+    -->
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- =====================================================
+         OPEN GRAPH (SOCIAL PREVIEWS)
+         ===================================================== -->
+
+    <!--
+      Open Graph type
+      Declares this page as a website
+    -->
+    <meta property="og:type" content="website" />
+
+    <!--
+      Open Graph title
+      Used by:
+      - WhatsApp
+      - LinkedIn
+      - Facebook
+      - Slack
+
+      Should closely match <title>, but can be slightly richer
+    -->
+    <meta
+      property="og:title"
+      content="Muhammad Ibtisam Iqbal | Infrastructure Engineer"
+    />
+
+    <!--
+      Open Graph description
+      Used in link previews when someone shares your site
+    -->
+    <meta
+      property="og:description"
+      content="Infrastructure Engineer focused on cloud systems, Kubernetes, and scalable infrastructure."
+    />
+
+    <!--
+      Canonical URL for social platforms
+    -->
+    <meta property="og:url" content="https://ibtisam-iq.com/" />
+
+    <!--
+      Open Graph image
+      REQUIRED for rich previews
+
+      TODO (you will add later):
+      - Create og-image.png (1200x630)
+      - Place it in /public
+      - Then uncomment this line
+    -->
+    <!--
+    <meta
+      property="og:image"
+      content="https://ibtisam-iq.com/og-image.png"
+    />
+    -->
+
+    <!-- =====================================================
+         TWITTER / X PREVIEW
+         ===================================================== -->
+
+    <!--
+      Twitter card type
+      "summary" is minimal and clean
+    -->
+    <meta name="twitter:card" content="summary" />
+
+    <!--
+      Twitter title
+    -->
+    <meta
+      name="twitter:title"
+      content="Muhammad Ibtisam Iqbal | Infrastructure Engineer"
+    />
+
+    <!--
+      Twitter description
+    -->
+    <meta
+      name="twitter:description"
+      content="Infrastructure Engineer focused on cloud systems, Kubernetes, and scalable infrastructure."
+    />
   </head>
+
   <body>
+    <!--
+      React application root
+      React mounts the entire app inside this div
+    -->
     <div id="root"></div>
+
+    <!--
+      Main React entry file
+      Vite loads this as an ES module
+    -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
