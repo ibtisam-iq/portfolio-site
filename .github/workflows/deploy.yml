@@ -1,0 +1,263 @@
+# ─────────────────────────────────────────────────────────────
+# GitHub Actions Workflow: Portfolio Site CI/CD
+#
+# This file defines HOW and WHEN your site is built, tested,
+# previewed, and deployed.
+#
+# Think of this as:
+# "Rules for what happens when code changes"
+# ─────────────────────────────────────────────────────────────
+
+name: Portfolio Site CI/CD
+
+# ─────────────────────────────────────────────────────────────
+# WHEN should this workflow run?
+# ─────────────────────────────────────────────────────────────
+on:
+  # Trigger when code is pushed directly to main
+  # This is your "production change" event
+  push:
+    branches: [main]
+
+  # Trigger on pull requests (PRs)
+  # A PR is a proposal to merge code into main
+  # These events represent the PR lifecycle:
+  pull_request:
+    types:
+      - opened       # PR created for the first time
+      - reopened     # PR was closed earlier, now reopened
+      - synchronize  # New commits pushed to the PR branch
+      - closed       # PR closed or merged (used to CLEAN UP previews)
+
+  # Manual trigger from GitHub UI
+  # Useful when you want to re-run CI without new commits
+  workflow_dispatch:
+
+# ─────────────────────────────────────────────────────────────
+# PERMISSIONS
+#
+# GitHub Actions now run with ZERO permissions by default.
+# You must explicitly grant what the workflow is allowed to do.
+#
+# Principle: Least Privilege
+# ─────────────────────────────────────────────────────────────
+permissions:
+  contents: read
+  # Allows reading repository code.
+  # Without this, checkout would fail.
+
+  pages: write
+  # Required to deploy to GitHub Pages.
+  # This allows uploading the built site.
+
+  id-token: write
+  # Used by GitHub Pages deployment internally
+  # for secure authentication (OIDC).
+
+  pull-requests: write
+  # Required by pr-preview-action
+  # so it can COMMENT on PRs with preview URLs.
+
+# ─────────────────────────────────────────────────────────────
+# CONCURRENCY
+#
+# Prevents multiple runs from deploying at the same time.
+# This avoids race conditions and corrupted deployments.
+#
+# Example problem without this:
+# - Push A starts deploy
+# - Push B starts deploy before A finishes
+# - Result: inconsistent Pages state
+# ─────────────────────────────────────────────────────────────
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # One deployment per branch per workflow
+
+  cancel-in-progress: true
+  # If a newer run starts, cancel the old one
+
+# ─────────────────────────────────────────────────────────────
+# JOBS
+#
+# Each job runs on a fresh VM.
+# Jobs can depend on each other.
+# ─────────────────────────────────────────────────────────────
+jobs:
+
+  # ─────────────────────────────────────────────────────────────
+  # BUILD & QUALITY (Production Gate)
+  #
+  # Purpose:
+  # - Enforce code quality
+  # - Ensure TypeScript correctness
+  # - Produce a production-ready build
+  #
+  # IMPORTANT:
+  # This job exists ONLY to protect production.
+  # ─────────────────────────────────────────────────────────────
+  build-and-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Fetch repository code into the runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Node.js in the runner
+      # cache: npm speeds up future runs
+      - name: Setup Node.js (v20 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Install dependencies EXACTLY as locked in package-lock.json
+      # npm ci fails if lockfile and package.json mismatch
+      - name: Install dependencies
+        run: npm ci
+
+      # Static linting (code style + common bugs)
+      # This prevents low-quality code from reaching production
+      - name: Run lint
+        run: npm run lint
+
+      # TypeScript compile check WITHOUT emitting files
+      # This ensures type safety but does not produce JS output
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      # Build the site using Vite
+      # Output goes to the "dist/" directory
+      - name: Build production bundle
+        run: npm run build
+
+      # Create CNAME file for GitHub Pages
+      #
+      # GitHub Pages reads this file to know
+      # which custom domain to attach to this site
+      - name: Add CNAME for custom domain
+        run: echo "ibtisam-iq.com" > dist/CNAME
+
+      # SPA ROUTER FALLBACK
+      #
+      # GitHub Pages is static hosting.
+      # If user visits /projects directly, Pages looks for /projects/index.html
+      # which does NOT exist.
+      #
+      # Solution:
+      # - Copy index.html to 404.html
+      # - Pages serves 404.html
+      # - React Router takes over
+      - name: Add 404 fallback for React Router
+        run: cp dist/index.html dist/404.html
+
+      # Upload the built site as a Pages artifact
+      #
+      # This artifact is what GitHub Pages will deploy
+      # in the production job.
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # ─────────────────────────────────────────────────────────────
+  # PR PREVIEW JOB
+  #
+  # Purpose:
+  # - Give reviewers a LIVE preview of PR changes
+  # - Completely isolated from production
+  #
+  # This job does NOT protect production.
+  # It is disposable by design.
+  # ─────────────────────────────────────────────────────────────
+  pr-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout PR code (not main)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Same Node setup as production
+      - name: Setup Node.js (v20 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Install dependencies again
+      # (Preview jobs must be independent)
+      - name: Install dependencies
+        run: npm ci
+
+      # Build ONLY if PR is not closed
+      #
+      # When PR is closed, pr-preview-action will CLEAN UP
+      # previously deployed previews.
+      - name: Build for preview
+        if: github.event.action != 'closed'
+        run: npm run build
+
+      # Optional CNAME for previews
+      # Safe, but not required
+      - name: Add CNAME (optional for previews, but harmless)
+        if: github.event.action != 'closed'
+        run: echo "ibtisam-iq.com" > dist/CNAME
+
+      # Same SPA fallback logic for previews
+      - name: Add 404 fallback
+        if: github.event.action != 'closed'
+        run: cp dist/index.html dist/404.html
+
+      # Deploy preview using pr-preview-action
+      #
+      # This publishes the site under:
+      # /previews/pr-<PR_NUMBER>
+      #
+      # action: auto means:
+      # - Deploy on open / update
+      # - Remove preview on close
+      - name: Deploy PR preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source_dir: ./dist
+          umbrella_dir: previews
+          action: auto
+
+  # ─────────────────────────────────────────────────────────────
+  # PRODUCTION DEPLOYMENT
+  #
+  # Purpose:
+  # - Deploy ONLY after build-and-quality passes
+  # - Deploy ONLY on main branch push
+  #
+  # This is the final step.
+  # ─────────────────────────────────────────────────────────────
+  deploy-production:
+    needs: build-and-quality
+
+    # Safety guard:
+    # - Must be a push
+    # - Must be main branch
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      # GitHub automatically sets this URL after deployment
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Deploy the uploaded Pages artifact
+      #
+      # NOTE:
+      # You no longer see GITHUB_TOKEN, publish_branch,
+      # or force_orphan here because:
+      #
+      # - deploy-pages@v4 handles that internally
+      # - This is the modern, secure way
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
