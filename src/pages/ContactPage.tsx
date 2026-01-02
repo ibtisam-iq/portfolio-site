@@ -19,7 +19,7 @@ const ContactPage = () => {
 
         {/* EMAIL */}
         <a
-          href="mailto:hi@ibtisam-iq.com"
+          href="mailto:contact@ibtisam-iq.com"
           className="w-full border border-gray-700 px-8 py-4 rounded-xl text-center hover:bg-white hover:text-black transition font-semibold"
         >
           📧 Email Me Directly
