@@ -10,8 +10,6 @@
 ![DevOps](https://img.shields.io/badge/DevOps-0B0F19)
 ![Systems](https://img.shields.io/badge/Systems-0B0F19)
 
----
-
 Personal engineering portfolio of **Muhammad Ibtisam Iqbal**, focused on cloud infrastructure, Kubernetes, and production-style system design.
 
 This repository powers the main portfolio site and acts as the **entry point** to a larger engineering knowledge ecosystem.
