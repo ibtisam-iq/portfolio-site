@@ -1,5 +1,7 @@
 node_modules
 dist
 .env
-docs
+.DS_Store
+# Personal engineering scratchpad (not part of the project)
+.scratch
 
