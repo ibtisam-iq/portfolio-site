@@ -22,7 +22,7 @@ export const projects: Project[] = [
       "Lower bandwidth usage and reduced cluster cost",
       "Designed for real production debugging, not demos",
     ],
-    tech: ["Kubernetes", "Containers", "Linux", "Networking"],
+    tech: ["Open Source", "Kubernetes Troubleshooting", "Containers", "Networking"],
     githubUrl: "https://github.com/ibtisam-iq/debugbox",
   },
 
@@ -47,6 +47,29 @@ export const projects: Project[] = [
       "Architecture",
     ],
     githubUrl: "https://github.com/ibtisam-iq/nectar",
+  },
+  
+   {
+    slug: "certification-practice-vault",
+    title: "Certification Practice Vault",
+    shortDescription:
+      "An execution-first certification practice vault built from real labs, terminal sessions, and exam attempts.",
+    description:
+      "Certification Practice Vault is a living repository built while preparing for Kubernetes and Cloud certifications. Instead of polished notes, it documents real exam-style questions, hands-on labs, terminal output, mistakes, and recovery paths exactly as they occurred during preparation.\n\nThe vault is structured by official certification domains and competencies, reflecting how exams are actually designed. It captures how problems were approached, what failed, why it failed, and how they were fixed — prioritizing execution over theory.\n\nThis project serves both as proof of hands-on capability and as a growing knowledge asset that will expand with future certifications.",
+    highlights: [
+      "Real exam-style questions with full execution context",
+      "Hands-on Kubernetes labs and terminal-driven workflows",
+      "Structured by official certification domains",
+      "Built from real preparation and exam attempts, not theory",
+    ],
+    tech: [
+      "Kubernetes",
+      "CKA",
+      "CKAD",
+      "Cloud",
+      "Hands-on Labs",
+    ],
+    githubUrl: "https://github.com/ibtisam-iq/certification-practice-vault",
   },
 ]
 
