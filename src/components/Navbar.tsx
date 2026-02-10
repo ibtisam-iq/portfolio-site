@@ -7,7 +7,7 @@ const Navbar = () => {
 
   return (
     <nav className="flex justify-between items-center px-6 md:px-10 py-5 bg-bg border-b border-gray-800 text-white relative z-50">
-      
+
       {/* LOGO → Home */}
       <a
         href="/"
@@ -32,11 +32,11 @@ const Navbar = () => {
 
         {/* Docs - External */}
         <a
-          href="https://docs.ibtisam-iq.com"
+          href="https://nectar.ibtisam-iq.com"
           target="_blank"
           className="hover:text-purple-400 transition"
         >
-          Docs
+          Nectar
         </a>
 
         {/* ===== Portfolio Dropdown ===== */}
@@ -63,6 +63,10 @@ const Navbar = () => {
               <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/skills">
                 Skills
               </a>
+              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/projects">
+                Projects
+              </a>
+              {/*
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
                 href="https://projects.ibtisam-iq.com"
@@ -70,6 +74,7 @@ const Navbar = () => {
               >
                 Projects
               </a>
+              */}
               <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/certificates">
                 Certificates
               </a>
@@ -130,10 +135,10 @@ const Navbar = () => {
               </a>
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://cert-prep.ibtisam-iq.com"
+                href="https://cert-vault.ibtisam-iq.com"
                 target="_blank"
               >
-                Certificate Prep
+                Certification Practice Vault
               </a>
             </div>
           )}
@@ -167,23 +172,23 @@ const Navbar = () => {
       {/* Mobile Menu (Shows when hamburger is clicked) */}
       {mobileMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-gray-900 md:hidden flex flex-col gap-4 p-6 border-b border-gray-800">
-          
+
           <a href="/" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>
             Home
           </a>
 
           <a
-            href="https://docs.ibtisam-iq.com"
+            href="https://nectar.ibtisam-iq.com"
             target="_blank"
             className="hover:text-purple-400 transition"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Docs
+            Nectar
           </a>
 
           {/* Portfolio Section */}
           <div>
-            <button 
+            <button
               className="hover:text-purple-400 transition w-full text-left"
               onClick={() => setPortfolioOpen(!portfolioOpen)}
             >
@@ -194,9 +199,14 @@ const Navbar = () => {
                 <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>
                   Skills
                 </a>
+                <a className="hover:text-purple-400" href="/projects" onClick={() => setMobileMenuOpen(false)}>
+                  Projects
+                </a>
+                {/*
                 <a className="hover:text-purple-400" href="https://projects.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
                   Projects
                 </a>
+                */}
                 <a className="hover:text-purple-400" href="/certificates" onClick={() => setMobileMenuOpen(false)}>
                   Certificates
                 </a>
@@ -218,7 +228,7 @@ const Navbar = () => {
 
           {/* Resources Section */}
           <div>
-            <button 
+            <button
               className="hover:text-purple-400 transition w-full text-left"
               onClick={() => setResourcesOpen(!resourcesOpen)}
             >
@@ -232,8 +242,8 @@ const Navbar = () => {
                 <a className="hover:text-purple-400" href="https://roadmaps.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
                   Roadmaps
                 </a>
-                <a className="hover:text-purple-400" href="https://cert-prep.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Certificate Prep
+                <a className="hover:text-purple-400" href="https://cert-vault.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
+                  Certificate Practice Vault
                 </a>
               </div>
             )}
