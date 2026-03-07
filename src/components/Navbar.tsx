@@ -121,10 +121,10 @@ const Navbar = () => {
             >
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://blogs.ibtisam-iq.com"
+                href="https://blog.ibtisam-iq.com"
                 target="_blank"
               >
-                Blogs
+                Blog
               </a>
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
@@ -236,8 +236,8 @@ const Navbar = () => {
             </button>
             {resourcesOpen && (
               <div className="pl-4 mt-2 flex flex-col gap-2">
-                <a className="hover:text-purple-400" href="https://blogs.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Blogs
+                <a className="hover:text-purple-400" href="https://blog.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
+                  Blog
                 </a>
                 <a className="hover:text-purple-400" href="https://roadmaps.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
                   Roadmaps
