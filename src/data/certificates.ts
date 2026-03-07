@@ -17,7 +17,7 @@ export type Certificate = {
   badge: string; // emoji/icon
   notes: string; // short description
   credlyLink: string;
-  prepNotesLink: string;
+  vaultNotesLink: string;
   isTop: boolean; // 👈 used for "Top Certifications"
 };
 
@@ -31,7 +31,7 @@ export const certificates: Certificate[] = [
     badge: "🏅",
     notes: "Hands-on Kubernetes cluster administration, troubleshooting, and production-style scenarios.",
     credlyLink: "https://www.credly.com/badges/0f1fd462-102e-42e8-932c-ebd4222d5587",
-    prepNotesLink: "https://cert-prep.ibtisam-iq.com/",
+    vaultNotesLink: "https://cert-vault.ibtisam-iq.com/",
     isTop: true,
   },
   {
@@ -43,7 +43,7 @@ export const certificates: Certificate[] = [
     badge: "🏅",
     notes: "Real-world Kubernetes application design, troubleshooting, and hands-on workload scenarios.",
     credlyLink: "https://www.credly.com/badges/13e7993c-8bc1-4f82-822d-7382322f7b88",
-    prepNotesLink: "https://cert-prep.ibtisam-iq.com/",
+    vaultNotesLink: "https://cert-vault.ibtisam-iq.com/",
     isTop: true,
   },
 
@@ -60,7 +60,7 @@ export const certificates: Certificate[] = [
   //   verificationText: "Verify on AWS Certification Portal",
   //   verificationLink: "https://www.aws.training/Certification",
   //   credlyLink: "",
-  //   prepNotesLink: "",
+  //   vaultNotesLink: "",
   //   isTop: true,
   // },
   // {
@@ -74,7 +74,7 @@ export const certificates: Certificate[] = [
   //   verificationText: "Project-based validation (see portfolio)",
   //   verificationLink: "https://ibtisam-iq.com/projects",
   //   credlyLink: "",
-  //   prepNotesLink: "",
+  //   vaultNotesLink: "",
   //   isTop: false,
   // },
 ];

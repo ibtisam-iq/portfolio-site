@@ -138,9 +138,9 @@ export default function Certificates() {
                 </a>
               )}
 
-              {cert.prepNotesLink && (
+              {cert.vaultNotesLink && (
                 <a
-                  href={cert.prepNotesLink}
+                  href={cert.vaultNotesLink}
                   target="_blank"
                   rel="noreferrer"
                   className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl text-sm font-bold text-white tracking-wide transition shadow-lg"
