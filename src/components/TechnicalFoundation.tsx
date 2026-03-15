@@ -1,6 +1,6 @@
 const TechnicalFoundation = () => {
   return (
-    <section className="py-24 bg-[#0B0F19] text-white">
+    <section className="py-14 bg-[#0B0F19] text-white">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
         {/* LEFT — TEXT CONTENT */}
@@ -43,7 +43,7 @@ const TechnicalFoundation = () => {
           {/* CTA BUTTONS */}
           <div className="flex flex-wrap items-center gap-4 pt-8">
             <a
-              href="/how-it-started"
+              href="/about"
               className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition"
             >
               Read the full story →

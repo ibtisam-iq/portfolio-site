@@ -1,6 +1,6 @@
 const WhyMe = () => {
   return (
-    <section className="py-24 bg-[#0B0F19] text-white">
+    <section className="py-14 bg-[#0B0F19] text-white">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
         {/* LEFT — TEXT CONTENT */}
