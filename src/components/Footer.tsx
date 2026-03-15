@@ -16,7 +16,7 @@ const Footer = () => {
               Muhammad Ibtisam Iqbal
             </p>
             <p className="text-sm text-gray-400 mt-1">
-              Infrastructure Engineer
+              DevOps Engineer
             </p>
             <p className="text-sm text-gray-500 mt-3">
               Building systems with discipline
