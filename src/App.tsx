@@ -12,8 +12,7 @@ import Footer from "./components/Footer";
 import HowItStarted from "./pages/HowItStarted";
 import Certificates from "./pages/Certificates";
 import ContactPage from "./pages/ContactPage";
-import Projects from "./pages/Projects";
-import ProjectDetail from "./pages/ProjectDetail";
+import Skills from "./pages/Skills";
 
 function App() {
   return (
@@ -26,10 +25,7 @@ function App() {
           element={
             <>
               <Hero />
-
-              {/* 🔥 Featured Projects go here */}
               <FeaturedProjects />
-
               <TechnicalFoundation />
               <Philosophy />
               <Systems />
@@ -37,12 +33,10 @@ function App() {
             </>
           }
         />
-
         <Route path="/certificates" element={<Certificates />} />
-        <Route path="/how-it-started" element={<HowItStarted />} />
+        <Route path="/about" element={<HowItStarted />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:slug" element={<ProjectDetail />} />
+        <Route path="/skills" element={<Skills />} />
       </Routes>
 
       <Footer />

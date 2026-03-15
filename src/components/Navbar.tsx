@@ -1,14 +1,16 @@
 import { useState } from "react";
 
 const Navbar = () => {
-  const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const [engineeringOpen, setEngineeringOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileEngineeringOpen, setMobileEngineeringOpen] = useState(false);
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
 
   return (
     <nav className="flex justify-between items-center px-6 md:px-10 py-5 bg-bg border-b border-gray-800 text-white relative z-50">
 
-      {/* LOGO → Home */}
+      {/* LOGO */}
       <a
         href="/"
         className="text-2xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-wide"
@@ -16,7 +18,7 @@ const Navbar = () => {
         Ibtisam
       </a>
 
-      {/* Hamburger Menu Button (Mobile Only) */}
+      {/* Hamburger (Mobile) */}
       <button
         className="md:hidden text-2xl focus:outline-none"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -24,64 +26,46 @@ const Navbar = () => {
         {mobileMenuOpen ? "✕" : "☰"}
       </button>
 
-      {/* Desktop Menu (Hidden on Mobile) */}
+      {/* ===== Desktop Menu ===== */}
       <div className="hidden md:flex gap-8 items-center text-lg">
 
-        {/* Home */}
         <a href="/" className="hover:text-purple-400 transition">Home</a>
 
-        {/* Docs - External */}
         <a
-          href="https://nectar.ibtisam-iq.com"
+          href="https://projects.ibtisam-iq.com"
           target="_blank"
+          rel="noopener noreferrer"
           className="hover:text-purple-400 transition"
         >
-          Nectar
+          Projects
         </a>
 
-        {/* ===== Portfolio Dropdown ===== */}
+        <a href="/certificates" className="hover:text-purple-400 transition">Certifications</a>
+
+        {/* Engineering Dropdown */}
         <div
           className="relative"
-          onMouseEnter={() => setPortfolioOpen(true)}
+          onMouseEnter={() => setEngineeringOpen(true)}
           onMouseLeave={(e) => {
             const related = e.relatedTarget as HTMLElement;
-            if (!e.currentTarget.contains(related)) {
-              setPortfolioOpen(false);
-            }
+            if (!e.currentTarget.contains(related)) setEngineeringOpen(false);
           }}
         >
-          <button className="hover:text-purple-400 transition">
-            Portfolio ▾
-          </button>
-
-          {portfolioOpen && (
+          <button className="hover:text-purple-400 transition">Engineering ▾</button>
+          {engineeringOpen && (
             <div
-              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[200px]"
-              onMouseEnter={() => setPortfolioOpen(true)}
-              onMouseLeave={() => setPortfolioOpen(false)}
+              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[180px]"
+              onMouseEnter={() => setEngineeringOpen(true)}
+              onMouseLeave={() => setEngineeringOpen(false)}
             >
               <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/skills">
                 Skills
-              </a>
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/projects">
-                Projects
-              </a>
-              {/*
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://projects.ibtisam-iq.com"
-                target="_blank"
-              >
-                Projects
-              </a>
-              */}
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/certificates">
-                Certificates
               </a>
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
                 href="https://achievements.ibtisam-iq.com"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 Achievements
               </a>
@@ -89,76 +73,34 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* How it started */}
-        <a
-          href="/how-it-started"
-          className="hover:text-purple-400 transition flex items-center gap-2"
-       >
-          How it started
-          <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-       </a>
-
-        {/* ===== Resources Dropdown ===== */}
+        {/* Resources Dropdown */}
         <div
           className="relative"
           onMouseEnter={() => setResourcesOpen(true)}
           onMouseLeave={(e) => {
             const related = e.relatedTarget as HTMLElement;
-            if (!e.currentTarget.contains(related)) {
-              setResourcesOpen(false);
-            }
+            if (!e.currentTarget.contains(related)) setResourcesOpen(false);
           }}
         >
-          <button className="hover:text-purple-400 transition">
-            Resources ▾
-          </button>
-
+          <button className="hover:text-purple-400 transition">Resources ▾</button>
           {resourcesOpen && (
             <div
-              className="absolute bg-[#111827] backdrop-blur-lg top-full pt-2 rounded-xl shadow-lg w-[200px]"
+              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[220px]"
               onMouseEnter={() => setResourcesOpen(true)}
               onMouseLeave={() => setResourcesOpen(false)}
             >
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://blog.ibtisam-iq.com"
-                target="_blank"
-              >
-                Blog
-              </a>
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://roadmaps.ibtisam-iq.com"
-                target="_blank"
-              >
-                Roadmaps
-              </a>
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://cert-vault.ibtisam-iq.com"
-                target="_blank"
-              >
-                Certification Practice Vault
-              </a>
+              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://blog.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Blog</a>
+              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://roadmaps.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Roadmaps</a>
+              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://cert-vault.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Cert Practice Vault</a>
+              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://nectar.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Knowledge Base</a>
             </div>
           )}
         </div>
 
-        {/* Services */}
-        <a
-          href="https://ibtisamx.com"
-          target="_blank"
-          className="hover:text-purple-400 transition"
-        >
-          Services
-        </a>
+        <a href="/about" className="hover:text-purple-400 transition">About</a>
 
-        {/* Contact */}
-        <a href="/contact" className="hover:text-purple-400 transition">
-          Contact
-        </a>
+        <a href="/contact" className="hover:text-purple-400 transition">Contact</a>
 
-        {/* Download CV */}
         <a
           href="/cv.pdf"
           download
@@ -169,98 +111,61 @@ const Navbar = () => {
 
       </div>
 
-      {/* Mobile Menu (Shows when hamburger is clicked) */}
+      {/* ===== Mobile Menu ===== */}
       {mobileMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-gray-900 md:hidden flex flex-col gap-4 p-6 border-b border-gray-800">
 
-          <a href="/" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>
-            Home
-          </a>
+          <a href="/" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>Home</a>
 
           <a
-            href="https://nectar.ibtisam-iq.com"
+            href="https://projects.ibtisam-iq.com"
             target="_blank"
+            rel="noopener noreferrer"
             className="hover:text-purple-400 transition"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Nectar
+            Projects
           </a>
 
-          {/* Portfolio Section */}
+          <a href="/certificates" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>Certifications</a>
+
+          {/* Engineering (Mobile) */}
           <div>
             <button
               className="hover:text-purple-400 transition w-full text-left"
-              onClick={() => setPortfolioOpen(!portfolioOpen)}
+              onClick={() => setMobileEngineeringOpen(!mobileEngineeringOpen)}
             >
-              Portfolio ▾
+              Engineering ▾
             </button>
-            {portfolioOpen && (
+            {mobileEngineeringOpen && (
               <div className="pl-4 mt-2 flex flex-col gap-2">
-                <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>
-                  Skills
-                </a>
-                <a className="hover:text-purple-400" href="/projects" onClick={() => setMobileMenuOpen(false)}>
-                  Projects
-                </a>
-                {/*
-                <a className="hover:text-purple-400" href="https://projects.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Projects
-                </a>
-                */}
-                <a className="hover:text-purple-400" href="/certificates" onClick={() => setMobileMenuOpen(false)}>
-                  Certificates
-                </a>
-                <a className="hover:text-purple-400" href="https://achievements.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Achievements
-                </a>
+                <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>Skills</a>
+                <a className="hover:text-purple-400" href="https://achievements.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Achievements</a>
               </div>
             )}
           </div>
 
-          <a
-            href="/how-it-started"
-            className="hover:text-purple-400 transition flex items-center gap-2"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            How it started
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-          </a>
-
-          {/* Resources Section */}
+          {/* Resources (Mobile) */}
           <div>
             <button
               className="hover:text-purple-400 transition w-full text-left"
-              onClick={() => setResourcesOpen(!resourcesOpen)}
+              onClick={() => setMobileResourcesOpen(!mobileResourcesOpen)}
             >
               Resources ▾
             </button>
-            {resourcesOpen && (
+            {mobileResourcesOpen && (
               <div className="pl-4 mt-2 flex flex-col gap-2">
-                <a className="hover:text-purple-400" href="https://blog.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Blog
-                </a>
-                <a className="hover:text-purple-400" href="https://roadmaps.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Roadmaps
-                </a>
-                <a className="hover:text-purple-400" href="https://cert-vault.ibtisam-iq.com" target="_blank" onClick={() => setMobileMenuOpen(false)}>
-                  Certificate Practice Vault
-                </a>
+                <a className="hover:text-purple-400" href="https://blog.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Blog</a>
+                <a className="hover:text-purple-400" href="https://roadmaps.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Roadmaps</a>
+                <a className="hover:text-purple-400" href="https://cert-vault.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Cert Practice Vault</a>
+                <a className="hover:text-purple-400" href="https://nectar.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Knowledge Base</a>
               </div>
             )}
           </div>
 
-          <a
-            href="https://ibtisamx.com"
-            target="_blank"
-            className="hover:text-purple-400 transition"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Services
-          </a>
+          <a href="/about" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>About</a>
 
-          <a href="/contact" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>
-            Contact
-          </a>
+          <a href="/contact" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>Contact</a>
 
           <a
             href="/cv.pdf"
