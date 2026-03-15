@@ -1,88 +1,36 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { projects } from "../data/projects";
-import { ProjectCard } from "./ProjectCard";
-
-const FeaturedProjects = () => {
-  const featured = projects.slice(0, 5);
-  const [active, setActive] = useState(0);
-
-  // auto-slide
-  useEffect(() => {
-    if (featured.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setActive((prev) => (prev + 1) % featured.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [featured.length]);
-
+const ProjectsCTA = () => {
   return (
-    <section className="py-24 bg-gradient-to-b from-[#0B0F19] via-black to-[#0B0F19] text-white">
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <section className="pt-12 pb-16 bg-[#0B0F19] text-white">
+      <div className="max-w-6xl mx-auto px-6 md:px-10">
 
-        {/* LEFT — TEXT */}
-        <div>
-          <h2 className="text-5xl font-bold mb-6 tracking-tight">
-            Featured Engineering Projects
-          </h2>
+        <p className="text-sm font-semibold uppercase tracking-widest text-purple-400 mb-4">
+          My Work
+        </p>
 
-          <p className="text-gray-300 text-lg leading-relaxed mb-8">
-            These projects represent how I think as an engineer — designing systems,
-            understanding failure modes, and building infrastructure that behaves
-            predictably under real conditions.
-          </p>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight max-w-3xl">
+          I don't just read documentation —{" "}
+          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+            I build, deploy, and document production-grade systems.
+          </span>
+        </h2>
 
-          <Link
-            to="/projects"
-            className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition"
-          >
-            View all projects →
-          </Link>
-        </div>
+        <p className="text-gray-400 text-lg leading-relaxed mb-10 max-w-2xl">
+          Every project is real infrastructure — CI/CD pipelines, Kubernetes clusters,
+          containerized stacks, and automated deployments. Built from scratch. Documented in detail.
+        </p>
 
-        {/* RIGHT — SLIDER */}
-        <div className="relative overflow-hidden">
-
-          {/* TRACK */}
-          <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{
-              transform: `translateX(-${active * 100}%)`,
-            }}
-          >
-            {featured.map((project) => (
-              <div key={project.slug} className="min-w-full px-2">
-                <ProjectCard project={project} />
-              </div>
-            ))}
-          </div>
-
-          {/* DOTS */}
-          <div className="flex justify-center gap-2 mt-6">
-            {featured.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActive(index)}
-                className={`w-2.5 h-2.5 rounded-full transition ${
-                  active === index
-                    ? "bg-purple-500"
-                    : "bg-gray-600 hover:bg-gray-500"
-                }`}
-              />
-            ))}
-          </div>
-
-        </div>
+        <a
+          href="https://projects.ibtisam-iq.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition"
+        >
+          Explore My Projects →
+        </a>
 
       </div>
     </section>
   );
 };
 
-export default FeaturedProjects;
-
-
-
-
+export default ProjectsCTA;

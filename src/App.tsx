@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import FeaturedProjects from "./components/FeaturedProjects";
+import ProjectsCTA from "./components/FeaturedProjects";
 import TechnicalFoundation from "./components/TechnicalFoundation";
 import Philosophy from "./components/Philosophy";
 import Systems from "./components/Systems";
@@ -25,7 +25,7 @@ function App() {
           element={
             <>
               <Hero />
-              <FeaturedProjects />
+              <ProjectsCTA />
               <TechnicalFoundation />
               <Philosophy />
               <Systems />
