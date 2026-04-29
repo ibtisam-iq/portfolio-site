@@ -58,8 +58,13 @@ const Navbar = () => {
               onMouseEnter={() => setEngineeringOpen(true)}
               onMouseLeave={() => setEngineeringOpen(false)}
             >
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/skills">
-                Skills
+              <a
+                className="block px-4 py-2 hover:bg-gray-700 rounded"
+                href="https://runbook.ibtisam-iq.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Runbook
               </a>
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
@@ -68,6 +73,9 @@ const Navbar = () => {
                 rel="noopener noreferrer"
               >
                 Achievements
+              </a>
+              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/skills">
+                Skills
               </a>
             </div>
           )}
@@ -139,8 +147,9 @@ const Navbar = () => {
             </button>
             {mobileEngineeringOpen && (
               <div className="pl-4 mt-2 flex flex-col gap-2">
-                <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>Skills</a>
+                <a className="hover:text-purple-400" href="https://runbook.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Runbook</a>
                 <a className="hover:text-purple-400" href="https://achievements.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Achievements</a>
+                <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>Skills</a>
               </div>
             )}
           </div>
