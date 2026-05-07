@@ -50,15 +50,26 @@ const categories: Category[] = [
     tools: [
       { name: "Bash",      level: "Expert" },
       { name: "Ansible",   level: "Proficient" },
-      { name: "Terraform", level: "Growing" },
+      { name: "Terraform", level: "Proficient" },
     ],
   },
   {
     title: "Linux & OS",
     tools: [
-      { name: "Ubuntu / Debian", level: "Expert" },
-      { name: "RHEL / CentOS",   level: "Proficient" },
-      { name: "Networking",      level: "Proficient" },
+      { name: "Ubuntu / Debian",  level: "Expert" },
+      { name: "RHEL / CentOS",    level: "Proficient" },
+      { name: "systemd",          level: "Expert" },
+      { name: "Networking",       level: "Proficient" },
+      { name: "Nginx",            level: "Proficient" },
+    ],
+  },
+  {
+    title: "Security & Supply Chain",
+    tools: [
+      { name: "Trivy",     level: "Proficient" },
+      { name: "Gitleaks",  level: "Proficient" },
+      { name: "cosign",    level: "Growing" },
+      { name: "syft",      level: "Growing" },
     ],
   },
   {
@@ -71,8 +82,9 @@ const categories: Category[] = [
   {
     title: "Documentation",
     tools: [
-      { name: "MkDocs",   level: "Expert" },
-      { name: "Markdown", level: "Expert" },
+      { name: "MkDocs",            level: "Expert" },
+      { name: "Markdown",          level: "Expert" },
+      { name: "Runbook authoring", level: "Expert" },
     ],
   },
 ];
@@ -109,11 +121,13 @@ const Skills = () => {
       >
         <h1>Engineering Stack — Muhammad Ibtisam Iqbal, DevOps Engineer</h1>
         <p>
-          Docker, Kubernetes, CKA, CKD, Helm, Kustomize, ArgoCD, Jenkins,
+          Docker, Kubernetes, CKA, Helm, Kustomize, ArgoCD, Jenkins,
           GitHub Actions, SonarQube, Nexus, Azure DevOps, Maven, AWS EC2, VPC,
           IAM, EKS, ECS, S3, Route53, CodeCommit, CodeDeploy, Bash, Ansible,
-          Terraform, Ubuntu, RHEL, Linux, Networking, Prometheus, Grafana,
-          MkDocs, CI/CD pipelines, infrastructure automation, DevSecOps.
+          Terraform, Ubuntu, RHEL, Linux, systemd, Nginx, Networking,
+          Trivy, Gitleaks, cosign, syft, Prometheus, Grafana,
+          MkDocs, Runbook authoring, Cloudflare Tunnel, rootfs image engineering,
+          CI/CD pipelines, infrastructure automation, DevSecOps.
         </p>
       </div>
 
@@ -186,7 +200,7 @@ const Skills = () => {
               Currently Deepening
             </p>
             <div className="flex flex-wrap gap-3">
-              {["Terraform", "Prometheus", "Grafana", "HashiCorp Vault"].map((item) => (
+              {["Prometheus", "Grafana", "HashiCorp Vault", "cosign", "syft"].map((item) => (
                 <span
                   key={item}
                   className="bg-gray-800 border border-emerald-800 hover:border-emerald-500 text-emerald-300 text-sm px-4 py-2 rounded-2xl transition-all duration-200"
