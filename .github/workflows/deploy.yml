@@ -89,15 +89,19 @@ jobs:
         if: github.event.action != 'closed'
         run: npm ci
 
+      # VITE_BASE_PATH scopes all asset paths and React Router basename to the
+      # preview sub-path so the full site works at /pr-preview/pr-N/
       - name: Build
         if: github.event.action != 'closed'
         run: npm run build
+        env:
+          VITE_BASE_PATH: /pr-preview/pr-${{ github.event.pull_request.number }}/
 
+      # No CNAME: would redirect away from /previews/pr-N
       - name: Write 404 fallback
         if: github.event.action != 'closed'
         run: cp dist/index.html dist/404.html
 
-      # No CNAME: would redirect away from /previews/pr-N
       # token: required — rossjrw calls marocchino/sticky-pull-request-comment
       # internally; without explicit token it falls back to a read-only default
       - name: Deploy PR preview

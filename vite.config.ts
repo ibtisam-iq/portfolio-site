@@ -5,18 +5,12 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
 
-  // Critical for GitHub Pages + custom domain
-  base: '/',
+  // Production: VITE_BASE_PATH is unset → defaults to '/'
+  // PR preview: VITE_BASE_PATH = '/pr-preview/pr-N/' (injected by deploy.yml)
+  base: process.env.VITE_BASE_PATH ?? '/',
 
-  // Optional but recommended enhancements
   build: {
     outDir: 'dist',
-    sourcemap: true, // Helpful for debugging in production if needed
-  },
-
-  // If you're using React Router, this helps with client-side routing on refresh
-  server: {
-    // Only needed during local development
-    // GitHub Pages doesn't support fallback, so we handle it via a 404.html redirect later if needed
+    sourcemap: true,
   },
 });
