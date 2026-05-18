@@ -20,8 +20,8 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKERHUB_IMAGE: ibtisam-iq/ibtisam-iq
-  GHCR_IMAGE:      ghcr.io/${{ github.repository_owner }}/portfolio-site
+  DOCKERHUB_IMAGE: mibtisam/mibtisam
+  GHCR_IMAGE:      ghcr.io/${{ github.repository_owner }}/${{ github.repository_owner }}
 
 jobs:
   build-and-push:
