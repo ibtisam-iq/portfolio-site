@@ -13,7 +13,7 @@
 
 # ── Dependencies ──────────────────────────────────────────────────────────────
 # MUST be excluded. If a local node_modules exists and this line is missing,
-# `COPY . .` would overwrite the clean `npm ci` output from the deps stage.
+# COPY . . would overwrite the clean `npm ci` output from the deps stage.
 # The deps stage re-installs everything fresh inside the container.
 node_modules
 
@@ -56,11 +56,14 @@ __mocks__
 vitest.config.*
 jest.config.*
 
-# ── Docker Files (prevent recursive self-inclusion) ───────────────────────────
+# ── Docker Files (self-referential — not needed inside the container) ─────────
+# Only the Dockerfile and .dockerignore itself are excluded here.
+# nginx.conf is intentionally NOT excluded — it is a runtime config file that
+# Stage 3 (production) depends on via: COPY --chown=nginx:nginx nginx.conf ...
+# Excluding nginx.conf causes: ERROR: "/nginx.conf": not found
 Dockerfile
 Dockerfile.*
 .dockerignore
-nginx.conf
 
 # ── Secrets & Credentials (NEVER bake into an image layer) ───────────────────
 .env
