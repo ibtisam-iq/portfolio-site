@@ -19,10 +19,10 @@ on:
       - '.github/PULL_REQUEST_TEMPLATE/**'
   workflow_dispatch:
 
-# DOCKERHUB_IMAGE: secrets.DOCKERHUB_USERNAME cannot be referenced in top-level env block;
-# it is resolved per-job via an explicit env step instead.
 env:
-  GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.repository_owner }}
+  DOCKERHUB_USERNAME: mibtisam
+  DOCKERHUB_IMAGE:    mibtisam/mibtisam
+  GHCR_IMAGE:         ghcr.io/${{ github.repository_owner }}/${{ github.repository_owner }}
 
 jobs:
   build-and-push:
@@ -30,11 +30,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read      # checkout
-      packages: write     # push to GHCR
-
-    env:
-      DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_USERNAME }}
+      contents: read
+      packages: write
 
     strategy:
       fail-fast: false
@@ -63,7 +60,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to GHCR
@@ -139,9 +136,6 @@ jobs:
       contents: read
       packages: write
 
-    env:
-      DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_USERNAME }}
-
     steps:
       - name: Download all digests
         uses: actions/download-artifact@v4
@@ -156,7 +150,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to GHCR
