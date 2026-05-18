@@ -72,7 +72,7 @@ jobs:
 
     permissions:
       contents: write       # gh-pages branch push
-      pull-requests: write  # post preview URL comment
+      pull-requests: write  # post preview URL comment via marocchino/sticky-pull-request-comment
 
     steps:
       - name: Checkout
@@ -97,13 +97,16 @@ jobs:
         if: github.event.action != 'closed'
         run: cp dist/index.html dist/404.html
 
-      # No CNAME here: CNAME redirects away from /previews/pr-N sub-path
+      # No CNAME: would redirect away from /previews/pr-N
+      # token: required — rossjrw calls marocchino/sticky-pull-request-comment
+      # internally; without explicit token it falls back to a read-only default
       - name: Deploy PR preview
         uses: rossjrw/pr-preview-action@v1
         with:
           source_dir: ./dist
           umbrella_dir: previews
           action: auto
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-production:
     needs: build-and-quality
