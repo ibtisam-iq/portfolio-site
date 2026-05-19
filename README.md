@@ -1,6 +1,6 @@
 # Ibtisam IQ — Engineering Portfolio
 
-![Build](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/deploy.yml/badge.svg)
+![Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
