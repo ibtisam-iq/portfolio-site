@@ -1,9 +1,0 @@
-node_modules
-dist
-.env
-.DS_Store
-# Personal engineering scratchpad (not part of the project)
-.scratch
-# Backups
-*.bak
-
