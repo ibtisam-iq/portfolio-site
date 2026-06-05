@@ -54,10 +54,18 @@ const Navbar = () => {
           <button className="hover:text-purple-400 transition">Engineering ▾</button>
           {engineeringOpen && (
             <div
-              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[180px]"
+              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[200px]"
               onMouseEnter={() => setEngineeringOpen(true)}
               onMouseLeave={() => setEngineeringOpen(false)}
             >
+              <a
+                className="block px-4 py-2 hover:bg-gray-700 rounded"
+                href="https://labs.iximiuz.com/a/ibtisam-iq"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                iximiuz Playgrounds
+              </a>
               <a
                 className="block px-4 py-2 hover:bg-gray-700 rounded"
                 href="https://runbook.ibtisam-iq.com"
@@ -147,6 +155,7 @@ const Navbar = () => {
             </button>
             {mobileEngineeringOpen && (
               <div className="pl-4 mt-2 flex flex-col gap-2">
+                <a className="hover:text-purple-400" href="https://labs.iximiuz.com/a/ibtisam-iq" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>iximiuz Playgrounds</a>
                 <a className="hover:text-purple-400" href="https://runbook.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Runbook</a>
                 <a className="hover:text-purple-400" href="https://achievements.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Achievements</a>
                 <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>Skills</a>
