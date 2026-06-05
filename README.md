@@ -1,133 +1,246 @@
 # Ibtisam IQ — Engineering Portfolio
 
-![Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?logo=react)
-![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-0F172A?logo=tailwindcss)
-![Infrastructure](https://img.shields.io/badge/Infrastructure-0B0F19)
-![Cloud](https://img.shields.io/badge/Cloud-0B0F19)
-![DevOps](https://img.shields.io/badge/DevOps-0B0F19)
-![Systems](https://img.shields.io/badge/Systems-0B0F19)
+[![Deploy to Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml)
+[![CI — Build & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0F172A?logo=tailwindcss)](https://tailwindcss.com/)
+[![GHCR](https://img.shields.io/badge/GHCR-ibtisam--iq%2Fibtisam--iq-2496ED?logo=github)](https://github.com/ibtisam-iq/portfolio-site/pkgs/container/ibtisam-iq)
+[![Docker Hub](https://img.shields.io/badge/Docker_Hub-mibtisam%2Fmibtisam-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/mibtisam/mibtisam)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Personal engineering portfolio of **Muhammad Ibtisam Iqbal**, focused on cloud infrastructure, Kubernetes, and production-style system design.
+The source for **[ibtisam-iq.com](https://ibtisam-iq.com)** — the front door to a multi-domain engineering ecosystem covering cloud infrastructure, Kubernetes, CI/CD, and production-grade system design.
 
-This repository powers the main portfolio site and acts as the **entry point** to a larger engineering knowledge ecosystem.
-
-🌐 **Live site:** https://ibtisam-iq.com
-
---- 
-
-## Engineering Ecosystem Overview
-
-This portfolio is intentionally split into **multiple subdomains**, each serving a clear engineering purpose.  
-The main site provides context and navigation — detailed content lives in the respective domains.
-
-### Subdomains
-
-| Subdomain | Purpose |
-|---------|--------|
-| **docs.ibtisam-iq.com** | Long-form technical documentation, system breakdowns, design notes |
-| **projects.ibtisam-iq.com** | Production-style infrastructure and cloud projects |
-| **blogs.ibtisam-iq.com** | Engineering articles and technical reflections |
-| **achievements.ibtisam-iq.com** | Milestones, and professional achievements |
-| **roadmaps.ibtisam-iq.com** | Engineering career paths and learning roadmaps |
-| **cert-prep.ibtisam-iq.com** | Deep certification preparation notes (CKA, CKAD, etc.) |
-
-Each subdomain is deployed independently to keep concerns isolated and scalable.
+This repository contains the **main site**. The deeper surfaces — projects, runbook, knowledge base, certification practice, blog, and more — each live in their own repository, deployed to their own subdomain with their own stack and pipeline (see [Ecosystem](#ecosystem)). The intent is a portfolio that reads like infrastructure: composable, isolated, predictable — not a single monolithic page.
 
 ---
 
-## Tech Stack
+## Why this exists
 
-**Frontend**
-- React (TypeScript)
-- Vite
-- Tailwind CSS
+Most portfolios are one page that goes stale the moment it ships. This one is built as a system of small, independently deployable surfaces, so each concern evolves on its own cadence without coupling. The main site stays small and stable; everything that changes frequently lives behind a subdomain.
 
-**Routing**
-- React Router
-
-**Hosting & Delivery**
-- GitHub Pages (subdomains)
-- Cloudflare DNS
-
-**Tooling**
-- ESLint
-- PostCSS
-- GitHub Actions (build & deploy)
+That separation is the point. It mirrors how production platforms are actually run, and it keeps every surface cheap to reason about, deploy, and roll back.
 
 ---
 
-## Project Structure
+## Ecosystem
+
+This site is the hub. It links out to external surfaces and hosts a handful of internal routes directly.
+
+### External surfaces (subdomains)
+
+| Surface | Purpose | Live | Repo |
+| --- | --- | --- | --- |
+| **Projects** | Production-style infrastructure and cloud projects | [projects.ibtisam-iq.com](https://projects.ibtisam-iq.com) | [`projects`](https://github.com/ibtisam-iq/projects) |
+| **Runbook** | Documented steps from real implementation work | [runbook.ibtisam-iq.com](https://runbook.ibtisam-iq.com) | [`runbook`](https://github.com/ibtisam-iq/runbook) |
+| **Knowledge Base** | Personal engineering knowledge base (Nectar) | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [`nectar`](https://github.com/ibtisam-iq/nectar) |
+| **Cert Practice Vault** | Execution-first Kubernetes & cloud cert practice | [cert-vault.ibtisam-iq.com](https://cert-vault.ibtisam-iq.com) | [`certification-practice-vault`](https://github.com/ibtisam-iq/certification-practice-vault) |
+| **DebugBox** | Multi-variant Docker debugging toolkit | [debugbox.ibtisam-iq.com](https://debugbox.ibtisam-iq.com) | [`debugbox`](https://github.com/ibtisam-iq/debugbox) |
+| **Blog** | Distilled write-ups of what was built and learned | [blog.ibtisam-iq.com](https://blog.ibtisam-iq.com) | [`blog`](https://github.com/ibtisam-iq/blog) |
+| **Achievements** | Milestones and professional achievements | [achievements.ibtisam-iq.com](https://achievements.ibtisam-iq.com) | [`achievements`](https://github.com/ibtisam-iq/achievements) |
+| **Roadmaps** | Engineering learning roadmaps | [roadmaps.ibtisam-iq.com](https://roadmaps.ibtisam-iq.com) | [`roadmaps`](https://github.com/ibtisam-iq/roadmaps) |
+
+Related: [SilverStack](https://github.com/ibtisam-iq/silver-stack) — reusable infrastructure artifacts (scripts, manifests, images) the other surfaces reference.
+
+Each surface is its own repository with its own stack and deploy pipeline — for example, `runbook` is an MkDocs site, independent of this React app — so they evolve and ship without coupling.
+
+### Internal routes (served by this repo)
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Landing and narrative hub |
+| `/certificates` | Verified certifications |
+| `/skills` | Technical skill breakdown |
+| `/about` | Background and bio |
+| `/contact` | Get in touch |
+
+---
+
+## Tech stack
+
+| Layer | Choice | Rationale |
+| --- | --- | --- |
+| **Language** | TypeScript | Type safety as a first-class constraint, not an afterthought |
+| **UI** | React 19 + react-icons | Component model that scales with the content |
+| **Build** | Vite 7 | Fast cold starts, native ESM, lean production bundles |
+| **Styling** | Tailwind CSS 3 + PostCSS | Utility-first; design decisions stay in the markup |
+| **Routing** | React Router 7 | Client-side routing for a static SPA |
+| **Quality** | ESLint (flat config) + typescript-eslint | Linting wired into the project, run via `npm run lint` |
+| **CI/CD** | GitHub Actions | Pages deploy (with PR previews) + multi-arch container build/push |
+| **Container** | Docker (multi-stage) + nginx:alpine | Rootless, hardened image for self-hosting / local parity |
+| **Hosting** | GitHub Pages | Static delivery — no server to run or patch |
+| **DNS** | Cloudflare | Domain and subdomain routing |
+
+---
+
+## CI/CD
+
+Two GitHub Actions workflows, both running on pushes and PRs to `main`:
+
+**`pages.yml` — GitHub Pages.** Lints, builds, and deploys the static site to Pages on `main`. Pull requests get their own preview deployment (scoped via `VITE_BASE_PATH`), and a `404.html` fallback lets React Router own deep links. Concurrency cancels superseded runs.
+
+**`ci.yml` — Build & Push.** Builds the `Dockerfile` for `linux/amd64` and `linux/arm64` (Buildx + QEMU), pushes by digest to GHCR and Docker Hub, then merges them into one multi-arch manifest. Tagged `latest`, `sha-<short>`, build date, and semver; PRs build without pushing.
+
+Production traffic is served by the **static Pages build**. The container image is an independent, portable deliverable — not in the live request path — that runs anywhere nginx can. Its bundled `nginx.conf` is hardened for a static SPA: security headers (CSP, HSTS, `X-Frame-Options`), immutable asset caching with an uncached `index.html`, gzip, and a `try_files` fallback to `index.html` for client-side routing.
+
+### Published images
+
+The container pipeline publishes a **multi-arch image** (`linux/amd64`, `linux/arm64`) to two registries:
+
+| Registry | Image |
+| --- | --- |
+| **GitHub Container Registry** | `ghcr.io/ibtisam-iq/ibtisam-iq` |
+| **Docker Hub** | `docker.io/mibtisam/mibtisam` |
+
+Tags include `latest`, `sha-<short>`, the build date, PR refs, and semver. Pull and run either registry:
+
+```bash
+# GHCR
+docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
+
+# Docker Hub
+docker run --rm -p 8080:8080 mibtisam/mibtisam:latest
+
+# → http://localhost:8080
+```
+
+---
+
+## Architecture at a glance
+
+```
+                          ┌──────────────────────┐
+                          │      Cloudflare      │
+                          │          DNS         │
+                          └───────────┬──────────┘
+                                      │
+        ┌──────────────────┬──────────┴───────────┬──────────────────┐
+        │                  │                      │                  │
+  ibtisam-iq.com    projects.ibtisam-iq    runbook.ibtisam-iq   blog / nectar / …
+   (this repo)        (separate repo)        (separate repo)      (separate repos)
+        │
+   push to main
+        │
+   ┌────┴───────────────────────────────────────────────────────────┐
+   │  GitHub Actions                                                │
+   │  ├─ pages.yml  → lint → build → deploy to Pages (+ PR preview) │  ← live
+   │  └─ ci.yml     → multi-arch build → push to GHCR + Docker Hub  │  ← images
+   └─────────────────────────────────────────────────────────────── ┘
+```
+
+Production is **static, served from GitHub Pages**, with DNS handled by Cloudflare. No SSR by design — the trade is predictable, fast, and operationally near-zero.
+
+---
+
+## Project structure
 
 ```text
 portfolio-site/
-├── public/                # Static assets, favicon, manifest
+├── .github/workflows/      # pages.yml (Pages + previews) · ci.yml (multi-arch images)
+├── public/                 # Static assets (favicon, cv.pdf, etc.)
 ├── src/
-│   ├── components/        # Reusable UI components
-│   ├── pages/             # Route-level pages
-│   ├── data/              # Structured data (certificates, etc.)
-│   ├── App.tsx            # App shell
-│   ├── main.tsx           # Entry point
-│   └── index.css          # Global styles
-├── index.html             # HTML entry (SEO, meta, favicon)
+│   ├── components/         # Reusable UI (Navbar, etc.)
+│   ├── App.tsx             # Root app component
+│   ├── main.tsx            # Entry point
+│   └── index.css           # Global styles / Tailwind layer
+├── Dockerfile              # Multi-stage build → rootless nginx:alpine
+├── nginx.conf              # Hardened nginx config (port 8080, CSP, caching)
+├── index.html              # HTML entry — SEO, meta, favicon
+├── eslint.config.js
+├── postcss.config.js
 ├── tailwind.config.js
+├── tsconfig.json           # + tsconfig.app.json, tsconfig.node.json
 ├── vite.config.ts
 └── package.json
 ```
 
-The structure is intentionally **flat and explicit** to keep navigation, maintenance, and scalability predictable.
+The layout is intentionally **flat and explicit** — structure that fits in a single mental model.
 
 ---
 
-## Design Philosophy
+## Local development
 
-* Systems before tools
-* Clarity over cleverness
-* Explicit structure over abstraction
-* Documentation is part of the system, not an afterthought
-* Production-style decisions even in personal projects
-
-This site evolves incrementally — unfinished sections are intentional, not neglected.
-
----
-
-## Local Development
+**Prerequisites:** Node.js and npm. CI runs on Node 20; the container build pins Node 22 (`22.14-alpine`). Any recent LTS works locally.
 
 ```bash
-npm install
+# Install exact, reproducible dependencies from the lockfile
+npm ci
+
+# Start the Vite dev server
 npm run dev
+
+# Type-check and build for production (tsc -b && vite build)
+npm run build
+
+# Lint the codebase
+npm run lint
+
+# Preview the production build locally
+npm run preview
 ```
 
-Build for production:
+### Run the container
+
+The image is a **3-stage build** (`deps` → `builder` → `production`) that ends on `nginx:alpine` with no Node toolchain in the final layer. It runs **rootless** (`USER nginx`), exposes **8080**, ships a `HEALTHCHECK`, and uses `STOPSIGNAL SIGQUIT` for graceful connection draining.
+
+Pull a published image, or build locally for production parity:
 
 ```bash
-npm run build
+# Run the published image (GHCR)
+docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
+
+# …or build from source (CI injects BUILD_DATE / GIT_SHA as OCI labels)
+docker build -t portfolio-site .
+docker run --rm -p 8080:8080 portfolio-site
+
+# → http://localhost:8080
 ```
 
 ---
 
-## Deployment Model
+## Deployment model
 
-* Main site and subdomains are deployed independently
-* Static builds served via GitHub Pages
-* DNS and HTTPS handled by Cloudflare
-* No server-side rendering by design (predictable, fast, simple)
+- **Production is static.** Served from GitHub Pages; no application server in the request path.
+- **CI builds and deploys.** Pushes to `main` trigger the GitHub Actions workflows — no manual deploys.
+- **Two artifacts.** The same source produces both the static Pages deploy and a container image published to GHCR and Docker Hub.
+- **PR previews.** Pull requests deploy to isolated preview paths before anything reaches `main`.
+- **DNS via Cloudflare.** Domain and subdomain routing are handled at Cloudflare; the custom domain is bound through a `CNAME` in the build.
+- **No SSR, by design.** The content doesn't need it; avoiding it removes a class of runtime failure.
 
 ---
 
-## Project Status
+## Design principles
 
-This portfolio is **actively evolving**.
+Choices in this repo that reflect how it's built, not just stated values:
 
-New systems, documentation, and projects are added incrementally as they reach
-a production-ready standard.
+- **Production stays simple.** A static SPA on Pages — no server to run or patch — with SSR deliberately avoided.
+- **Reproducible by default.** `npm ci` against a committed lockfile; CI lints and builds the same way every time.
+- **Portable, not locked in.** The same source ships as a multi-arch container image (amd64 + arm64) to two registries, runnable anywhere nginx can run.
+- **Hardened even off the critical path.** The container image runs rootless on a non-privileged port with a healthcheck and security headers, despite not serving production.
+- **Isolated by surface.** Each part of the ecosystem is its own repo with its own stack and pipeline, so one can change or break without touching the rest.
+- **Safe to change.** PR previews and a lint gate catch problems before they reach `main`.
+
+---
+
+## Status
+
+**Actively evolving.** New systems, documentation, and projects land incrementally as they reach a production-ready bar. Unfinished sections are intentional staging, not neglect.
 
 ---
 
 ## License
 
-MIT License
+Released under the [MIT License](./LICENSE).
 
-### Muhammad Ibtisam
+---
+
+<div align="center">
+
+**Muhammad Ibtisam Iqbal**
+
+DevOps & Infrastructure Engineer · Kubernetes · Cloud · CI/CD
+
+[Website](https://ibtisam-iq.com) · [GitHub](https://github.com/ibtisam-iq)
+
+</div>
