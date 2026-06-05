@@ -189,8 +189,10 @@ Pull a published image, or build locally for production parity:
 ```bash
 # Run the published image (GHCR)
 docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
+```
 
-# …or build from source (CI injects BUILD_DATE / GIT_SHA as OCI labels)
+```bash
+# Build from source (CI injects BUILD_DATE / GIT_SHA as OCI labels)
 docker build -t portfolio-site .
 docker run --rm -p 8080:8080 portfolio-site
 
