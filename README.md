@@ -212,19 +212,6 @@ docker run --rm -p 8080:8080 portfolio-site
 
 ---
 
-## Design principles
-
-Choices in this repo that reflect how it's built, not just stated values:
-
-- **Production stays simple.** A static SPA on Pages — no server to run or patch — with SSR deliberately avoided.
-- **Reproducible by default.** `npm ci` against a committed lockfile; CI lints and builds the same way every time.
-- **Portable, not locked in.** The same source ships as a multi-arch container image (amd64 + arm64) to two registries, runnable anywhere nginx can run.
-- **Hardened even off the critical path.** The container image runs rootless on a non-privileged port with a healthcheck and security headers, despite not serving production.
-- **Isolated by surface.** Each part of the ecosystem is its own repo with its own stack and pipeline, so one can change or break without touching the rest.
-- **Safe to change.** PR previews and a lint gate catch problems before they reach `main`.
-
----
-
 ## Status
 
 **Actively evolving.** New systems, documentation, and projects land incrementally as they reach a production-ready bar. Unfinished sections are intentional staging, not neglect.
