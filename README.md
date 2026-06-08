@@ -115,18 +115,18 @@ docker run --rm -p 8080:8080 mibtisam/mibtisam:latest
                           │          DNS         │
                           └───────────┬──────────┘
                                       │
-        ┌──────────────────┬──────────┴───────────┬──────────────────┐
+        ┌──────────────────┬────────┬─────────────────────┬──────────────────┐
         │                  │                      │                  │
   ibtisam-iq.com    projects.ibtisam-iq    runbook.ibtisam-iq   blog / nectar / …
    (this repo)        (separate repo)        (separate repo)      (separate repos)
         │
    push to main
         │
-   ┌────┴───────────────────────────────────────────────────────────┐
+   ┌────┴─────────────────────────────────────────────────────┐
    │  GitHub Actions                                                │
    │  ├─ pages.yml  → lint → build → deploy to Pages (+ PR preview) │  ← live
    │  └─ ci.yml     → multi-arch build → push to GHCR + Docker Hub  │  ← images
-   └─────────────────────────────────────────────────────────────── ┘
+   └──────────────────────────────────────────────────────────────────── ┘
 ```
 
 Production is **static, served from GitHub Pages**, with DNS handled by Cloudflare. No SSR by design — the trade is predictable, fast, and operationally near-zero.
@@ -161,7 +161,7 @@ The layout is intentionally **flat and explicit** — structure that fits in a s
 
 ## Local development
 
-**Prerequisites:** Node.js and npm. CI runs on Node 20; the container build pins Node 22 (`22.14-alpine`). Any recent LTS works locally.
+**Prerequisites:** Node.js and npm. CI runs on Node 24; the container build pins Node 22 (`22.14-alpine`). Any recent LTS works locally.
 
 ```bash
 # Install exact, reproducible dependencies from the lockfile
@@ -198,6 +198,24 @@ docker run --rm -p 8080:8080 portfolio-site
 
 # → http://localhost:8080
 ```
+
+---
+
+## Local CI Testing (`act`)
+
+Both pipelines can be run locally using [`act`](https://github.com/nektos/act).
+
+```bash
+# Run the Pages build pipeline (lint → build → CNAME → 404)
+act push \
+  -W .github/workflows/pages.yml
+
+# Run the Docker build pipeline (QEMU → Buildx → build)
+act push \
+  -W .github/workflows/ci.yml
+```
+
+> Artifact uploads, registry logins, image pushes, and GitHub Pages deployment are automatically skipped via `if: ${{ env.ACT != 'true' }}` guards — `act` sets this environment variable automatically.
 
 ---
 
