@@ -116,14 +116,16 @@ jobs:
           cache-to:   type=gha,scope=${{ steps.slug.outputs.value }},mode=max
           outputs: type=image,name=${{ env.DOCKERHUB_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
 
+      # load: true requires a single platform; pinned to linux/amd64 for local parity
       - name: Build (local act only)
         if: ${{ env.ACT == 'true' }}
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64
           push: false
+          load: true
 
       - name: Export digest
         if: ${{ github.event_name != 'pull_request' && env.ACT != 'true' }}
