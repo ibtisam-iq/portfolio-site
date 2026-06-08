@@ -21,12 +21,16 @@ on:
 
 # One deployment per branch/PR; cancel in-progress on newer push
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
 
+  # ────────────────────────────────────────────────────────────────
+  # JOB 1 — Build + QA
+  # ────────────────────────────────────────────────────────────────
   build-and-quality:
+    name: Build Site
     runs-on: ubuntu-latest
 
     permissions:
@@ -34,12 +38,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -61,11 +65,19 @@ jobs:
         run: cp dist/index.html dist/404.html
 
       - name: Upload Pages artifact
+        if: ${{ env.ACT != 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
+  # ────────────────────────────────────────────────────────────────
+  # JOB 2 — PR Preview (runs ONLY on pull_request)
+  # Live URL: https://ibtisam-iq.com/previews/pr-<number>/
+  # Auto-deleted when PR is merged or closed.
+  # Also posts the preview URL as a comment on the PR automatically.
+  # ────────────────────────────────────────────────────────────────
   pr-preview:
+    name: Deploy PR Preview
     # Runs on all PR events; rossjrw/pr-preview-action handles deploy vs cleanup
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -76,13 +88,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Setup Node.js
         if: github.event.action != 'closed'
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -105,14 +117,19 @@ jobs:
       # token: required — rossjrw calls marocchino/sticky-pull-request-comment
       # internally; without explicit token it falls back to a read-only default
       - name: Deploy PR preview
-        uses: rossjrw/pr-preview-action@v1
+        if: ${{ env.ACT != 'true' }}
+        uses: rossjrw/pr-preview-action@v1.8.1
         with:
           source_dir: ./dist
           umbrella_dir: previews
           action: auto
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  # ────────────────────────────────────────────────────────────────
+  # JOB 3 — Production Deploy (runs ONLY on push to main)
+  # ────────────────────────────────────────────────────────────────
   deploy-production:
+    name: Deploy to GitHub Pages
     needs: build-and-quality
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -127,5 +144,6 @@ jobs:
 
     steps:
       - name: Deploy to GitHub Pages
+        if: ${{ env.ACT != 'true' }}
         id: deployment
         uses: actions/deploy-pages@v4
