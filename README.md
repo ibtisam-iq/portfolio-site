@@ -215,7 +215,7 @@ act push \
   -W .github/workflows/ci.yml
 ```
 
-> Artifact uploads, registry logins, image pushes, and GitHub Pages deployment are automatically skipped via `if: ${{ env.ACT != 'true' }}` guards — `act` sets this environment variable automatically.
+> Registry logins, metadata extraction, image pushes, artifact uploads, and GitHub Pages deployment are automatically skipped via `if: ${{ !env.ACT }}` guards — `act` sets the `ACT` environment variable automatically. For `ci.yml`, the build is pinned to `linux/amd64` locally (required for `load: true`) and the image is loaded into your local Docker daemon as `mibtisam/mibtisam:local`.
 
 ---
 
