@@ -61,14 +61,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        if: ${{ github.event_name != 'pull_request' && env.ACT != 'true' }}
+        if: ${{ !env.ACT && github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to GHCR
-        if: ${{ github.event_name != 'pull_request' && env.ACT != 'true' }}
+        if: ${{ !env.ACT && github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -76,7 +76,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -99,43 +99,35 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Build & push by digest
-        if: ${{ env.ACT != 'true' }}
+      # Under act: load image into local Docker daemon (linux/amd64 only; load requires single platform)
+      # On CI:     push by digest to GHCR + Docker Hub
+      - name: Build & push
         id: build
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
-          platforms: ${{ matrix.platform }}
-          push: ${{ github.event_name != 'pull_request' }}
+          platforms: ${{ !!env.ACT && 'linux/amd64' || matrix.platform }}
+          load: ${{ !!env.ACT }}
+          push: ${{ !env.ACT && github.event_name != 'pull_request' }}
+          tags: ${{ env.ACT && format('{0}:local', env.DOCKERHUB_IMAGE) || steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
             GIT_SHA=${{ github.sha }}
           cache-from: type=gha,scope=${{ steps.slug.outputs.value }}
           cache-to:   type=gha,scope=${{ steps.slug.outputs.value }},mode=max
-          outputs: type=image,name=${{ env.DOCKERHUB_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
-
-      # load: true requires a single platform; pinned to linux/amd64 for local parity
-      - name: Build (local act only)
-        if: ${{ env.ACT == 'true' }}
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile
-          platforms: linux/amd64
-          push: false
-          load: true
+          outputs: ${{ !env.ACT && format('type=image,name={0},push-by-digest=true,name-canonical=true,push={1}', env.DOCKERHUB_IMAGE, github.event_name != 'pull_request') || '' }}
 
       - name: Export digest
-        if: ${{ github.event_name != 'pull_request' && env.ACT != 'true' }}
+        if: ${{ !env.ACT && github.event_name != 'pull_request' }}
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest artifact
-        if: ${{ github.event_name != 'pull_request' && env.ACT != 'true' }}
+        if: ${{ !env.ACT && github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v7.0.1
         with:
           name: digest-${{ steps.slug.outputs.value }}
@@ -158,7 +150,7 @@ jobs:
 
     steps:
       - name: Download all digests
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         uses: actions/download-artifact@v8.0.1
         with:
           path: /tmp/digests
@@ -169,14 +161,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         uses: docker/login-action@v3
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to GHCR
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -184,7 +176,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -200,7 +192,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
       - name: Create & push multi-arch manifest
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create \
@@ -208,5 +200,5 @@ jobs:
             $(printf '${{ env.DOCKERHUB_IMAGE }}@sha256:%s ' *)
 
       - name: Inspect manifest
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ !env.ACT }}
         run: docker buildx imagetools inspect ${{ env.DOCKERHUB_IMAGE }}:latest
