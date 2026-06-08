@@ -85,10 +85,10 @@ jobs:
             ${{ env.GHCR_IMAGE }}
           labels: |
             org.opencontainers.image.title=portfolio-site
-            org.opencontainers.image.description=Ibtisam Iqbal — Portfolio (React 19 + Vite 7 + Tailwind)
+            org.opencontainers.image.description=Muhammad Ibtisam — Portfolio
             org.opencontainers.image.url=https://ibtisam-iq.com
             org.opencontainers.image.source=https://github.com/ibtisam-iq/portfolio-site
-            org.opencontainers.image.vendor=Ibtisam Iqbal
+            org.opencontainers.image.vendor=Muhammad Ibtisam
             org.opencontainers.image.authors=Muhammad Ibtisam <contact@ibtisam-iq.com>
             org.opencontainers.image.licenses=MIT
           tags: |
