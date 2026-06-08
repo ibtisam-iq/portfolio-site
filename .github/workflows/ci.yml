@@ -99,8 +99,9 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      # Under act: load image into local Docker daemon (linux/amd64 only; load requires single platform)
-      # On CI:     push by digest to GHCR + Docker Hub
+      # Under act : load into local daemon, tag as :local (no outputs/digest needed)
+      # On CI push: push raw digest only (no tags — tags applied in merge-and-tag job)
+      # On CI PR  : build only, no push, no digest export
       - name: Build & push
         id: build
         uses: docker/build-push-action@v6
@@ -110,14 +111,14 @@ jobs:
           platforms: ${{ !!env.ACT && 'linux/amd64' || matrix.platform }}
           load: ${{ !!env.ACT }}
           push: ${{ !env.ACT && github.event_name != 'pull_request' }}
-          tags: ${{ env.ACT && format('{0}:local', env.DOCKERHUB_IMAGE) || steps.meta.outputs.tags }}
+          tags: ${{ !!env.ACT && format('{0}:local', env.DOCKERHUB_IMAGE) || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
             GIT_SHA=${{ github.sha }}
           cache-from: type=gha,scope=${{ steps.slug.outputs.value }}
           cache-to:   type=gha,scope=${{ steps.slug.outputs.value }},mode=max
-          outputs: ${{ !env.ACT && format('type=image,name={0},push-by-digest=true,name-canonical=true,push={1}', env.DOCKERHUB_IMAGE, github.event_name != 'pull_request') || '' }}
+          outputs: ${{ !env.ACT && github.event_name != 'pull_request' && format('type=image,name={0},push-by-digest=true,name-canonical=true,push=true', env.DOCKERHUB_IMAGE) || '' }}
 
       - name: Export digest
         if: ${{ !env.ACT && github.event_name != 'pull_request' }}
