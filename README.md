@@ -2,6 +2,7 @@
 
 [![Deploy to Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml)
 [![CI — Build & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml)
+[![Helm — Package & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
@@ -69,6 +70,7 @@ Each surface is its own repository with its own stack and deploy pipeline — fo
 | **Quality** | ESLint (flat config) + typescript-eslint | Linting wired into the project, run via `npm run lint` |
 | **CI/CD** | GitHub Actions | Pages deploy (with PR previews) + multi-arch container build/push |
 | **Container** | Docker (multi-stage) + nginx:alpine | Rootless, hardened image for self-hosting / local parity |
+| **Kubernetes** | Helm | Chart packaged and published to GHCR as an OCI artifact |
 | **Hosting** | GitHub Pages | Static delivery — no server to run or patch |
 | **DNS** | Cloudflare | Domain and subdomain routing |
 
@@ -76,13 +78,13 @@ Each surface is its own repository with its own stack and deploy pipeline — fo
 
 ## CI/CD
 
-Two GitHub Actions workflows, both running on pushes and PRs to `main`:
+Three GitHub Actions workflows running on `main`:
 
 **`pages.yml` — GitHub Pages.** Lints, builds, and deploys the static site to Pages on `main`. Pull requests get their own preview deployment (scoped via `VITE_BASE_PATH`), and a `404.html` fallback lets React Router own deep links. Concurrency cancels superseded runs.
 
 **`ci.yml` — Build & Push.** Builds the `Dockerfile` for `linux/amd64` and `linux/arm64` (Buildx + QEMU), pushes by digest to GHCR and Docker Hub, then merges them into one multi-arch manifest. Tagged `latest`, `sha-<short>`, build date, and semver; PRs build without pushing.
 
-Production traffic is served by the **static Pages build**. The container image is an independent, portable deliverable — not in the live request path — that runs anywhere nginx can. Its bundled `nginx.conf` is hardened for a static SPA: security headers (CSP, HSTS, `X-Frame-Options`), immutable asset caching with an uncached `index.html`, gzip, and a `try_files` fallback to `index.html` for client-side routing.
+**`helm-release.yml` — Helm Package & Push.** Triggered on successful completion of `ci.yml`. Lints the chart with `helm lint`, packages it, and pushes it as an OCI artifact to GHCR. The chart version is extracted dynamically from `Chart.yaml` — no hardcoded values in the pipeline. Only runs when `helm/` has changed; `pages.yml` ignores `helm/**` entirely to avoid redundant deploys.
 
 ### Published images
 
@@ -105,6 +107,14 @@ docker run --rm -p 8080:8080 mibtisam/mibtisam:latest
 # → http://localhost:8080
 ```
 
+### Install via Helm
+
+The Helm chart is published to GHCR as an OCI artifact alongside the container image:
+
+```bash
+helm install portfolio-site oci://ghcr.io/ibtisam-iq/ibtisam-iq --version 0.1.0
+```
+
 ---
 
 ## Architecture at a glance
@@ -124,8 +134,9 @@ docker run --rm -p 8080:8080 mibtisam/mibtisam:latest
         │
    ┌────┴─────────────────────────────────────────────────────┐
    │  GitHub Actions                                                │
-   │  ├─ pages.yml  → lint → build → deploy to Pages (+ PR preview) │  ← live
-   │  └─ ci.yml     → multi-arch build → push to GHCR + Docker Hub  │  ← images
+   │  ├─ pages.yml        → lint → build → deploy to Pages (+ PR preview) │  ← live
+   │  ├─ ci.yml           → multi-arch build → push to GHCR + Docker Hub  │  ← images
+   │  └─ helm-release.yml → lint → package → push chart to GHCR (OCI)     │  ← chart
    └──────────────────────────────────────────────────────────────────── ┘
 ```
 
@@ -137,7 +148,11 @@ Production is **static, served from GitHub Pages**, with DNS handled by Cloudfla
 
 ```text
 portfolio-site/
-├── .github/workflows/      # pages.yml (Pages + previews) · ci.yml (multi-arch images)
+├── .github/workflows/      # pages.yml · ci.yml · helm-release.yml
+├── helm/                   # Helm chart — packaged and published to GHCR as OCI artifact
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
 ├── public/                 # Static assets (favicon, cv.pdf, etc.)
 ├── src/
 │   ├── components/         # Reusable UI (Navbar, etc.)
@@ -228,7 +243,7 @@ act push \
 
 - **Production is static.** Served from GitHub Pages; no application server in the request path.
 - **CI builds and deploys.** Pushes to `main` trigger the GitHub Actions workflows — no manual deploys.
-- **Two artifacts.** The same source produces both the static Pages deploy and a container image published to GHCR and Docker Hub.
+- **Three artifacts.** The same source produces the static Pages deploy, a container image published to GHCR and Docker Hub, and a Helm chart published to GHCR as an OCI artifact.
 - **PR previews.** Pull requests deploy to isolated preview paths before anything reaches `main`.
 - **DNS via Cloudflare.** Domain and subdomain routing are handled at Cloudflare; the custom domain is bound through a `CNAME` in the build.
 - **No SSR, by design.** The content doesn't need it; avoiding it removes a class of runtime failure.
