@@ -1,0 +1,67 @@
+export const PROJECTS_URL = "https://projects.ibtisam-iq.com";
+
+export const toolProjects: Record<string, string[]> = {
+  "Docker": ["SilverStack", "Microservices GitOps on EKS", "Retail Store Multi-Env", "BankApp Java Monolith", "Polyglot Deployment", "14-Stage DevSecOps", "DebugBox"],
+  "Docker Compose": ["Polyglot Deployment"],
+  "Docker Buildx": ["DebugBox"],
+  "Kubernetes": ["Microservices GitOps on EKS", "Retail Store Multi-Env", "BankApp Java Monolith", "Polyglot Deployment"],
+  "kubeadm": ["Retail Store Multi-Env", "Polyglot Deployment"],
+  "Helm": ["Microservices GitOps on EKS", "Retail Store Multi-Env"],
+  "Helmfile": ["Retail Store Multi-Env"],
+  "Kustomize": ["Microservices GitOps on EKS", "BankApp Java Monolith", "Polyglot Deployment"],
+  "ArgoCD": ["Microservices GitOps on EKS"],
+  "Gateway API": ["Microservices GitOps on EKS", "BankApp Java Monolith"],
+  "ExternalDNS": ["Microservices GitOps on EKS"],
+
+  "Jenkins": ["SilverStack", "14-Stage DevSecOps"],
+  "GitHub Actions": ["SilverStack", "Microservices GitOps on EKS", "14-Stage DevSecOps", "DebugBox"],
+  "SonarQube": ["SilverStack", "14-Stage DevSecOps"],
+  "Nexus": ["SilverStack", "14-Stage DevSecOps"],
+  "Maven": ["BankApp Java Monolith", "14-Stage DevSecOps"],
+  "Make": ["DebugBox"],
+
+  "EC2 & VPC": ["BankApp Java Monolith", "Polyglot Deployment"],
+  "IAM": ["Microservices GitOps on EKS", "AWS Static Hosting"],
+  "EKS": ["Microservices GitOps on EKS", "Retail Store Multi-Env", "BankApp Java Monolith", "Polyglot Deployment"],
+  "ECS": ["BankApp Java Monolith", "Polyglot Deployment"],
+  "S3": ["AWS Static Hosting"],
+  "Route 53": ["Microservices GitOps on EKS", "AWS Static Hosting"],
+  "CloudFront": ["AWS Static Hosting"],
+  "ACM": ["Microservices GitOps on EKS", "AWS Static Hosting"],
+  "KMS": ["AWS Static Hosting"],
+  "CloudFormation": ["Retail Store Multi-Env"],
+  "eksctl": ["Retail Store Multi-Env"],
+  "RDS": ["BankApp Java Monolith", "Polyglot Deployment"],
+  "DynamoDB": ["Retail Store Multi-Env"],
+  "SQS": ["Retail Store Multi-Env"],
+  "Lambda": ["Retail Store Multi-Env"],
+  "SNS": ["Retail Store Multi-Env"],
+
+  "Bash": ["SilverStack", "BankApp Java Monolith", "Polyglot Deployment", "DebugBox", "AWS Static Hosting"],
+  "Terraform": ["Microservices GitOps on EKS", "Retail Store Multi-Env"],
+  "Cloudflare Tunnel": ["SilverStack"],
+  "AWS CLI": ["AWS Static Hosting"],
+
+  "Alpine Linux": ["DebugBox"],
+  "systemd": ["SilverStack"],
+  "Nginx": ["SilverStack", "Polyglot Deployment"],
+
+  "Trivy": ["Microservices GitOps on EKS", "14-Stage DevSecOps", "DebugBox"],
+  "Hadolint": ["DebugBox"],
+
+  "Prometheus": ["Microservices GitOps on EKS", "Retail Store Multi-Env"],
+  "Grafana": ["Microservices GitOps on EKS", "Retail Store Multi-Env"],
+  "AlertManager": ["Microservices GitOps on EKS"],
+  "Elasticsearch": ["Microservices GitOps on EKS"],
+  "Kibana": ["Microservices GitOps on EKS"],
+  "Filebeat": ["Microservices GitOps on EKS"],
+  "Fluent Bit": ["Retail Store Multi-Env"],
+  "CloudWatch": ["Retail Store Multi-Env"],
+
+  "PostgreSQL": ["SilverStack", "Polyglot Deployment"],
+  "MySQL": ["Polyglot Deployment"],
+  "Redis": ["Retail Store Multi-Env"],
+  "RabbitMQ": ["Retail Store Multi-Env"],
+
+  "MkDocs": ["DebugBox"],
+};

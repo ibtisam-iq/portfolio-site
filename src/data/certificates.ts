@@ -1,5 +1,3 @@
-// src/data/certificates.ts
-
 export type CertificateCategory =
   | "kubernetes"
   | "cloud"
@@ -8,73 +6,62 @@ export type CertificateCategory =
   | "security"
   | "other";
 
+export interface CertDomain {
+  name: string;
+  weight: number;
+}
+
 export type Certificate = {
   id: string;
   title: string;
+  shortTitle: string;
   issuer: string;
-  date: string; // e.g. "2025"
+  date: string;
   category: CertificateCategory;
-  badge: string; // emoji/icon
-  notes: string; // short description
+  notes: string;
   credlyLink: string;
   vaultNotesLink: string;
-  isTop: boolean; // 👈 used for "Top Certifications"
+  validUntil: string;
+  domains: CertDomain[];
 };
 
 export const certificates: Certificate[] = [
   {
     id: "LF-gjlveemoqf",
     title: "Certified Kubernetes Administrator (CKA)",
+    shortTitle: "CKA",
     issuer: "Cloud Native Computing Foundation (CNCF)",
     date: "Nov 2025",
     category: "kubernetes",
-    badge: "🏅",
-    notes: "Hands-on Kubernetes cluster administration, troubleshooting, and production-style scenarios.",
+    notes: "Performance-based exam. 2 hours, 15-20 tasks in a live Kubernetes cluster. No multiple choice.",
     credlyLink: "https://www.credly.com/badges/0f1fd462-102e-42e8-932c-ebd4222d5587",
     vaultNotesLink: "https://cert-vault.ibtisam-iq.com/",
-    isTop: true,
+    validUntil: "Nov 2027",
+    domains: [
+      { name: "Troubleshooting", weight: 30 },
+      { name: "Cluster Architecture, Installation & Configuration", weight: 25 },
+      { name: "Services & Networking", weight: 20 },
+      { name: "Workloads & Scheduling", weight: 15 },
+      { name: "Storage", weight: 10 },
+    ],
   },
   {
     id: "LF-l6qqde7lal",
     title: "Certified Kubernetes Application Developer (CKAD)",
+    shortTitle: "CKAD",
     issuer: "Cloud Native Computing Foundation (CNCF)",
     date: "Nov 2025",
     category: "kubernetes",
-    badge: "🏅",
-    notes: "Real-world Kubernetes application design, troubleshooting, and hands-on workload scenarios.",
+    notes: "Performance-based exam. 2 hours, 15-20 tasks focused on application lifecycle inside Kubernetes. No multiple choice.",
     credlyLink: "https://www.credly.com/badges/13e7993c-8bc1-4f82-822d-7382322f7b88",
     vaultNotesLink: "https://cert-vault.ibtisam-iq.com/",
-    isTop: true,
+    validUntil: "Nov 2027",
+    domains: [
+      { name: "Application Environment, Configuration & Security", weight: 25 },
+      { name: "Application Design & Build", weight: 20 },
+      { name: "Application Deployment", weight: 20 },
+      { name: "Services & Networking", weight: 20 },
+      { name: "Application Observability & Maintenance", weight: 15 },
+    ],
   },
-
-  // Example placeholders – uncomment + adjust when ready
-
-  // {
-  //   id: "aws-saa",
-  //   title: "AWS Certified Solutions Architect – Associate",
-  //   issuer: "Amazon Web Services",
-  //   date: "In Progress",
-  //   category: "cloud",
-  //   badge: "☁️",
-  //   notes: "Designing highly available and scalable AWS architectures.",
-  //   verificationText: "Verify on AWS Certification Portal",
-  //   verificationLink: "https://www.aws.training/Certification",
-  //   credlyLink: "",
-  //   vaultNotesLink: "",
-  //   isTop: true,
-  // },
-  // {
-  //   id: "terraform",
-  //   title: "Terraform Infrastructure as Code – Practical Track",
-  //   issuer: "Internal / Self-Study",
-  //   date: "2024",
-  //   category: "iac",
-  //   badge: "🏗️",
-  //   notes: "Hands-on Terraform projects for cloud-native infrastructure provisioning.",
-  //   verificationText: "Project-based validation (see portfolio)",
-  //   verificationLink: "https://ibtisam-iq.com/projects",
-  //   credlyLink: "",
-  //   vaultNotesLink: "",
-  //   isTop: false,
-  // },
 ];

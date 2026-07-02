@@ -1,202 +1,162 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
+import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
+
+const navItems = [
+  { label: "Home", to: "/" },
+  { label: "Skills", to: "/skills" },
+  { label: "Certifications", to: "/certificates" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
+];
 
 const Navbar = () => {
-  const [engineeringOpen, setEngineeringOpen] = useState(false);
-  const [resourcesOpen, setResourcesOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileEngineeringOpen, setMobileEngineeringOpen] = useState(false);
-  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
+  const { isDark, toggle } = useTheme();
+  const { pathname } = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    if (mobileOpen) document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
+
+  const isActive = (to: string) =>
+    to === "/" ? pathname === "/" : pathname.startsWith(to);
 
   return (
-    <nav className="flex justify-between items-center px-6 md:px-10 py-5 bg-bg border-b border-gray-800 text-white relative z-50">
-
-      {/* LOGO */}
-      <a
-        href="/"
-        className="text-2xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-wide"
-      >
-        Ibtisam
-      </a>
-
-      {/* Hamburger (Mobile) */}
-      <button
-        className="md:hidden text-2xl focus:outline-none"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-      >
-        {mobileMenuOpen ? "✕" : "☰"}
-      </button>
-
-      {/* ===== Desktop Menu ===== */}
-      <div className="hidden md:flex gap-8 items-center text-lg">
-
-        <a href="/" className="hover:text-purple-400 transition">Home</a>
-
-        <a
-          href="https://projects.ibtisam-iq.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-purple-400 transition"
+    <header
+      className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-200 ${
+        scrolled ? "py-2.5" : "py-4"
+      } border-light-border bg-light-bg/80 dark:border-white/5 dark:bg-surface-0/80`}
+    >
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 md:px-10">
+        <Link
+          to="/"
+          className="text-2xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-wide"
         >
-          Projects
-        </a>
+          Ibtisam
+        </Link>
 
-        <a href="/certificates" className="hover:text-purple-400 transition">Certifications</a>
-
-        {/* Engineering Dropdown */}
-        <div
-          className="relative"
-          onMouseEnter={() => setEngineeringOpen(true)}
-          onMouseLeave={(e) => {
-            const related = e.relatedTarget as HTMLElement;
-            if (!e.currentTarget.contains(related)) setEngineeringOpen(false);
-          }}
-        >
-          <button className="hover:text-purple-400 transition">Engineering ▾</button>
-          {engineeringOpen && (
-            <div
-              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[200px]"
-              onMouseEnter={() => setEngineeringOpen(true)}
-              onMouseLeave={() => setEngineeringOpen(false)}
+        {/* Desktop */}
+        <div className="hidden md:flex items-center gap-7">
+          {navItems.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`relative pb-1 text-sm font-medium transition-colors ${
+                isActive(item.to)
+                  ? "text-purple-600 dark:text-purple-400"
+                  : "text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white"
+              }`}
             >
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://labs.iximiuz.com/a/ibtisam-iq"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                iximiuz Playgrounds
-              </a>
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://runbook.ibtisam-iq.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Runbook
-              </a>
-              <a
-                className="block px-4 py-2 hover:bg-gray-700 rounded"
-                href="https://achievements.ibtisam-iq.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Achievements
-              </a>
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="/skills">
-                Skills
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Resources Dropdown */}
-        <div
-          className="relative"
-          onMouseEnter={() => setResourcesOpen(true)}
-          onMouseLeave={(e) => {
-            const related = e.relatedTarget as HTMLElement;
-            if (!e.currentTarget.contains(related)) setResourcesOpen(false);
-          }}
-        >
-          <button className="hover:text-purple-400 transition">Resources ▾</button>
-          {resourcesOpen && (
-            <div
-              className="absolute bg-gray-800 top-full pt-2 rounded-xl shadow-lg w-[220px]"
-              onMouseEnter={() => setResourcesOpen(true)}
-              onMouseLeave={() => setResourcesOpen(false)}
-            >
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://blog.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Blog</a>
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://roadmaps.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Roadmaps</a>
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://cert-vault.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Cert Practice Vault</a>
-              <a className="block px-4 py-2 hover:bg-gray-700 rounded" href="https://nectar.ibtisam-iq.com" target="_blank" rel="noopener noreferrer">Knowledge Base</a>
-            </div>
-          )}
-        </div>
-
-        <a href="/about" className="hover:text-purple-400 transition">About</a>
-
-        <a href="/contact" className="hover:text-purple-400 transition">Contact</a>
-
-        <a
-          href="/cv.pdf"
-          download
-          className="bg-white text-gray-900 px-4 py-2 rounded font-semibold hover:bg-gray-300 transition"
-        >
-          Download CV
-        </a>
-
-      </div>
-
-      {/* ===== Mobile Menu ===== */}
-      {mobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-gray-900 md:hidden flex flex-col gap-4 p-6 border-b border-gray-800">
-
-          <a href="/" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>Home</a>
+              {item.label}
+              {isActive(item.to) && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-purple-600 dark:bg-purple-400" />
+              )}
+            </Link>
+          ))}
 
           <a
             href="https://projects.ibtisam-iq.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-purple-400 transition"
-            onClick={() => setMobileMenuOpen(false)}
+            className="pb-1 text-sm font-medium text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white transition-colors"
           >
             Projects
           </a>
 
-          <a href="/certificates" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>Certifications</a>
-
-          {/* Engineering (Mobile) */}
-          <div>
-            <button
-              className="hover:text-purple-400 transition w-full text-left"
-              onClick={() => setMobileEngineeringOpen(!mobileEngineeringOpen)}
-            >
-              Engineering ▾
-            </button>
-            {mobileEngineeringOpen && (
-              <div className="pl-4 mt-2 flex flex-col gap-2">
-                <a className="hover:text-purple-400" href="https://labs.iximiuz.com/a/ibtisam-iq" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>iximiuz Playgrounds</a>
-                <a className="hover:text-purple-400" href="https://runbook.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Runbook</a>
-                <a className="hover:text-purple-400" href="https://achievements.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Achievements</a>
-                <a className="hover:text-purple-400" href="/skills" onClick={() => setMobileMenuOpen(false)}>Skills</a>
-              </div>
-            )}
-          </div>
-
-          {/* Resources (Mobile) */}
-          <div>
-            <button
-              className="hover:text-purple-400 transition w-full text-left"
-              onClick={() => setMobileResourcesOpen(!mobileResourcesOpen)}
-            >
-              Resources ▾
-            </button>
-            {mobileResourcesOpen && (
-              <div className="pl-4 mt-2 flex flex-col gap-2">
-                <a className="hover:text-purple-400" href="https://blog.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Blog</a>
-                <a className="hover:text-purple-400" href="https://roadmaps.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Roadmaps</a>
-                <a className="hover:text-purple-400" href="https://cert-vault.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Cert Practice Vault</a>
-                <a className="hover:text-purple-400" href="https://nectar.ibtisam-iq.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>Knowledge Base</a>
-              </div>
-            )}
-          </div>
-
-          <a href="/about" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>About</a>
-
-          <a href="/contact" className="hover:text-purple-400 transition" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+          <button
+            onClick={toggle}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="rounded-md p-2 text-light-muted transition-colors hover:bg-light-surface-2 hover:text-light-text dark:text-text-muted dark:hover:bg-surface-2 dark:hover:text-white"
+          >
+            {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
+          </button>
 
           <a
             href="/cv.pdf"
             download
-            className="bg-white text-gray-900 px-4 py-2 rounded font-semibold hover:bg-gray-300 transition text-center"
-            onClick={() => setMobileMenuOpen(false)}
+            className="bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2 rounded font-semibold text-sm hover:bg-gray-700 dark:hover:bg-gray-300 transition"
           >
             Download CV
           </a>
+        </div>
 
+        {/* Mobile controls */}
+        <div className="flex items-center gap-1 md:hidden">
+          <button
+            onClick={toggle}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="rounded-md p-2.5 text-light-muted dark:text-text-muted"
+          >
+            {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
+          </button>
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            className="rounded-md p-2.5 text-light-muted dark:text-text-muted"
+          >
+            {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="animate-slide-up border-t border-light-border bg-light-bg dark:border-white/5 dark:bg-surface-1 md:hidden">
+          <div className="flex flex-col gap-1 px-6 py-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setMobileOpen(false)}
+                className={`rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                  isActive(item.to)
+                    ? "text-purple-600 dark:text-purple-400"
+                    : "text-light-muted dark:text-text-muted"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            <a
+              href="https://projects.ibtisam-iq.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md px-3 py-2.5 text-sm font-medium text-light-muted dark:text-text-muted transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              Projects
+            </a>
+
+            <a
+              href="/cv.pdf"
+              download
+              className="mt-2 bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2.5 rounded font-semibold text-sm hover:bg-gray-700 dark:hover:bg-gray-300 transition text-center"
+              onClick={() => setMobileOpen(false)}
+            >
+              Download CV
+            </a>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 
