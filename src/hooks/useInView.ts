@@ -28,6 +28,7 @@ export function useInView<T extends HTMLElement = HTMLDivElement>(
       observer.disconnect();
       clearTimeout(fallback);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { ref, inView };

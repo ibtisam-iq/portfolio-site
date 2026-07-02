@@ -22,16 +22,46 @@ env:
 jobs:
 
   # ────────────────────────────────────────────────────────────────
-  # JOB 1 — Lint
+  # JOB 1 — Check for Chart Changes
   # ────────────────────────────────────────────────────────────────
-  lint:
-    name: Lint Chart
+  changes:
+    name: Check for Chart Changes
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      helm: ${{ steps.filter.outputs.helm }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Check for changes in helm/
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          base: ${{ github.event.workflow_run.head_sha || github.sha }}~1
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          filters: |
+            helm:
+              - 'helm/**'
+
+  # ────────────────────────────────────────────────────────────────
+  # JOB 2 — Lint
+  # ────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint Chart
+    runs-on: ubuntu-latest
+    needs: changes
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && needs.changes.outputs.helm == 'true') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Helm
         uses: azure/setup-helm@v4
@@ -42,18 +72,21 @@ jobs:
         run: helm lint ${{ env.CHART_PATH }}
 
   # ────────────────────────────────────────────────────────────────
-  # JOB 2 — Package & Push
+  # JOB 3 — Package & Push
   # ────────────────────────────────────────────────────────────────
   release:
     name: Package & Push to GHCR
     runs-on: ubuntu-latest
-    needs: lint
+    needs: [changes, lint]
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && needs.changes.outputs.helm == 'true') }}
     outputs:
       chart_version: ${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Helm
         uses: azure/setup-helm@v4

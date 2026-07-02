@@ -27,7 +27,8 @@ const stats = [
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const projectCount = useCountUp(8, 1400, mounted);
