@@ -1,6 +1,9 @@
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+
 const HowItStarted = () => {
+  useDocumentTitle("About");
   return (
-    <section className="px-6 md:px-12 lg:px-20 py-20 bg-[#0B0F19] text-white">
+    <section className="px-6 md:px-12 lg:px-20 py-20 text-light-text dark:text-white">
 
       {/* CENTERED CONTAINER FOR BOTH TITLE + CONTENT */}
       <div className="max-w-4xl mx-auto">
@@ -11,7 +14,7 @@ const HowItStarted = () => {
         </h1>
 
         {/* CONTENT */}
-        <div className="space-y-6 text-lg text-gray-400 leading-relaxed">
+        <div className="space-y-6 text-lg text-light-muted dark:text-gray-400 leading-relaxed">
 
           <p>
             I didn’t grow up around computers. My early education was in medical sciences,
@@ -69,7 +72,7 @@ const HowItStarted = () => {
             Files began disappearing from the Drive. Entries inside the Sheet were modified.
             Students could view, overwrite, or copy each other’s work. At that time,
             I didn’t know terms like <em>access control</em>, <em>data integrity</em>,
-            or <em>concurrency issues</em> — I just recognized that the system was unreliable.
+            or <em>concurrency issues</em>. I just recognized that the system was unreliable.
             And unreliable systems always collapse under pressure.
           </p>
 
@@ -91,8 +94,8 @@ const HowItStarted = () => {
 
           <p>
             Later in the same semester, I encountered a different challenge. Another course
-            required me to share learning material with the class, but the content wasn’t static —
-            it evolved almost daily as new topics were added.
+            required me to share learning material with the class, but the content wasn’t static.
+            It evolved almost daily as new topics were added.
           </p>
 
           <p>
@@ -105,7 +108,7 @@ const HowItStarted = () => {
 
           <p>
             I created a single live document and shared a shortened link. I still remember using
-            a URL shortener at the time — Cutly — because I had just learned that long URLs
+            a URL shortener at the time (Cutly) because I had just learned that long URLs
             could be simplified. I continued using similar tools for quite some time before
             eventually transitioning to open-source options like dub.co as I moved deeper into engineering.
           </p>
@@ -113,7 +116,7 @@ const HowItStarted = () => {
           <p>
             There was even a small glitch: many classmates accessed the document through the Google
             Docs mobile app, which often displayed stale content unless refreshed properly. Once I
-            understood the issue, I simply taught everyone how to reload the document correctly —
+            understood the issue, I simply taught everyone how to reload the document correctly,
             and the entire system stabilized again. Looking back, it was my first real encounter
             with the idea of caching and state freshness, long before I knew those terms existed.
           </p>
@@ -144,7 +147,7 @@ const HowItStarted = () => {
 
           <p>
             That realization stayed with me. Even now, I don’t chase tools or buzzwords.
-            I look for broken systems — and redesign them until they become reliable,
+            I look for broken systems and redesign them until they become reliable,
             predictable, and calm under pressure.
           </p>
 
