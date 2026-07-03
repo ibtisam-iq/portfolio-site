@@ -10,6 +10,10 @@ const trackCV = () => {
   w.gtag?.("event", "cv_view", { event_category: "CV" });
 };
 
+// Prevent TS6133 unused variable errors while Resume buttons are commented out
+void CV_PATH;
+void trackCV;
+
 const navItems = [
   { label: "Home", to: "/" },
   { label: "Skills", to: "/skills" },
