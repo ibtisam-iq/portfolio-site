@@ -3,6 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
 
+const CV_PATH = "/cv.pdf";
+
+const trackCV = () => {
+  const w = window as Window & { gtag?: (...args: unknown[]) => void };
+  w.gtag?.("event", "cv_view", { event_category: "CV" });
+};
+
 const navItems = [
   { label: "Home", to: "/" },
   { label: "Skills", to: "/skills" },
@@ -90,11 +97,14 @@ const Navbar = () => {
           </button>
 
           <a
-            href="/cv.pdf"
-            download
-            className="bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2 rounded font-semibold text-sm hover:bg-gray-700 dark:hover:bg-gray-300 transition"
+            href={CV_PATH}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View Resume"
+            onClick={() => trackCV()}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
           >
-            Download CV
+            Resume
           </a>
         </div>
 
@@ -147,12 +157,14 @@ const Navbar = () => {
             </a>
 
             <a
-              href="/cv.pdf"
-              download
-              className="mt-2 bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2.5 rounded font-semibold text-sm hover:bg-gray-700 dark:hover:bg-gray-300 transition text-center"
-              onClick={() => setMobileOpen(false)}
+              href={CV_PATH}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="View Resume"
+              className="mt-2 flex items-center justify-center bg-purple-600 text-white px-4 py-2.5 rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
+              onClick={() => { trackCV(); setMobileOpen(false); }}
             >
-              Download CV
+              Resume
             </a>
           </div>
         </div>
