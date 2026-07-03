@@ -14,8 +14,9 @@ const trackCV = () => {
 void CV_PATH;
 void trackCV;
 
-const navItems = [
+const navItems: { label: string; to: string; external?: boolean }[] = [
   { label: "Home", to: "/" },
+  { label: "Projects", to: "https://projects.ibtisam-iq.com", external: true },
   { label: "Skills", to: "/skills" },
   { label: "Certifications", to: "/certificates" },
   { label: "About", to: "/about" },
@@ -65,30 +66,34 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-7">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`relative pb-1 text-sm font-medium transition-colors ${isActive(item.to)
-                  ? "text-purple-600 dark:text-purple-400"
-                  : "text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white"
+          {navItems.map((item) =>
+            item.external ? (
+              <a
+                key={item.to}
+                href={item.to}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pb-1 text-sm font-medium text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white transition-colors"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`relative pb-1 text-sm font-medium transition-colors ${
+                  isActive(item.to)
+                    ? "text-purple-600 dark:text-purple-400"
+                    : "text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white"
                 }`}
-            >
-              {item.label}
-              {isActive(item.to) && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-purple-600 dark:bg-purple-400" />
-              )}
-            </Link>
-          ))}
-
-          <a
-            href="https://projects.ibtisam-iq.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pb-1 text-sm font-medium text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white transition-colors"
-          >
-            Projects
-          </a>
+              >
+                {item.label}
+                {isActive(item.to) && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-purple-600 dark:bg-purple-400" />
+                )}
+              </Link>
+            )
+          )}
 
           <button
             onClick={toggle}
@@ -134,29 +139,33 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="animate-slide-up border-t border-light-border bg-light-bg dark:border-white/5 dark:bg-surface-1 md:hidden">
           <div className="flex flex-col gap-1 px-6 py-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setMobileOpen(false)}
-                className={`rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${isActive(item.to)
-                    ? "text-purple-600 dark:text-purple-400"
-                    : "text-light-muted dark:text-text-muted"
+            {navItems.map((item) =>
+              item.external ? (
+                <a
+                  key={item.to}
+                  href={item.to}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md px-3 py-2.5 text-sm font-medium text-light-muted dark:text-text-muted transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                    isActive(item.to)
+                      ? "text-purple-600 dark:text-purple-400"
+                      : "text-light-muted dark:text-text-muted"
                   }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            <a
-              href="https://projects.ibtisam-iq.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md px-3 py-2.5 text-sm font-medium text-light-muted dark:text-text-muted transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              Projects
-            </a>
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
 
             {/* Resume Button - Uncomment below to display on mobile menu */}
             {/* <a

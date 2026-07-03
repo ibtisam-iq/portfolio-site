@@ -79,7 +79,7 @@ const Methodology = () => {
         };
 
   return (
-    <section className="pt-10 pb-16 text-light-text dark:text-text-primary">
+    <section className="pt-6 pb-16 text-light-text dark:text-text-primary">
       <div className="max-w-5xl mx-auto px-6">
         <div className="mb-10 text-center">
           <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-light-muted dark:text-text-faint">

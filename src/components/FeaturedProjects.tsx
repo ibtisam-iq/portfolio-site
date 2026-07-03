@@ -38,7 +38,7 @@ const FeaturedProjects = () => {
   return (
     <section
       id="projects-cta"
-      className="pt-10 pb-14 text-light-text dark:text-text-primary"
+      className="pt-10 pb-8 text-light-text dark:text-text-primary"
       ref={ref}
     >
       <div className="max-w-6xl mx-auto px-6 md:px-10">

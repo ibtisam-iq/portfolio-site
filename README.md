@@ -1,9 +1,9 @@
-# Ibtisam IQ — Engineering Portfolio
+# Ibtisam IQ Portfolio
 
 [![Deploy to Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml)
 [![Build CV PDF](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml)
-[![CI — Build & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml)
-[![Helm — Package & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml)
+[![CI: Build & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml)
+[![Helm: Package & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
@@ -12,108 +12,97 @@
 [![Docker Hub](https://img.shields.io/badge/Docker_Hub-mibtisam%2Fmibtisam-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/mibtisam/mibtisam)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Source code for **[ibtisam-iq.com](https://ibtisam-iq.com)**. This is the main site for a multi-domain engineering portfolio covering cloud infrastructure, Kubernetes, and CI/CD.
-
-The deeper surfaces (projects, runbook, knowledge base, certification practice, blog, and more) each live in their own repository, deployed to their own subdomain with their own stack and pipeline. See [Ecosystem](#ecosystem) for the full list. Each surface ships independently so nothing is coupled.
-
----
-
-## Overview
-
-Most portfolios are one page that goes stale the moment it ships. This one is built as a system of small, independently deployable surfaces. Each concern evolves on its own cadence without coupling.
-
-The main site stays small and stable. Everything that changes frequently lives behind a subdomain. That separation keeps every surface cheap to reason about, deploy, and roll back.
+Source code for **[ibtisam-iq.com](https://ibtisam-iq.com)**. Static site deployed to GitHub Pages, containerized for self-hosting, and packaged as a Helm chart. Four GitHub Actions workflows produce four artifacts from one push.
 
 ---
 
 ## Ecosystem
 
-This site is the hub. It links out to external surfaces and hosts a handful of internal routes directly.
+The main site links out to independently deployed surfaces, each in its own repository with its own stack and pipeline.
 
-### External surfaces (subdomains)
+### External surfaces
 
 | Surface | Purpose | Live | Repo |
 | --- | --- | --- | --- |
 | **Projects** | Infrastructure and cloud projects | [projects.ibtisam-iq.com](https://projects.ibtisam-iq.com) | [`projects`](https://github.com/ibtisam-iq/projects) |
 | **Runbook** | Documented steps from real implementation work | [runbook.ibtisam-iq.com](https://runbook.ibtisam-iq.com) | [`runbook`](https://github.com/ibtisam-iq/runbook) |
-| **Knowledge Base** | Personal engineering knowledge base (Nectar) | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [`nectar`](https://github.com/ibtisam-iq/nectar) |
-| **Cert Practice Vault** | Kubernetes and cloud cert practice | [cert-vault.ibtisam-iq.com](https://cert-vault.ibtisam-iq.com) | [`certification-practice-vault`](https://github.com/ibtisam-iq/certification-practice-vault) |
+| **Nectar** | Engineering knowledge base (200+ pages) | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [`nectar`](https://github.com/ibtisam-iq/nectar) |
+| **Cert Vault** | Kubernetes and cloud certification prep | [cert-vault.ibtisam-iq.com](https://cert-vault.ibtisam-iq.com) | [`certification-practice-vault`](https://github.com/ibtisam-iq/certification-practice-vault) |
 | **DebugBox** | Multi-variant Docker debugging toolkit | [debugbox.ibtisam-iq.com](https://debugbox.ibtisam-iq.com) | [`debugbox`](https://github.com/ibtisam-iq/debugbox) |
-| **Blog** | Write-ups of what was built and learned | [blog.ibtisam-iq.com](https://blog.ibtisam-iq.com) | [`blog`](https://github.com/ibtisam-iq/blog) |
-| **Achievements** | Milestones and professional achievements | [achievements.ibtisam-iq.com](https://achievements.ibtisam-iq.com) | [`achievements`](https://github.com/ibtisam-iq/achievements) |
-| **Roadmaps** | Engineering learning roadmaps | [roadmaps.ibtisam-iq.com](https://roadmaps.ibtisam-iq.com) | [`roadmaps`](https://github.com/ibtisam-iq/roadmaps) |
+| **Blog** | Write-ups of what was built and debugged | [blog.ibtisam-iq.com](https://blog.ibtisam-iq.com) | [`blog`](https://github.com/ibtisam-iq/blog) |
+| **Achievements** | Professional milestones | [achievements.ibtisam-iq.com](https://achievements.ibtisam-iq.com) | [`achievements`](https://github.com/ibtisam-iq/achievements) |
+| **Roadmaps** | Engineering roadmaps | [roadmaps.ibtisam-iq.com](https://roadmaps.ibtisam-iq.com) | [`roadmaps`](https://github.com/ibtisam-iq/roadmaps) |
 
-Related: [SilverStack](https://github.com/ibtisam-iq/silver-stack) (reusable infrastructure artifacts: scripts, manifests, images).
+Related: [SilverStack](https://github.com/ibtisam-iq/silver-stack) (reusable infrastructure: provisioning scripts, OCI rootfs images, systemd units).
 
-Each surface is its own repository with its own stack and deploy pipeline. For example, `runbook` is an MkDocs site, independent of this React app.
-
-### Internal routes (served by this repo)
+### Internal routes
 
 | Route | Purpose |
 | --- | --- |
 | `/` | Landing page with featured projects and methodology |
 | `/skills` | 66 tools across 9 categories with project cross-references |
-| `/certificates` | CKA, CKAD, and in-progress certifications with exam domain breakdowns |
+| `/certificates` | CKA, CKAD earned; CKS and AWS SAA in progress |
 | `/about` | Background and bio |
-| `/contact` | Contact methods and availability |
-| `/cv.pdf` | Auto-generated resume (HTML → Puppeteer → PDF) |
+| `/contact` | Contact and availability |
+| `/cv.pdf` | Auto-generated resume (HTML to PDF via Puppeteer) |
 
 ---
 
-## Tech stack
+## Tech Stack
 
-| Layer | Choice | Rationale |
-| --- | --- | --- |
-| **Language** | TypeScript 5.9 | Type safety as a first-class constraint |
-| **UI** | React 19 + react-icons | Component model that scales with the content |
-| **Build** | Vite 7 | Fast cold starts, native ESM, lean production bundles |
-| **Styling** | Tailwind CSS 3 + PostCSS | Utility-first. Design decisions stay in the markup |
-| **Routing** | React Router 7 | Client-side routing for a static SPA |
-| **Quality** | ESLint (flat config) + typescript-eslint | Run via `npm run lint` |
-| **CI/CD** | GitHub Actions | Pages deploy (with PR previews) + multi-arch container build/push |
-| **Container** | Docker (multi-stage) + nginx:alpine | Rootless, hardened image for self-hosting |
-| **Kubernetes** | Helm | Chart packaged and published to GHCR as an OCI artifact |
-| **Hosting** | GitHub Pages | Static delivery, no server to run or patch |
-| **DNS** | Cloudflare | Domain and subdomain routing |
+| Layer | Choice |
+| --- | --- |
+| **Language** | TypeScript 5.9 |
+| **UI** | React 19, react-icons |
+| **Build** | Vite 7 |
+| **Styling** | Tailwind CSS 3, PostCSS |
+| **Routing** | React Router 7 |
+| **Quality** | ESLint (flat config), typescript-eslint |
+| **CI/CD** | GitHub Actions (4 workflows) |
+| **Container** | Docker multi-stage, nginx:alpine, rootless |
+| **Packaging** | Helm chart published to GHCR as OCI artifact |
+| **Hosting** | GitHub Pages |
+| **DNS** | Cloudflare |
 
 ---
 
 ## CI/CD
 
-Four GitHub Actions workflows running on `main`:
+Four workflows, each scoped to the paths it cares about. No workflow triggers another unless it has to.
 
-**`pages.yml` (GitHub Pages).** Lints, builds, and deploys the static site to Pages. Pull requests get their own preview deployment (scoped via `VITE_BASE_PATH`). A `404.html` fallback lets React Router own deep links. Concurrency cancels superseded runs.
+| Workflow | Trigger | What it does |
+| --- | --- | --- |
+| **`pages.yml`** | Push to `main` (site source) | Lint, build, deploy to GitHub Pages. PRs get isolated preview deploys. |
+| **`cv.yml`** | Push to `main` (`cv/**`) | Renders `cv/cv.html` to PDF via Puppeteer, commits `public/cv.pdf`. That commit triggers `pages.yml` and `ci.yml` to pick up the new file. |
+| **`ci.yml`** | Push to `main` (site source) | Multi-arch Docker build (`amd64` + `arm64`), push to GHCR and Docker Hub. PRs build without pushing. |
+| **`helm-release.yml`** | Push to `main` (`helm/**`) | Lint, package, and push the Helm chart to GHCR as an OCI artifact. |
 
-**`ci.yml` (Build & Push).** Builds the `Dockerfile` for `linux/amd64` and `linux/arm64` (Buildx + QEMU), pushes by digest to GHCR and Docker Hub, then merges them into one multi-arch manifest. Tagged `latest`, `sha-<short>`, build date, and semver. PRs build without pushing.
+### Trigger isolation
 
-**`cv.yml` (Build CV PDF).** Triggered when files under `cv/` change on `main` (or manually via `workflow_dispatch`). Runs Puppeteer against `cv/cv.html` to generate `public/cv.pdf`, commits the updated PDF, and triggers a Pages redeploy so the live `/cv.pdf` stays current. The Navbar links to this PDF directly.
+Each workflow ignores paths it does not need. A single commit that touches multiple areas triggers only the relevant workflows, with no redundant runs.
 
-**`helm-release.yml` (Helm Package & Push).** Triggered on successful completion of `ci.yml`. Lints the chart with `helm lint`, packages it, and pushes it as an OCI artifact to GHCR. The chart version is extracted dynamically from `Chart.yaml` (no hardcoded values in the pipeline). Only runs when `helm/` has changed. `pages.yml` ignores `helm/**` to avoid redundant deploys.
+| Changed paths | pages | cv | ci | helm |
+| --- | --- | --- | --- | --- |
+| `src/`, `public/`, configs | runs | - | runs | - |
+| `cv/**` | - | runs (commits PDF, that push triggers pages + ci) | - | - |
+| `helm/**` | - | - | - | runs |
+| `.github/**`, `*.md` | - | - | - | - |
 
 ### Published images
 
-The container pipeline publishes a **multi-arch image** (`linux/amd64`, `linux/arm64`) to two registries:
+Multi-arch (`linux/amd64`, `linux/arm64`) pushed to two registries:
 
 | Registry | Image |
 | --- | --- |
-| **GitHub Container Registry** | `ghcr.io/ibtisam-iq/ibtisam-iq` |
+| **GHCR** | `ghcr.io/ibtisam-iq/ibtisam-iq` |
 | **Docker Hub** | `docker.io/mibtisam/mibtisam` |
 
-Tags include `latest`, `sha-<short>`, the build date, PR refs, and semver. Pull and run either registry:
-
 ```bash
-# GHCR
 docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
-
-# Docker Hub
-docker run --rm -p 8080:8080 mibtisam/mibtisam:latest
-
 # → http://localhost:8080
 ```
 
-### Install via Helm
-
-The Helm chart is published to GHCR as an OCI artifact alongside the container image:
+### Helm chart
 
 ```bash
 helm install portfolio-site oci://ghcr.io/ibtisam-iq/ibtisam-iq --version 0.1.0
@@ -121,13 +110,13 @@ helm install portfolio-site oci://ghcr.io/ibtisam-iq/ibtisam-iq --version 0.1.0
 
 ### CV pipeline
 
-The resume lives as a single HTML file (`cv/cv.html`) styled with inline CSS for precise print layout. A Puppeteer script (`cv/build-pdf.mjs`) renders it to an A4 PDF with zero margins, and the output lands in `public/cv.pdf` so Vite serves it as a static asset.
+The resume is a single HTML file (`cv/cv.html`) with inline CSS for print layout. Puppeteer renders it to an A4 PDF with zero margins.
 
 ```
 cv/cv.html  →  Puppeteer (build-pdf.mjs)  →  public/cv.pdf  →  ibtisam-iq.com/cv.pdf
 ```
 
-Edit the HTML, push to `main`, and `cv.yml` rebuilds the PDF and triggers a Pages redeploy automatically. To build locally:
+Build locally:
 
 ```bash
 node cv/build-pdf.mjs
@@ -135,152 +124,100 @@ node cv/build-pdf.mjs
 
 ---
 
-## Architecture at a glance
+## Architecture
 
 ```
                           ┌──────────────────────┐
-                          │      Cloudflare      │
-                          │          DNS         │
+                          │   Cloudflare DNS     │
                           └───────────┬──────────┘
                                       │
-        ┌──────────────────┬────────┬─────────────────────┬──────────────────┐
-        │                  │                      │                  │
-  ibtisam-iq.com    projects.ibtisam-iq    runbook.ibtisam-iq   blog / nectar / …
-   (this repo)        (separate repo)        (separate repo)      (separate repos)
+        ┌──────────────────┬──────────┼──────────────────┬──────────────────┐
+        │                  │          │                  │                  │
+  ibtisam-iq.com    projects.*    runbook.*         blog.*           nectar.*
+   (this repo)      (separate)    (separate)       (separate)       (separate)
         │
    push to main
         │
    ┌────┴─────────────────────────────────────────────────────┐
    │  GitHub Actions                                          │
-   │  ├─ pages.yml        → lint, build, deploy to Pages      │  ← live
-   │  ├─ cv.yml           → HTML → Puppeteer → PDF, commit    │  ← resume
-   │  ├─ ci.yml           → multi-arch build, push to GHCR    │  ← images
-   │  └─ helm-release.yml → lint, package, push chart (OCI)   │  ← chart
+   │  ├─ pages.yml        → build, deploy to Pages            │
+   │  ├─ cv.yml           → HTML → PDF, commit                │
+   │  ├─ ci.yml           → multi-arch image → GHCR + Hub     │
+   │  └─ helm-release.yml → chart → GHCR OCI                  │
    └──────────────────────────────────────────────────────────┘
 ```
 
-Static site served from GitHub Pages with DNS handled by Cloudflare. No SSR by design. The content doesn't need it, and avoiding it removes a class of runtime failure.
+Static site on GitHub Pages. No SSR. No application server in the request path.
 
 ---
 
-## Project structure
+## Project Structure
 
 ```text
 portfolio-site/
 ├── .github/workflows/      # pages.yml, cv.yml, ci.yml, helm-release.yml
 ├── cv/                     # Resume source (cv.html + build-pdf.mjs → public/cv.pdf)
-├── helm/                   # Helm chart (packaged and published to GHCR as OCI artifact)
+├── helm/                   # Helm chart (published to GHCR as OCI artifact)
 │   ├── Chart.yaml
 │   ├── values.yaml
 │   └── templates/
-├── public/                 # Static assets (favicons, webmanifest)
+├── public/                 # Static assets (favicons, cv.pdf, webmanifest)
 ├── src/
-│   ├── components/         # Hero, Navbar, Footer, FeaturedProjects, Methodology, Reveal, ErrorBoundary
+│   ├── components/         # Hero, Navbar, Footer, FeaturedProjects, Methodology, Reveal
 │   ├── context/            # ThemeContext (dark/light mode)
 │   ├── data/               # certificates.ts, toolProjects.ts
 │   ├── hooks/              # useCountUp, useDocumentTitle, useInView, useTypewriter
-│   ├── pages/              # Skills, Certificates, ContactPage, HowItStarted (About), NotFound
-│   ├── App.tsx             # Root app component and route definitions
-│   ├── main.tsx            # Entry point
-│   └── index.css           # Global styles and Tailwind layer
-├── Dockerfile              # Multi-stage build into rootless nginx:alpine
-├── nginx.conf              # Hardened nginx config (port 8080, CSP, caching)
-├── index.html              # HTML entry (SEO, meta, favicon)
-├── eslint.config.js
-├── postcss.config.js
+│   ├── pages/              # Skills, Certificates, ContactPage, HowItStarted, NotFound
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── Dockerfile              # Multi-stage → rootless nginx:alpine
+├── nginx.conf              # Hardened config (port 8080, CSP headers, caching)
+├── index.html
 ├── tailwind.config.js
-├── tsconfig.json           # + tsconfig.app.json, tsconfig.node.json
 ├── vite.config.ts
 └── package.json
 ```
 
 ---
 
-## Local development
-
-**Prerequisites:** Node.js and npm. CI runs on Node 24; the container build pins Node 22 (`22.14-alpine`). Any recent LTS works locally.
+## Development
 
 ```bash
-# Install exact, reproducible dependencies from the lockfile
-npm ci
-
-# Start the Vite dev server
-npm run dev
-
-# Type-check and build for production (tsc -b && vite build)
-npm run build
-
-# Lint the codebase
-npm run lint
-
-# Preview the production build locally
-npm run preview
+npm ci              # Install from lockfile
+npm run dev         # Vite dev server
+npm run build       # Type-check + production build
+npm run lint        # ESLint
+npm run preview     # Preview production build
 ```
 
-### Run the container
+### Container
 
-The image is a **3-stage build** (`deps` → `builder` → `production`) that ends on `nginx:alpine` with no Node toolchain in the final layer. It runs **rootless** (`USER nginx`), exposes **8080**, ships a `HEALTHCHECK`, and uses `STOPSIGNAL SIGQUIT` for graceful connection draining.
-
-Pull a published image, or build locally:
+3-stage build (`deps` → `builder` → `production`). Final layer is `nginx:alpine` with no Node toolchain. Runs rootless (`USER nginx`), exposes port 8080, includes a `HEALTHCHECK`.
 
 ```bash
-# Run the published image (GHCR)
+# Published image
 docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
-```
 
-```bash
-# Build from source (CI injects BUILD_DATE / GIT_SHA as OCI labels)
+# Build from source
 docker build -t portfolio-site .
 docker run --rm -p 8080:8080 portfolio-site
-
-# → http://localhost:8080
 ```
 
----
-
-## Local CI testing (`act`)
-
-Both pipelines can be run locally using [`act`](https://github.com/nektos/act).
+### Local CI with `act`
 
 ```bash
-# Run the Pages build pipeline (lint, build, CNAME, 404)
-act push \
-  -W .github/workflows/pages.yml
-
-# Run the Docker build pipeline (QEMU, Buildx, build)
-act push \
-  -W .github/workflows/ci.yml
+act push -W .github/workflows/pages.yml    # Pages pipeline
+act push -W .github/workflows/ci.yml       # Docker pipeline
 ```
 
-> [!NOTE]
-> Registry logins, metadata extraction, image pushes, artifact uploads, and GitHub Pages
-> deployment are automatically skipped via `if: ${{ !env.ACT }}` guards. `act` sets the
-> `ACT` environment variable automatically.
-> For `ci.yml`, the build is pinned to `linux/amd64` locally (required for `load: true`)
-> and the image is loaded into your local Docker daemon as `mibtisam/mibtisam:local`.
-
----
-
-## Deployment model
-
-- **Static site.** Served from GitHub Pages. No application server in the request path.
-- **CI builds and deploys.** Pushes to `main` trigger GitHub Actions workflows. No manual deploys.
-- **Four artifacts.** The same source produces the static Pages deploy, a CV PDF (Puppeteer), a container image (GHCR + Docker Hub), and a Helm chart (GHCR OCI artifact).
-- **PR previews.** Pull requests deploy to isolated preview paths before anything reaches `main`.
-- **DNS via Cloudflare.** The custom domain is bound through a `CNAME` in the build.
-- **No SSR, by design.** The content doesn't need it. Avoiding it removes a class of runtime failure.
-
----
-
-## Status
-
-Actively evolving. New surfaces and projects land incrementally as they are completed and documented.
+Registry pushes, artifact uploads, and deployments are skipped locally via `!env.ACT` guards.
 
 ---
 
 ## License
 
-Released under the [MIT License](./LICENSE).
+[MIT](./LICENSE)
 
 ---
 
