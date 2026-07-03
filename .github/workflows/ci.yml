@@ -7,6 +7,8 @@ on:
       - '**/*.md'
       - '**/LICENSE'
       - 'docs/**'
+      - 'helm/**'
+      - 'cv/**'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
   pull_request:
@@ -15,9 +17,15 @@ on:
       - '**/*.md'
       - '**/LICENSE'
       - 'docs/**'
+      - 'helm/**'
+      - 'cv/**'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
   workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   DOCKERHUB_USERNAME: mibtisam
