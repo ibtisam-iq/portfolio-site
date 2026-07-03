@@ -48,9 +48,8 @@ const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-200 ${
-        scrolled ? "py-2.5" : "py-4"
-      } border-light-border bg-light-bg/80 dark:border-white/5 dark:bg-surface-0/80`}
+      className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-200 ${scrolled ? "py-2.5" : "py-4"
+        } border-light-border bg-light-bg/80 dark:border-white/5 dark:bg-surface-0/80`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 md:px-10">
         <Link
@@ -66,11 +65,10 @@ const Navbar = () => {
             <Link
               key={item.to}
               to={item.to}
-              className={`relative pb-1 text-sm font-medium transition-colors ${
-                isActive(item.to)
+              className={`relative pb-1 text-sm font-medium transition-colors ${isActive(item.to)
                   ? "text-purple-600 dark:text-purple-400"
                   : "text-light-muted hover:text-light-text dark:text-text-muted dark:hover:text-white"
-              }`}
+                }`}
             >
               {item.label}
               {isActive(item.to) && (
@@ -96,7 +94,8 @@ const Navbar = () => {
             {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
           </button>
 
-          <a
+          {/* Resume Button - Uncomment below to display on desktop nav */}
+          {/* <a
             href={CV_PATH}
             target="_blank"
             rel="noopener noreferrer"
@@ -105,7 +104,7 @@ const Navbar = () => {
             className="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
           >
             Resume
-          </a>
+          </a> */}
         </div>
 
         {/* Mobile controls */}
@@ -136,11 +135,10 @@ const Navbar = () => {
                 key={item.to}
                 to={item.to}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive(item.to)
+                className={`rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${isActive(item.to)
                     ? "text-purple-600 dark:text-purple-400"
                     : "text-light-muted dark:text-text-muted"
-                }`}
+                  }`}
               >
                 {item.label}
               </Link>
@@ -156,7 +154,8 @@ const Navbar = () => {
               Projects
             </a>
 
-            <a
+            {/* Resume Button - Uncomment below to display on mobile menu */}
+            {/* <a
               href={CV_PATH}
               target="_blank"
               rel="noopener noreferrer"
@@ -165,7 +164,7 @@ const Navbar = () => {
               onClick={() => { trackCV(); setMobileOpen(false); }}
             >
               Resume
-            </a>
+            </a> */}
           </div>
         </div>
       )}
