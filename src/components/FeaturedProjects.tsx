@@ -7,28 +7,28 @@ const projects = [
     description:
       "Deployed 10 microservices on Amazon EKS with Terraform, 3 CI pipelines, and fully automated GitOps delivery via ArgoCD Image Updater. Configured Gateway API routing, ExternalDNS, and observability with Prometheus and the Elastic Stack.",
     tech: ["Terraform", "Amazon EKS", "ArgoCD", "Gateway API", "Prometheus"],
-    url: "https://projects.ibtisam-iq.com",
+    url: "https://projects.ibtisam-iq.com/project/microservices-demo",
   },
   {
     title: "SilverStack CI/CD Platform",
     description:
       "Built a self-hosted CI/CD platform (Jenkins, SonarQube, Nexus) on microVMs with 5 custom OCI rootfs images using systemd as PID 1. Configured Cloudflare Tunnels for CGNAT traversal and published each environment as a publicly accessible playground.",
     tech: ["systemd", "Jenkins", "Cloudflare Tunnel", "GitHub Actions", "Docker"],
-    url: "https://projects.ibtisam-iq.com",
+    url: "https://projects.ibtisam-iq.com/project/silverstack-cicd-platform",
   },
   {
     title: "14-Stage DevSecOps Pipeline",
     description:
       "Built a 14-stage CI pipeline for three codebases and implemented it identically on Jenkins and GitHub Actions. Integrated 3-pass Trivy scanning, SonarQube quality gates, and triple-registry publishing (GHCR, Docker Hub, Nexus).",
     tech: ["Jenkins", "GitHub Actions", "Trivy", "SonarQube", "Docker"],
-    url: "https://projects.ibtisam-iq.com",
+    url: "https://projects.ibtisam-iq.com/project/devsecops-pipeline-engineering",
   },
   {
     title: "DebugBox",
     description:
       "Built an open-source Kubernetes debugging toolkit with 3 Alpine variants (14MB to 104MB), 93% smaller than netshoot. Automated multi-arch builds with Trivy gating, in-container smoke tests, and MkDocs documentation.",
     tech: ["Alpine Linux", "Docker Buildx", "Trivy", "GitHub Actions", "Bash"],
-    url: "https://projects.ibtisam-iq.com",
+    url: "https://projects.ibtisam-iq.com/project/debugbox",
   },
 ];
 
@@ -38,7 +38,7 @@ const FeaturedProjects = () => {
   return (
     <section
       id="projects-cta"
-      className="py-20 text-light-text dark:text-text-primary"
+      className="pt-10 pb-14 text-light-text dark:text-text-primary"
       ref={ref}
     >
       <div className="max-w-6xl mx-auto px-6 md:px-10">

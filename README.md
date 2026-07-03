@@ -1,6 +1,7 @@
 # Ibtisam IQ — Engineering Portfolio
 
 [![Deploy to Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml)
+[![Build CV PDF](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml)
 [![CI — Build & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml)
 [![Helm — Package & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -55,6 +56,7 @@ Each surface is its own repository with its own stack and deploy pipeline. For e
 | `/certificates` | CKA, CKAD, and in-progress certifications with exam domain breakdowns |
 | `/about` | Background and bio |
 | `/contact` | Contact methods and availability |
+| `/cv.pdf` | Auto-generated resume (HTML → Puppeteer → PDF) |
 
 ---
 
@@ -78,11 +80,13 @@ Each surface is its own repository with its own stack and deploy pipeline. For e
 
 ## CI/CD
 
-Three GitHub Actions workflows running on `main`:
+Four GitHub Actions workflows running on `main`:
 
 **`pages.yml` (GitHub Pages).** Lints, builds, and deploys the static site to Pages. Pull requests get their own preview deployment (scoped via `VITE_BASE_PATH`). A `404.html` fallback lets React Router own deep links. Concurrency cancels superseded runs.
 
 **`ci.yml` (Build & Push).** Builds the `Dockerfile` for `linux/amd64` and `linux/arm64` (Buildx + QEMU), pushes by digest to GHCR and Docker Hub, then merges them into one multi-arch manifest. Tagged `latest`, `sha-<short>`, build date, and semver. PRs build without pushing.
+
+**`cv.yml` (Build CV PDF).** Triggered when files under `cv/` change on `main` (or manually via `workflow_dispatch`). Runs Puppeteer against `cv/cv.html` to generate `public/cv.pdf`, commits the updated PDF, and triggers a Pages redeploy so the live `/cv.pdf` stays current. The Navbar links to this PDF directly.
 
 **`helm-release.yml` (Helm Package & Push).** Triggered on successful completion of `ci.yml`. Lints the chart with `helm lint`, packages it, and pushes it as an OCI artifact to GHCR. The chart version is extracted dynamically from `Chart.yaml` (no hardcoded values in the pipeline). Only runs when `helm/` has changed. `pages.yml` ignores `helm/**` to avoid redundant deploys.
 
@@ -115,6 +119,20 @@ The Helm chart is published to GHCR as an OCI artifact alongside the container i
 helm install portfolio-site oci://ghcr.io/ibtisam-iq/ibtisam-iq --version 0.1.0
 ```
 
+### CV pipeline
+
+The resume lives as a single HTML file (`cv/cv.html`) styled with inline CSS for precise print layout. A Puppeteer script (`cv/build-pdf.mjs`) renders it to an A4 PDF with zero margins, and the output lands in `public/cv.pdf` so Vite serves it as a static asset.
+
+```
+cv/cv.html  →  Puppeteer (build-pdf.mjs)  →  public/cv.pdf  →  ibtisam-iq.com/cv.pdf
+```
+
+Edit the HTML, push to `main`, and `cv.yml` rebuilds the PDF and triggers a Pages redeploy automatically. To build locally:
+
+```bash
+node cv/build-pdf.mjs
+```
+
 ---
 
 ## Architecture at a glance
@@ -135,6 +153,7 @@ helm install portfolio-site oci://ghcr.io/ibtisam-iq/ibtisam-iq --version 0.1.0
    ┌────┴─────────────────────────────────────────────────────┐
    │  GitHub Actions                                          │
    │  ├─ pages.yml        → lint, build, deploy to Pages      │  ← live
+   │  ├─ cv.yml           → HTML → Puppeteer → PDF, commit    │  ← resume
    │  ├─ ci.yml           → multi-arch build, push to GHCR    │  ← images
    │  └─ helm-release.yml → lint, package, push chart (OCI)   │  ← chart
    └──────────────────────────────────────────────────────────┘
@@ -148,7 +167,8 @@ Static site served from GitHub Pages with DNS handled by Cloudflare. No SSR by d
 
 ```text
 portfolio-site/
-├── .github/workflows/      # pages.yml, ci.yml, helm-release.yml
+├── .github/workflows/      # pages.yml, cv.yml, ci.yml, helm-release.yml
+├── cv/                     # Resume source (cv.html + build-pdf.mjs → public/cv.pdf)
 ├── helm/                   # Helm chart (packaged and published to GHCR as OCI artifact)
 │   ├── Chart.yaml
 │   ├── values.yaml
@@ -245,7 +265,7 @@ act push \
 
 - **Static site.** Served from GitHub Pages. No application server in the request path.
 - **CI builds and deploys.** Pushes to `main` trigger GitHub Actions workflows. No manual deploys.
-- **Three artifacts.** The same source produces the static Pages deploy, a container image (GHCR + Docker Hub), and a Helm chart (GHCR OCI artifact).
+- **Four artifacts.** The same source produces the static Pages deploy, a CV PDF (Puppeteer), a container image (GHCR + Docker Hub), and a Helm chart (GHCR OCI artifact).
 - **PR previews.** Pull requests deploy to isolated preview paths before anything reaches `main`.
 - **DNS via Cloudflare.** The custom domain is bound through a `CNAME` in the build.
 - **No SSR, by design.** The content doesn't need it. Avoiding it removes a class of runtime failure.

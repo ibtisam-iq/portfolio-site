@@ -1,0 +1,59 @@
+name: Build CV PDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cv/**'
+  workflow_dispatch:
+
+concurrency:
+  group: cv-build
+  cancel-in-progress: true
+
+jobs:
+  build-cv:
+    name: Build CV PDF
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build PDF
+        run: node cv/build-pdf.mjs
+
+      - name: Commit updated PDF
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/cv.pdf
+          if git diff --cached --quiet; then
+            echo "No changes to CV PDF"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore: rebuild CV PDF"
+            git pull --rebase
+            git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.committed == 'true'
+        run: gh workflow run pages.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -5,14 +5,15 @@ const ecosystem = [
   { label: "Projects", href: "https://projects.ibtisam-iq.com" },
   { label: "Runbook", href: "https://runbook.ibtisam-iq.com" },
   { label: "Blog", href: "https://blog.ibtisam-iq.com" },
-  { label: "Roadmaps", href: "https://roadmaps.ibtisam-iq.com" },
+  { label: "Nectar", href: "https://nectar.ibtisam-iq.com" },
+  { label: "Cert Vault", href: "https://cert-vault.ibtisam-iq.com" },
 ];
 
 const resources = [
-  { label: "Knowledge Base", href: "https://nectar.ibtisam-iq.com" },
-  { label: "Cert Vault", href: "https://cert-vault.ibtisam-iq.com" },
+  { label: "SilverStack", href: "https://github.com/ibtisam-iq/silver-stack" },
+  { label: "Roadmaps", href: "https://roadmaps.ibtisam-iq.com" },
   { label: "Achievements", href: "https://achievements.ibtisam-iq.com" },
-  { label: "iximiuz Labs", href: "https://labs.iximiuz.com/a/ibtisam-iq" },
+  { label: "iximiuz Playgrounds", href: "https://labs.iximiuz.com/a/ibtisam-iq" },
 ];
 
 const siteLinks = [

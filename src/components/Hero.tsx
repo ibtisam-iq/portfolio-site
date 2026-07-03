@@ -36,7 +36,7 @@ const Hero = () => {
   const s = (d: number) => (mounted ? shown(d) : hidden(d));
 
   return (
-    <section className="relative overflow-hidden pt-16 pb-12 md:pt-20 md:pb-16">
+    <section className="relative overflow-hidden pt-16 pb-4 md:pt-20 md:pb-6">
       <div
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
         aria-hidden="true"
@@ -127,7 +127,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="mt-12 flex justify-center">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={() =>
               document
