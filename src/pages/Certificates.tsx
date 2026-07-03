@@ -138,31 +138,60 @@ export default function Certificates() {
             In Progress
           </p>
 
-          <div className="relative overflow-hidden rounded-xl border border-dashed border-light-border bg-light-surface p-8 dark:border-border-subtle dark:bg-surface-1">
-            <div className="absolute inset-y-0 left-0 w-1 bg-emerald-500 dark:bg-emerald-400" />
+          <div className="space-y-6">
+            <div className="relative overflow-hidden rounded-xl border border-dashed border-light-border bg-light-surface p-8 dark:border-border-subtle dark:bg-surface-1">
+              <div className="absolute inset-y-0 left-0 w-1 bg-emerald-500 dark:bg-emerald-400" />
 
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="mb-2 flex items-center gap-2.5">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-                  <span className="font-mono text-xs font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    Preparing
-                  </span>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="mb-2 flex items-center gap-2.5">
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                    <span className="font-mono text-xs font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      Preparing
+                    </span>
+                  </div>
+                  <h2 className="text-xl font-bold">
+                    Certified Kubernetes Security Specialist (CKS)
+                  </h2>
+                  <p className="mt-1 text-sm text-light-muted dark:text-text-muted">
+                    Cloud Native Computing Foundation (CNCF)
+                  </p>
                 </div>
-                <h2 className="text-xl font-bold">
-                  AWS Solutions Architect Associate
-                </h2>
-                <p className="mt-1 text-sm text-light-muted dark:text-text-muted">
-                  Amazon Web Services
-                </p>
               </div>
+
+              <p className="mt-4 text-sm leading-relaxed text-light-muted dark:text-text-muted">
+                Performance-based exam focused on Kubernetes cluster hardening,
+                system hardening, supply chain security, monitoring and logging,
+                and runtime security. Builds on CKA-level cluster administration.
+              </p>
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-light-muted dark:text-text-muted">
-              Designing highly available, cost-efficient, and fault-tolerant
-              systems on AWS. Focus areas include VPC architecture, IAM policies,
-              compute and storage selection, and multi-region strategies.
-            </p>
+            <div className="relative overflow-hidden rounded-xl border border-dashed border-light-border bg-light-surface p-8 dark:border-border-subtle dark:bg-surface-1">
+              <div className="absolute inset-y-0 left-0 w-1 bg-emerald-500 dark:bg-emerald-400" />
+
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="mb-2 flex items-center gap-2.5">
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                    <span className="font-mono text-xs font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      Preparing
+                    </span>
+                  </div>
+                  <h2 className="text-xl font-bold">
+                    AWS Solutions Architect Associate
+                  </h2>
+                  <p className="mt-1 text-sm text-light-muted dark:text-text-muted">
+                    Amazon Web Services
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm leading-relaxed text-light-muted dark:text-text-muted">
+                Designing highly available, cost-efficient, and fault-tolerant
+                systems on AWS. Focus areas include VPC architecture, IAM policies,
+                compute and storage selection, and multi-region strategies.
+              </p>
+            </div>
           </div>
         </div>
 
