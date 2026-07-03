@@ -9,8 +9,7 @@ on:
       - 'docs/**'
       - 'helm/**'
       - 'cv/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/PULL_REQUEST_TEMPLATE/**'
+      - '.github/**'
   pull_request:
     types: [opened, reopened, synchronize, closed]
     paths-ignore:
@@ -19,8 +18,7 @@ on:
       - 'docs/**'
       - 'helm/**'
       - 'cv/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/PULL_REQUEST_TEMPLATE/**'
+      - '.github/**'
   workflow_dispatch:
 
 # One deployment per branch/PR; cancel in-progress on newer push
