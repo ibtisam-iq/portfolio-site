@@ -1,18 +1,62 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import { FiSun, FiMoon, FiMenu, FiX, FiFileText } from "react-icons/fi";
+import { FiSun, FiMoon, FiMenu, FiX, FiChevronDown, FiExternalLink, FiDownload } from "react-icons/fi";
 
 const CV_PATH = "/cv.pdf";
 
-const trackResume = () => {
+const trackResume = (action: string) => {
   const w = window as Window & { gtag?: (...args: unknown[]) => void };
-  w.gtag?.("event", "resume_view", { event_category: "Resume" });
+  w.gtag?.("event", `resume_${action}`, { event_category: "Resume" });
 };
 
+const downloadResume = async () => {
+  trackResume("download");
+  const res = await fetch(CV_PATH);
+  const blob = await res.blob();
+  const date = new Date().toISOString().slice(0, 10);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Muhammad-Ibtisam-Iqbal-Resume-${date}.pdf`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+const ResumeDropdown = ({ onAction }: { onAction?: () => void }) => (
+  <div className="group relative">
+    <button className="flex items-center gap-1.5 rounded-full bg-purple-600 px-4 py-1.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-purple-500">
+      Resume
+      <FiChevronDown size={13} className="transition-transform duration-200 group-hover:rotate-180" />
+    </button>
+    <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute right-0 top-full pt-2 transition-all duration-200">
+      <div className="min-w-[170px] rounded-lg border border-light-border dark:border-white/10 bg-light-bg dark:bg-surface-1 py-1 shadow-lg">
+        <a
+          href={CV_PATH}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => { trackResume("view"); onAction?.(); }}
+          className="flex items-center gap-2.5 px-4 py-2 text-sm text-light-muted dark:text-text-muted hover:text-light-text dark:hover:text-white hover:bg-light-surface-2 dark:hover:bg-surface-2 transition-colors"
+        >
+          <FiExternalLink size={14} />
+          View Resume
+        </a>
+        <button
+          onClick={() => { downloadResume(); onAction?.(); }}
+          className="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-light-muted dark:text-text-muted hover:text-light-text dark:hover:text-white hover:bg-light-surface-2 dark:hover:bg-surface-2 transition-colors"
+        >
+          <FiDownload size={14} />
+          Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+// Prevent TS6133 unused variable errors
+void ResumeDropdown;
 void CV_PATH;
 void trackResume;
-void FiFileText;
+void downloadResume;
 
 const navItems: { label: string; to: string; external?: boolean }[] = [
   { label: "Home", to: "/" },
@@ -103,16 +147,7 @@ const Navbar = () => {
             {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
           </button>
 
-          {/* <a
-            href={CV_PATH}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={trackResume}
-            className="group flex items-center gap-2 rounded-lg border border-purple-500/50 bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-purple-500"
-          >
-            <FiFileText size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
-            Resume
-          </a> */}
+          {/* <ResumeDropdown /> */}
         </div>
 
         {/* Mobile controls */}
@@ -170,12 +205,17 @@ const Navbar = () => {
               href={CV_PATH}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => { trackResume(); setMobileOpen(false); }}
-              className="mt-2 flex items-center justify-center gap-2 rounded-lg border border-purple-500/50 bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-purple-500"
+              onClick={() => { trackResume("view"); setMobileOpen(false); }}
+              className="rounded-md px-3 py-2.5 text-sm font-medium text-light-muted dark:text-text-muted transition-colors"
             >
-              <FiFileText size={15} />
-              Resume
-            </a> */}
+              View Resume
+            </a>
+            <button
+              onClick={() => { downloadResume(); setMobileOpen(false); }}
+              className="rounded-md px-3 py-2.5 text-left text-sm font-medium text-light-muted dark:text-text-muted transition-colors"
+            >
+              Download Resume
+            </button> */}
           </div>
         </div>
       )}
