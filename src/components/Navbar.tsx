@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
+import { FiSun, FiMoon, FiMenu, FiX, FiFileText } from "react-icons/fi";
 
 const CV_PATH = "/cv.pdf";
 
-const trackCV = () => {
+const trackResume = () => {
   const w = window as Window & { gtag?: (...args: unknown[]) => void };
-  w.gtag?.("event", "cv_view", { event_category: "CV" });
+  w.gtag?.("event", "resume_view", { event_category: "Resume" });
 };
 
-// Prevent TS6133 unused variable errors while Resume buttons are commented out
 void CV_PATH;
-void trackCV;
+void trackResume;
+void FiFileText;
 
 const navItems: { label: string; to: string; external?: boolean }[] = [
   { label: "Home", to: "/" },
@@ -103,15 +103,14 @@ const Navbar = () => {
             {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
           </button>
 
-          {/* Resume Button - Uncomment below to display on desktop nav */}
           {/* <a
             href={CV_PATH}
             target="_blank"
             rel="noopener noreferrer"
-            title="View Resume"
-            onClick={() => trackCV()}
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
+            onClick={trackResume}
+            className="group flex items-center gap-2 rounded-lg border border-purple-500/50 bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-purple-500"
           >
+            <FiFileText size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
             Resume
           </a> */}
         </div>
@@ -167,15 +166,14 @@ const Navbar = () => {
               )
             )}
 
-            {/* Resume Button - Uncomment below to display on mobile menu */}
             {/* <a
               href={CV_PATH}
               target="_blank"
               rel="noopener noreferrer"
-              title="View Resume"
-              className="mt-2 flex items-center justify-center bg-purple-600 text-white px-4 py-2.5 rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
-              onClick={() => { trackCV(); setMobileOpen(false); }}
+              onClick={() => { trackResume(); setMobileOpen(false); }}
+              className="mt-2 flex items-center justify-center gap-2 rounded-lg border border-purple-500/50 bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-purple-500"
             >
+              <FiFileText size={15} />
               Resume
             </a> */}
           </div>
