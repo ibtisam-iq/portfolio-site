@@ -11,12 +11,7 @@ export function useTypewriter(lines: string[], start: boolean) {
   const [output, setOutput] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!start) return;
-
-    if (prefersReducedMotion()) {
-      setOutput(lines);
-      return;
-    }
+    if (!start || prefersReducedMotion()) return;
 
     let cancelled = false;
     let lineIdx = 0;
@@ -45,5 +40,5 @@ export function useTypewriter(lines: string[], start: boolean) {
     };
   }, [start, lines]);
 
-  return output;
+  return prefersReducedMotion() ? (start ? lines : []) : output;
 }
