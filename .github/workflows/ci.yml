@@ -110,7 +110,7 @@ jobs:
       # On CI PR  : build only, no push, no digest export
       - name: Build & push
         id: build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile
