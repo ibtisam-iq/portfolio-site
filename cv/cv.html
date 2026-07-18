@@ -430,7 +430,7 @@
     <ul>
       <li>Deployed 5 microservices across bare-metal Kubernetes (kubeadm) and Amazon EKS. Kept all upstream Helm charts unmodified and decoupled AWS dependencies by swapping DynamoDB, SQS, and ElastiCache for containerized alternatives (RabbitMQ, Redis) on bare metal.</li>
       <li>Wrote 3 Helmfile configurations with dependency sequencing to prevent startup race conditions (databases and brokers provision before application services).</li>
-      <li>Created self-managed CloudFormation worker nodes to bypass lab SCP restrictions on EKS managed node groups. Configured IRSA to bind services to DynamoDB and a serverless event pipeline (SQS, Lambda, SNS).</li>
+      <li>Created self-managed CloudFormation worker nodes to bypass KodeKloud lab SCP restrictions on EKS managed node groups. Configured IRSA to bind services to DynamoDB and a serverless event pipeline (SQS, Lambda, SNS).</li>
       <li>Deployed Fluent Bit to stream logs to CloudWatch Container Insights. Set up an ALB Ingress Group to share a single load balancer across the UI, Prometheus, and Grafana.</li>
     </ul>
   </div>
@@ -466,7 +466,7 @@
       <span class="project-tech">Alpine Linux, Docker Buildx, Trivy, Hadolint, GitHub Actions, MkDocs</span>
     </div>
     <ul>
-      <li>Built an open-source Kubernetes debugging toolkit with 3 Alpine-based variants (14MB to 104MB). The smallest variant is 93% smaller than netshoot.</li>
+      <li>Built an open-source Kubernetes debugging toolkit with 3 Alpine-based variants (15MB to 91MB). The smallest variant is 93% smaller than netshoot.</li>
       <li>Separated Dockerfiles (declarative) from installation scripts (procedural). Package lists live in '.packages' files; complex installs use dedicated scripts with architecture detection and SHA256 verification.</li>
       <li>Pre-loaded kubectx/kubens and custom bash functions (json(), yaml(), sniff-dns(), cert-check()) for faster debugging sessions.</li>
       <li>Automated multi-arch builds (amd64, arm64) with Trivy gating on HIGH/CRITICAL findings, Hadolint linting, in-container smoke tests, and dual-registry publishing (GHCR + Docker Hub).</li>
@@ -562,7 +562,7 @@
     <div class="eco-item"><span class="eco-label">Blog:</span> <a href="https://blog.ibtisam-iq.com">blog.ibtisam-iq.com</a></div>
     <div class="eco-item"><span class="eco-label">DebugBox:</span> <a href="https://debugbox.ibtisam-iq.com">debugbox.ibtisam-iq.com</a></div>
     <div class="eco-item"><span class="eco-label">SilverStack:</span> <a href="https://github.com/ibtisam-iq/silver-stack">github.com/ibtisam-iq/silver-stack</a></div>
-    <div class="eco-item"><span class="eco-label">iximiuz Playgrounds:</span> <a href="https://labs.iximiuz.com/a/ibtisam-iq">labs.iximiuz.com/a/ibtisam-iq</a></div>
+    <div class="eco-item"><span class="eco-label">iximiuz Labs:</span> <a href="https://labs.iximiuz.com/a/ibtisam-iq">labs.iximiuz.com/a/ibtisam-iq</a></div>
   </div>
 </div>
 
