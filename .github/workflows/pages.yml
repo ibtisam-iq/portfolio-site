@@ -21,9 +21,9 @@ on:
       - '.github/**'
   workflow_dispatch:
 
-# One deployment per branch/PR; cancel in-progress on newer push
+# One deployment per branch/PR/event; cancel in-progress on newer push of same event type
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
