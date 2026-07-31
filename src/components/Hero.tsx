@@ -24,8 +24,12 @@ const stats = [
   { value: 0, suffix: "AWS + K8s", label: "Core Focus", animate: false },
 ];
 
+const GITHUB_AVATAR = "https://avatars.githubusercontent.com/u/174851199?v=4&s=400";
+
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
+  // Local public/profile.png takes priority; falls back to GitHub avatar
+  const [photoSrc, setPhotoSrc] = useState("/profile.png");
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
@@ -50,7 +54,9 @@ const Hero = () => {
       />
 
       <div className="relative max-w-6xl mx-auto px-6 md:px-10">
-        <div className="max-w-3xl">
+        <div className="flex flex-col md:flex-row md:items-center md:gap-16">
+          {/* Text (left on desktop, top on mobile) */}
+          <div className="min-w-0 flex-1">
           <p
             style={s(0)}
             className="text-sm font-semibold uppercase tracking-widest text-purple-600 dark:text-purple-400 mb-4"
@@ -124,6 +130,21 @@ const Hero = () => {
                 </span>
               </div>
             ))}
+          </div>
+          </div>
+
+          {/* Photo (right on desktop, below text on mobile) */}
+          <div style={s(200)} className="mt-10 flex justify-center md:mt-0 md:shrink-0">
+            <img
+              src={photoSrc}
+              onError={() => {
+                if (photoSrc !== GITHUB_AVATAR) setPhotoSrc(GITHUB_AVATAR);
+              }}
+              alt="Muhammad Ibtisam Iqbal"
+              width={280}
+              height={280}
+              className="h-48 w-48 rounded-full border-2 border-light-border object-cover dark:border-border-subtle md:h-64 md:w-64 lg:h-72 lg:w-72"
+            />
           </div>
         </div>
 
