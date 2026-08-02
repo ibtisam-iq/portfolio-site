@@ -1,7 +1,7 @@
 export const PROJECTS_URL = "https://projects.ibtisam-iq.com";
 
 export const toolProjects: Record<string, string[]> = {
-  "Docker": ["SilverStack", "Microservices GitOps on EKS", "Retail Store Multi-Env", "BankApp Java Monolith", "Polyglot Deployment", "14-Stage DevSecOps", "DebugBox"],
+  "Docker": ["SilverStack", "Microservices GitOps on EKS", "Retail Store Multi-Env", "BankApp Java Monolith", "Polyglot Deployment", "DevSecOps CI Pipelines", "DebugBox"],
   "Docker Compose": ["Polyglot Deployment"],
   "Docker Buildx": ["DebugBox"],
   "Kubernetes": ["Microservices GitOps on EKS", "Retail Store Multi-Env", "BankApp Java Monolith", "Polyglot Deployment"],
@@ -13,11 +13,11 @@ export const toolProjects: Record<string, string[]> = {
   "Gateway API": ["Microservices GitOps on EKS", "BankApp Java Monolith"],
   "ExternalDNS": ["Microservices GitOps on EKS"],
 
-  "Jenkins": ["SilverStack", "14-Stage DevSecOps"],
-  "GitHub Actions": ["SilverStack", "Microservices GitOps on EKS", "14-Stage DevSecOps", "DebugBox"],
-  "SonarQube": ["SilverStack", "14-Stage DevSecOps"],
-  "Nexus": ["SilverStack", "14-Stage DevSecOps"],
-  "Maven": ["BankApp Java Monolith", "14-Stage DevSecOps"],
+  "Jenkins": ["SilverStack", "DevSecOps CI Pipelines"],
+  "GitHub Actions": ["SilverStack", "Microservices GitOps on EKS", "DevSecOps CI Pipelines", "DebugBox"],
+  "SonarQube": ["SilverStack", "DevSecOps CI Pipelines"],
+  "Nexus": ["SilverStack", "DevSecOps CI Pipelines"],
+  "Maven": ["BankApp Java Monolith", "DevSecOps CI Pipelines"],
   "Make": ["DebugBox"],
 
   "EC2 & VPC": ["BankApp Java Monolith", "Polyglot Deployment"],
@@ -46,7 +46,7 @@ export const toolProjects: Record<string, string[]> = {
   "systemd": ["SilverStack"],
   "Nginx": ["SilverStack", "Polyglot Deployment"],
 
-  "Trivy": ["Microservices GitOps on EKS", "14-Stage DevSecOps", "DebugBox"],
+  "Trivy": ["Microservices GitOps on EKS", "DevSecOps CI Pipelines", "DebugBox"],
   "Hadolint": ["DebugBox"],
 
   "Prometheus": ["Microservices GitOps on EKS", "Retail Store Multi-Env"],
