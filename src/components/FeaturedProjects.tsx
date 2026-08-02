@@ -17,16 +17,16 @@ const projects = [
     url: "https://projects.ibtisam-iq.com/silverstack-cicd-platform",
   },
   {
-    title: "14-Stage DevSecOps Pipeline",
+    title: "DevSecOps CI Pipelines",
     description:
-      "Built a 14-stage CI pipeline for three codebases and implemented it identically on Jenkins and GitHub Actions. Integrated 3-pass Trivy scanning, SonarQube quality gates, and triple-registry publishing (GHCR, Docker Hub, Nexus).",
+      "Built one CI pipeline contract for three codebases (14, 16, and 21 stages) and implemented it twice, on Jenkins and GitHub Actions. Integrated layered Trivy scanning, SonarQube quality gates, and triple-registry publishing (GHCR, Docker Hub, Nexus).",
     tech: ["Jenkins", "GitHub Actions", "Trivy", "SonarQube", "Docker"],
     url: "https://projects.ibtisam-iq.com/devsecops-pipeline-engineering",
   },
   {
     title: "DebugBox",
     description:
-      "Built an open-source Kubernetes debugging toolkit with 3 Alpine variants (14MB to 104MB), 93% smaller than netshoot. Automated multi-arch builds with Trivy gating, in-container smoke tests, and MkDocs documentation.",
+      "Built an open-source Kubernetes debugging toolkit with 3 Alpine variants (15MB to 91MB), 93% smaller than netshoot. Automated multi-arch builds with Trivy gating, in-container smoke tests, and MkDocs documentation.",
     tech: ["Alpine Linux", "Docker Buildx", "Trivy", "GitHub Actions", "Bash"],
     url: "https://projects.ibtisam-iq.com/debugbox",
   },
