@@ -2,6 +2,7 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import { useCountUp } from "../hooks/useCountUp";
+import { TOTAL_TOOLS } from "../data/skills";
 
 const hidden = (delay: number): CSSProperties => ({
   opacity: 0,
@@ -19,7 +20,7 @@ const shown = (delay: number): CSSProperties => ({
 
 const stats = [
   { value: 8, suffix: "", label: "Projects", animate: true },
-  { value: 66, suffix: "+", label: "Tools", animate: true },
+  { value: TOTAL_TOOLS, suffix: "+", label: "Tools", animate: true },
   { value: 0, suffix: "CKA + CKAD", label: "Certified", animate: false },
   { value: 0, suffix: "AWS + K8s", label: "Core Focus", animate: false },
 ];
@@ -36,7 +37,7 @@ const Hero = () => {
   }, []);
 
   const projectCount = useCountUp(8, 1400, mounted);
-  const toolCount = useCountUp(66, 1800, mounted);
+  const toolCount = useCountUp(TOTAL_TOOLS, 1800, mounted);
   const s = (d: number) => (mounted ? shown(d) : hidden(d));
 
   return (
