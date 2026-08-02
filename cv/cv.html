@@ -275,6 +275,17 @@
     break-after: avoid;
   }
 
+  /* Keep a project whole so a page never opens with an orphaned bullet from
+     the previous one. Without this, pagination depends on the renderer's font
+     metrics and shifts between local and CI builds. */
+  .project {
+    break-inside: avoid;
+  }
+
+  li {
+    break-inside: avoid;
+  }
+
   .exp-header {
     break-after: avoid;
   }
