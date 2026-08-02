@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, type PropsWithChildren } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useCanonical } from "./hooks/useCanonical";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -24,6 +25,8 @@ const ScrollToTop = ({ children }: PropsWithChildren) => {
 };
 
 function App() {
+  useCanonical();
+
   return (
     <ThemeProvider>
       <a href="#main-content" className="skip-link">
