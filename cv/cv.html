@@ -408,14 +408,14 @@
 
   <div class="project">
     <div class="project-header">
-      <span class="project-title">14-Stage DevSecOps Pipeline</span>
+      <span class="project-title">DevSecOps CI Pipelines</span>
       <span class="project-tech">Jenkins, GitHub Actions, Trivy, SonarQube, GHCR, Docker Hub, Nexus</span>
     </div>
     <ul>
       <li>Validated each application's build and test cycle locally (Maven, Webpack, pytest with real databases) before writing any pipeline automation.</li>
-      <li>Built a standardized 14-stage CI pipeline for 3 codebases (Java, Python, Node.js) and implemented it identically on Jenkins and GitHub Actions to prove tool-agnostic design.</li>
+      <li>Built one CI pipeline contract for 3 codebases at 14, 16, and 21 stages (Java, Python, Node.js) and implemented it twice, on Jenkins and GitHub Actions, to prove tool-agnostic design.</li>
       <li>Integrated language-specific security scanning: Bandit and pip-audit for Python, npm audit and ESLint for Node.js, Trivy filesystem scan for Java.</li>
-      <li>Configured 3-pass Trivy container scanning: library vulnerabilities hard-fail the build on CRITICAL findings, OS vulnerabilities run as advisory-only to prevent false blocks from upstream CVEs.</li>
+      <li>Configured 3-pass Trivy scanning (source filesystem, container library, container OS): library vulnerabilities hard-fail the build on CRITICAL findings, OS vulnerabilities run as advisory-only to prevent false blocks from upstream CVEs.</li>
       <li>Tagged every image with semantic version, 7-character Git SHA, and CI build number. No floating 'latest' tags. Published to GHCR, Docker Hub, and self-hosted Nexus simultaneously.</li>
       <li>Ran CI test suites against in-memory databases (SQLite for Python) to avoid external dependencies, while still generating JaCoCo and Cobertura XML coverage reports for SonarQube quality gates.</li>
       <li>Enforced strict CI/CD separation: pipelines commit image SHAs to the CD repository. No pipeline has kubectl access to any cluster.</li>
