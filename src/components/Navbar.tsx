@@ -147,7 +147,7 @@ const Navbar = () => {
             {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
           </button>
 
-          <ResumeDropdown />
+          {/* <ResumeDropdown /> */}
         </div>
 
         {/* Mobile controls */}
@@ -201,7 +201,7 @@ const Navbar = () => {
               )
             )}
 
-            <a
+            {/* <a
               href={CV_PATH}
               target="_blank"
               rel="noopener noreferrer"
@@ -215,7 +215,7 @@ const Navbar = () => {
               className="rounded-md px-3 py-2.5 text-left text-sm font-medium text-light-muted dark:text-text-muted transition-colors"
             >
               Download Resume
-            </button>
+            </button> */}
           </div>
         </div>
       )}
