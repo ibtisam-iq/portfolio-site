@@ -213,6 +213,46 @@ export default function Certificates() {
             cert-vault.ibtisam-iq.com ↗
           </a>
         </div>
+
+        {/* Independent audit callout */}
+        <div className="mt-6 rounded-xl border border-teal-accent/20 bg-light-surface p-8 text-center dark:bg-surface-1">
+          <p className="mb-2 text-sm font-semibold text-teal-accent">
+            Independent Audit
+            <span className="ml-2 font-mono text-xs font-normal text-light-muted dark:text-text-muted">
+              Aug 02, 2026
+            </span>
+          </p>
+          <p className="mx-auto max-w-lg text-sm text-light-muted dark:text-text-muted">
+            An AI research agent was given one line and no other context:
+          </p>
+          <p className="mx-auto mt-3 w-fit rounded-md border border-light-border px-3 py-1.5 font-mono text-xs text-light-text dark:border-border-subtle dark:text-text-primary">
+            do a detailed research on ibtisam-iq
+          </p>
+          <p className="mx-auto mt-3 max-w-lg text-sm text-light-muted dark:text-text-muted">
+            It found the sites, repositories and credentials on its own, then
+            checked every claim against a source I do not control. The write-up
+            covers what held up, and what did not.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-sm">
+            <a
+              href="https://hyperagent.com/s/otIn4z6g27aLiqccnQ4kvQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-accent transition-colors hover:text-teal-accent/80"
+            >
+              The audit ↗
+            </a>
+            <span className="text-light-muted dark:text-text-faint">·</span>
+            <a
+              href="https://blog.ibtisam-iq.com/ai-agent-audit-devops-portfolio/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-accent transition-colors hover:text-teal-accent/80"
+            >
+              What I changed after it ↗
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
