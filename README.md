@@ -26,7 +26,7 @@ The main site links out to independently deployed surfaces, each in its own repo
 | --- | --- | --- | --- |
 | **Projects** | Infrastructure and cloud projects | [projects.ibtisam-iq.com](https://projects.ibtisam-iq.com) | [`projects`](https://github.com/ibtisam-iq/projects) |
 | **Runbook** | Documented steps from real implementation work | [runbook.ibtisam-iq.com](https://runbook.ibtisam-iq.com) | [`runbook`](https://github.com/ibtisam-iq/runbook) |
-| **Nectar** | Engineering knowledge base (200+ pages) | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [`nectar`](https://github.com/ibtisam-iq/nectar) |
+| **Nectar** | Engineering knowledge base (365 pages) | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [`nectar`](https://github.com/ibtisam-iq/nectar) |
 | **Cert Vault** | Kubernetes and cloud certification prep | [cert-vault.ibtisam-iq.com](https://cert-vault.ibtisam-iq.com) | [`certification-practice-vault`](https://github.com/ibtisam-iq/certification-practice-vault) |
 | **DebugBox** | Multi-variant Docker debugging toolkit | [debugbox.ibtisam-iq.com](https://debugbox.ibtisam-iq.com) | [`debugbox`](https://github.com/ibtisam-iq/debugbox) |
 | **Blog** | Write-ups of what was built and debugged | [blog.ibtisam-iq.com](https://blog.ibtisam-iq.com) | [`blog`](https://github.com/ibtisam-iq/blog) |

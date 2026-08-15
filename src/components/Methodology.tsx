@@ -8,7 +8,7 @@ const LOG_LINES = [
   "[phase-02] blog          -> distilled, problem-first write-ups",
   "[phase-02] projects      -> integrated systems, end-to-end pipelines",
   "[phase-02] runbook       -> daily decisions and debugging, written while fresh",
-  "[phase-01] nectar        -> 200+ pages, survived contact with reality",
+  "[phase-01] nectar        -> 365 pages, survived contact with reality",
   "---------------------------------------------------------------",
   "status: nothing here is a tutorial followed once",
 ];
@@ -164,7 +164,7 @@ const Methodology = () => {
                 Nectar
               </h3>
               <p className="mb-4 text-sm text-light-muted dark:text-text-muted">
-                200+ pages. A concept doesn't count as understood until it
+                365 pages. A concept doesn't count as understood until it
                 survives contact with what I actually built.
               </p>
               <span className="font-mono text-xs text-teal-accent transition group-hover:text-teal-accent/80">
