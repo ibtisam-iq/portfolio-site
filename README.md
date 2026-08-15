@@ -85,6 +85,24 @@ After `vite build`, [`scripts/prerender-meta.js`](./scripts/prerender-meta.js) c
 
 Routes are declared in the script rather than derived, since they are a fixed set defined in `src/App.tsx`. Adding a route there means adding it there too, and the build fails until it is. If the head in `index.html` changes so a tag no longer matches, the build fails rather than emitting a shell with stale metadata.
 
+`dist/404.html` is built by the same script instead of being copied from `index.html`. GitHub Pages serves it on any unmatched path, so a copy would give every dead URL the home page's title, canonical and `index, follow`. The generated one carries its own title, a self-referential canonical, and `noindex`.
+
+### Identity and discovery
+
+The same facts surface in several artifacts: certifications in the JSON-LD, profile URLs in `sameAs`, sitemap locations in `robots.txt`, and a description of the estate in `llms.txt`. None of these are rendered in the browser, so a copy that falls out of date gives no visible signal that it has.
+
+[`scripts/profile.js`](./scripts/profile.js) holds them once. After `vite build`, `prerender-meta.js` derives five artifacts from it:
+
+| Artifact | Contents |
+| --- | --- |
+| JSON-LD | `schema.org/Person` in every route shell: credentials with their Credly URLs, `sameAs`, `knowsAbout` |
+| `robots.txt` | User-agent rules and every sitemap across the estate |
+| `llms.txt` | What an agent reads before crawling, separating third-party verifiable records from self-reported ones |
+| `sitemap.xml` | This site's routes, from the same array the shells come from |
+| `profile.json` | The full record, machine-readable |
+
+Each site in `profile.js` records its sitemap URL or `null`. Nothing is fetched at build time, so that field is a manual check: a subdomain whose sitemap 404s or falls through to an SPA shell is left `null` and appears in `robots.txt` as a commented-out line rather than a live `Sitemap:` directive. `profile.json` is published so other repositories read it over HTTP rather than holding a copy of their own.
+
 ### Trigger isolation
 
 Each workflow ignores paths it does not need. A single commit that touches multiple areas triggers only the relevant workflows, with no redundant runs.
@@ -171,7 +189,9 @@ portfolio-site/
 │   └── templates/
 ├── public/                 # Static assets (favicons, cv.pdf, webmanifest)
 ├── scripts/
-│   └── prerender-meta.js   # Writes dist/<route>/index.html with per-route meta after the build.
+│   ├── profile.js          # Single source: identity, credentials, sites, profiles. Edit only here.
+│   └── prerender-meta.js   # After the build: per-route shells, 404.html, sitemap.xml,
+│                           # robots.txt, llms.txt, profile.json.
 ├── src/
 │   ├── components/         # Hero, Navbar, Footer, FeaturedProjects, Methodology, Reveal
 │   ├── context/            # ThemeContext (dark/light mode)
