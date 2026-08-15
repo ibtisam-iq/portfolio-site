@@ -80,9 +80,8 @@ jobs:
       - name: Write CNAME
         run: echo "ibtisam-iq.com" > dist/CNAME
 
-      # 404.html: Pages serves this on unknown paths; React Router handles the rest
-      - name: Write 404 fallback
-        run: cp dist/index.html dist/404.html
+      # 404.html is emitted by scripts/prerender-meta.js during the build, with
+      # its own title and noindex. Copying index.html here would overwrite that.
 
       - name: Upload Pages artifact
         if: ${{ env.ACT != 'true' }}
@@ -130,9 +129,7 @@ jobs:
           VITE_BASE_PATH: /pr-preview/pr-${{ github.event.pull_request.number }}/
 
       # No CNAME: would redirect away from /previews/pr-N
-      - name: Write 404 fallback
-        if: github.event.action != 'closed'
-        run: cp dist/index.html dist/404.html
+      # 404.html comes from scripts/prerender-meta.js, same as the deploy job.
 
       # token: required — rossjrw calls marocchino/sticky-pull-request-comment
       # internally; without explicit token it falls back to a read-only default
