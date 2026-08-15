@@ -89,8 +89,8 @@ const Hero = () => {
           >
             CKA and CKAD certified. I build Kubernetes clusters, CI/CD
             pipelines, and cloud infrastructure from first principles. Every
-            project documented with source code, runbooks, and terminal
-            sessions.
+            project documented with source code and a runbook, plus
+            terminal sessions on the ones worth replaying.
           </p>
 
           <div style={s(330)} className="flex flex-wrap items-center gap-4 mb-12">
