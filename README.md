@@ -72,10 +72,18 @@ Four workflows, each scoped to the paths it cares about. No workflow triggers an
 
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
-| **`pages.yml`** | Push to `main` (site source) | Lint, build, deploy to GitHub Pages. PRs get isolated preview deploys. |
+| **`pages.yml`** | Push to `main` (site source) | Lint, build, prerender per-route metadata, verify it, deploy to GitHub Pages. PRs get isolated preview deploys. |
 | **`cv.yml`** | Push to `main` (`cv/**`) | Renders `cv/cv.html` to PDF via Puppeteer, commits `public/cv.pdf`. That commit triggers `pages.yml` and `ci.yml` to pick up the new file. |
 | **`ci.yml`** | Push to `main` (site source) | Multi-arch Docker build (`amd64` + `arm64`), push to GHCR and Docker Hub. PRs build without pushing. |
 | **`helm-release.yml`** | Push to `main` (`helm/**`) | Lint, package, and push the Helm chart to GHCR as an OCI artifact. |
+
+### Per-route metadata
+
+The site is client-rendered, so every route serves the same `index.html`. `useCanonical` corrects `canonical` and `og:url` in the browser, but crawlers that do not execute JavaScript (LinkedIn, Slack, Twitter) read the raw HTML and would see the site-root values on every page, collapsing every deep link back to `/`.
+
+After `vite build`, [`scripts/prerender-meta.js`](./scripts/prerender-meta.js) clones `dist/index.html` once per route and rewrites eight tags: `<title>`, `description`, `canonical`, `og:title`, `og:description`, `og:url`, `twitter:title`, and `twitter:description`. React still renders the page on the client, unchanged. `og:image` stays site-wide.
+
+Routes are declared in the script rather than derived, since they are a fixed set defined in `src/App.tsx`. Adding a route there means adding it there too, and the build fails until it is. If the head in `index.html` changes so a tag no longer matches, the build fails rather than emitting a shell with stale metadata.
 
 ### Trigger isolation
 
@@ -162,6 +170,8 @@ portfolio-site/
 │   ├── values.yaml
 │   └── templates/
 ├── public/                 # Static assets (favicons, cv.pdf, webmanifest)
+├── scripts/
+│   └── prerender-meta.js   # Writes dist/<route>/index.html with per-route meta after the build.
 ├── src/
 │   ├── components/         # Hero, Navbar, Footer, FeaturedProjects, Methodology, Reveal
 │   ├── context/            # ThemeContext (dark/light mode)
