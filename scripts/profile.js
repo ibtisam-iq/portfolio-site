@@ -1,7 +1,6 @@
-// Identity, credentials, sites and profiles. Declared here once; scripts/prerender-meta.js
-// derives the JSON-LD graph, robots.txt, sitemap.xml, llms.txt and profile.json from it
-// during `npm run build`. None of those are committed, so this file is the only place
-// any of it is edited.
+// Identity, credentials, sites and profiles. scripts/prerender-meta.js derives the JSON-LD
+// graph, robots.txt, sitemap.xml, llms.txt and profile.json from this file during
+// `npm run build`. None of those are committed, so this is the only place they are edited.
 //
 // Page routes are the exception: they live in prerender-meta.js, because they have to
 // track src/App.tsx rather than anything here.
@@ -52,10 +51,9 @@ export const profile = {
     },
   ],
 
-  // `sitemap` is the URL confirmed to return XML, or null. Nothing here is fetched at
-  // build time, so the field records a manual check rather than a live one. Listing a
-  // path that 404s or hits an SPA fallback returning HTML puts a permanent "couldn't
-  // fetch" against the property in Search Console, so null is the safer default.
+  // `sitemap` is the URL confirmed to return XML, or null. Nothing is fetched at build
+  // time, so the field records a manual check. A path that 404s or falls through to an SPA
+  // shell is reported as a fetch error in Search Console until fixed, so null is the default.
   sites: [
     {
       label: 'Portfolio',
