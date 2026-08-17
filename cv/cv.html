@@ -411,7 +411,7 @@
       <li>Built a self-hosted CI/CD platform (Jenkins, SonarQube, Nexus) on microVMs with 5 custom OCI rootfs images, each using systemd as PID 1 for runtime provisioning at boot.</li>
       <li>Configured Nginx as a reverse proxy in each image with a build-time parameterized upstream port, /health endpoint for readiness checks, and hardened security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy). All services serve on port 80.</li>
       <li>Configured outbound-only Cloudflare Tunnels to expose services on custom domains without public IPs, bypassing Carrier-Grade NAT (CGNAT).</li>
-      <li>Automated image CI with GitHub Actions: build-time health checks validate systemd units, Nginx configs, and service readiness before publishing to GHCR.</li>
+      <li>Automated image CI with GitHub Actions: build-time checks parse Nginx configs and verify systemd wiring, gating every push to GHCR.</li>
       <li>Enforced security through strict sudoers profiles, daemon user isolation, pinned binary versions, and SHA256 checksum verification on all downloads.</li>
       <li>Each image is independently launchable (standalone SonarQube, Nexus, Dev Machine, or full CI/CD stack) and published as a publicly accessible playground on iximiuz Labs.</li>
     </ul>
