@@ -18,7 +18,7 @@ const resources = [
 
 const siteLinks = [
   { label: "About", to: "/about" },
-  { label: "Skills", to: "/skills" },
+  { label: "Tools", to: "/tools" },
   { label: "Certifications", to: "/certificates" },
   { label: "Contact", to: "/contact" },
 ];

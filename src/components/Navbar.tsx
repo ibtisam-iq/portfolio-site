@@ -61,7 +61,7 @@ void downloadResume;
 const navItems: { label: string; to: string; external?: boolean }[] = [
   { label: "Home", to: "/" },
   { label: "Projects", to: "https://projects.ibtisam-iq.com", external: true },
-  { label: "Skills", to: "/skills" },
+  { label: "Tools", to: "/tools" },
   { label: "Certifications", to: "/certificates" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },

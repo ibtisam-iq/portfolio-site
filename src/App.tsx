@@ -52,7 +52,7 @@ function App() {
               <Route path="/certificates" element={<Certificates />} />
               <Route path="/about" element={<HowItStarted />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/skills" element={<Skills />} />
+              <Route path="/tools" element={<Skills />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             </ErrorBoundary>

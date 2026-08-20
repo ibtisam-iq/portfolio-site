@@ -40,7 +40,7 @@ Related: [SilverStack](https://github.com/ibtisam-iq/silver-stack) (reusable inf
 | Route | Purpose |
 | --- | --- |
 | `/` | Landing page with featured projects and methodology |
-| `/skills` | 66 tools across 9 categories with project cross-references |
+| `/tools` | 66 tools across 9 categories with project cross-references |
 | `/certificates` | CKA, CKAD earned; CKS and AWS SAA in progress |
 | `/about` | Background and bio |
 | `/contact` | Contact and availability |
@@ -197,7 +197,7 @@ portfolio-site/
 │   ├── context/            # ThemeContext (dark/light mode)
 │   ├── data/               # certificates.ts, toolProjects.ts
 │   ├── hooks/              # useCountUp, useDocumentTitle, useInView, useTypewriter
-│   ├── pages/              # Skills, Certificates, ContactPage, HowItStarted, NotFound
+│   ├── pages/              # Tools, Certificates, ContactPage, HowItStarted, NotFound
 │   ├── App.tsx
 │   ├── main.tsx
 │   └── index.css
