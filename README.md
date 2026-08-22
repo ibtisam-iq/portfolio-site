@@ -1,4 +1,4 @@
-# Ibtisam IQ Portfolio
+# ibtisam-iq.com
 
 [![Deploy to Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml)
 [![Build CV PDF](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml)
