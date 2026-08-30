@@ -1,3 +1,6 @@
+# The chart's own test: `helm test` runs a pod that fetches the service and fails if it
+# does not answer.
+
 apiVersion: v1
 kind: Pod
 metadata:

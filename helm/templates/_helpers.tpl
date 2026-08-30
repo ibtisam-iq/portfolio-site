@@ -6,9 +6,8 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+The fully qualified app name, truncated to the 63 characters a Kubernetes name field
+allows. A release name already containing the chart name is used as-is.
 */}}
 {{- define "ibtisam-iq.fullname" -}}
 {{- if .Values.fullnameOverride }}

@@ -26,13 +26,13 @@ helm uninstall portfolio-site
 
 * **Rootless Execution**: Runs as non-root (`USER nginx`, UID `1001`) with a read-only root filesystem and all Linux capabilities dropped.
 * **Modern Networking**: Pre-configured templates for standard Kubernetes Ingress as well as Kubernetes Gateway API (`HTTPRoute`).
-* **CI/CD Integration**: Fully automated OCI packaging and registry publishing via [helm-release.yml](file:///Users/ibtisam-iq/gitHub/portfolio-site/.github/workflows/helm-release.yml).
+* **CI/CD Integration**: Fully automated OCI packaging and registry publishing via [.github/workflows/helm-release.yml](../.github/workflows/helm-release.yml).
 
 ---
 
 ## Key Parameters
 
-See [values.yaml](file:///Users/ibtisam-iq/gitHub/portfolio-site/helm/values.yaml) for full defaults.
+See [the chart defaults](values.yaml) for the full list.
 
 | Parameter | Default | Description |
 | --- | --- | --- |

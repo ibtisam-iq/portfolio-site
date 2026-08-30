@@ -1,3 +1,5 @@
+# Optional horizontal autoscaling, off unless autoscaling.enabled is set.
+
 {{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
