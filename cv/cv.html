@@ -29,7 +29,7 @@
   /* HEADER */
   .header {
     text-align: center;
-    padding-bottom: 6px;
+    padding-bottom: 8px;
     border-bottom: 1.5px solid #1a1a1a;
     margin-bottom: 7px;
   }
@@ -60,6 +60,14 @@
   .header .separator {
     margin: 0 3px;
     color: #999;
+  }
+
+  /* Public build only. Removed from every private and role-specific PDF, because a CV
+     written for one role should not tell its reader it is the general one. */
+  .header .general-note {
+    font-size: 7.5pt;
+    color: #666;
+    margin-top: 3px;
   }
 
   /* SECTIONS */
@@ -310,8 +318,12 @@
   <div class="subtitle">DevOps & Cloud Engineer</div>
   <div class="contact-row">
     <a href="mailto:contact@ibtisam-iq.com">contact@ibtisam-iq.com</a>
-    <span class="separator">|</span>
-    +92 304 6210233
+    <!-- Filled only for the private build. This repository is public and its git history
+         is permanent, so the number does not live in this file. See cv/README.md. -->
+    <span data-private-group>
+      <span class="separator">|</span>
+      <span data-private="phone"></span>
+    </span>
     <span class="separator">|</span>
     Islamabad, Pakistan
     <span class="separator">|</span>
@@ -320,6 +332,11 @@
     <a href="https://github.com/ibtisam-iq">github.com/ibtisam-iq</a>
     <span class="separator">|</span>
     <a href="https://ibtisam-iq.com">ibtisam-iq.com</a>
+  </div>
+  <!-- Public build only. A role-specific CV must not tell its reader it is the general
+       one, so the build strips this from every private variant. -->
+  <div class="general-note" data-public-only>
+    General CV. A version written for a specific role is available on request.
   </div>
 </div>
 
