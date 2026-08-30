@@ -1,8 +1,8 @@
-# Default values for ibtisam-iq.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Default values for the ibtisam-iq chart. Override any of these with `helm install -f` or
+# `--set`.
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+# Replicas. The site is static and every pod serves the same immutable image, so this scales
+# purely for availability.
 replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
@@ -112,10 +112,9 @@ httpRoute:
   #       value: v2
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Left empty on purpose, so the chart installs on a small cluster such as Minikube and the
+  # limits are a deliberate choice rather than an inherited default. To set them, uncomment
+  # the lines below, adjust them, and remove the braces after `resources:`.
   # limits:
   #   cpu: 100m
   #   memory: 128Mi

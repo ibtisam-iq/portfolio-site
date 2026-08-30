@@ -1,3 +1,5 @@
+# The site's pods: the nginx image, its probes, and the hardened security context.
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:

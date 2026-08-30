@@ -1,3 +1,5 @@
+# The ClusterIP service in front of the pods. Ingress and HTTPRoute both target it.
+
 apiVersion: v1
 kind: Service
 metadata:
