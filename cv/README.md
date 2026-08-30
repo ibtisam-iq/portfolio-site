@@ -158,6 +158,12 @@ it, and the short link keeps working either way.
 It is long because it is the one a person downloads and keeps, and a short generic name in
 somebody's downloads folder is a file they cannot identify a month later.
 
+The short link's own title follows the same rule, so it needs no attention when a variant
+is added. `cv/cv-kubernetes.html`'s subtitle makes its link preview read "Muhammad Ibtisam
+Iqbal, Kubernetes Platform Engineer, CV" in WhatsApp, iMessage or Slack, before the
+recipient opens anything. `cv/cv.html`'s own subtitle is why the general link's preview reads
+"DevOps & Cloud Engineer" rather than the bare "CV" it once did.
+
 ## Which link is sent
 
 The build prints it:
