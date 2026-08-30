@@ -1,36 +1,14 @@
+// The homepage's project cards, from the projects repository by way of
+// src/data/generated.ts. Selection and order are that repository's `homepage` flag, so
+// nothing here decides what appears.
+
 import { useInView } from "../hooks/useInView";
 import { RevealChild } from "./Reveal";
-
-const projects = [
-  {
-    title: "Microservices GitOps on EKS",
-    description:
-      "Deployed 10 microservices on Amazon EKS with Terraform, 3 CI pipelines, and fully automated GitOps delivery via ArgoCD Image Updater. Configured Gateway API routing, ExternalDNS, and observability with Prometheus and the Elastic Stack.",
-    tech: ["Terraform", "Amazon EKS", "ArgoCD", "Gateway API", "Prometheus"],
-    url: "https://projects.ibtisam-iq.com/microservices-demo",
-  },
-  {
-    title: "SilverStack CI/CD Platform",
-    description:
-      "Built a self-hosted CI/CD platform (Jenkins, SonarQube, Nexus) on microVMs with 5 custom OCI rootfs images using systemd as PID 1. Configured Cloudflare Tunnels for CGNAT traversal and published each environment as a publicly accessible playground.",
-    tech: ["systemd", "Jenkins", "Cloudflare Tunnel", "GitHub Actions", "Docker"],
-    url: "https://projects.ibtisam-iq.com/silverstack-cicd-platform",
-  },
-  {
-    title: "DevSecOps CI Pipelines",
-    description:
-      "Built one CI pipeline contract for three codebases (14, 16, and 21 stages) and implemented it twice, on Jenkins and GitHub Actions. Integrated layered Trivy scanning, SonarQube quality gates, and triple-registry publishing (GHCR, Docker Hub, Nexus).",
-    tech: ["Jenkins", "GitHub Actions", "Trivy", "SonarQube", "Docker"],
-    url: "https://projects.ibtisam-iq.com/devsecops-pipeline-engineering",
-  },
-  {
-    title: "DebugBox",
-    description:
-      "Built an open-source Kubernetes debugging toolkit with 3 Alpine variants (15MB to 91MB), 93% smaller than netshoot. Automated multi-arch builds with Trivy gating, in-container smoke tests, and MkDocs documentation.",
-    tech: ["Alpine Linux", "Docker Buildx", "Trivy", "GitHub Actions", "Bash"],
-    url: "https://projects.ibtisam-iq.com/debugbox",
-  },
-];
+import {
+  homepageProjects as projects,
+  PROJECT_COUNT,
+  PROJECTS_URL,
+} from "../data/generated";
 
 const FeaturedProjects = () => {
   const { ref, inView } = useInView();
@@ -38,24 +16,39 @@ const FeaturedProjects = () => {
   return (
     <section
       id="projects-cta"
-      className="pt-10 pb-8 text-light-text dark:text-text-primary"
+      className="section-y text-light-text dark:text-text-primary"
       ref={ref}
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
+      <div className="page-frame">
+        {/* One rule across the site: a section-level action lives in that section's
+            header row, right-aligned. */}
         <RevealChild visible={inView} delay={0}>
-          <p className="text-sm font-semibold uppercase tracking-widest text-purple-600 dark:text-purple-400 mb-4">
-            Featured Projects
-          </p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight max-w-3xl">
-            Built from scratch.{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-              Documented in detail.
-            </span>
-          </h2>
-          <p className="text-light-muted dark:text-text-muted text-lg leading-relaxed mb-12 max-w-2xl">
-            Every project is real infrastructure: CI/CD pipelines, Kubernetes
-            clusters, containerized stacks, and automated deployments.
-          </p>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+            <div>
+              <p className="eyebrow">Featured Projects</p>
+              <h2 className="title-section max-w-3xl">
+                Built from scratch.{" "}
+                <span className="text-teal-accent">
+                  Documented in detail.
+                </span>
+              </h2>
+            </div>
+
+            <a
+              href={PROJECTS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-muted transition-colors hover:border-teal-accent/50 hover:text-teal-accent dark:border-border-subtle dark:text-text-muted dark:hover:text-teal-accent"
+            >
+              View all {PROJECT_COUNT} projects
+              <span
+                aria-hidden="true"
+                className="transition-transform group-hover:translate-x-0.5"
+              >
+                &#8599;
+              </span>
+            </a>
+          </div>
         </RevealChild>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,10 +62,10 @@ const FeaturedProjects = () => {
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block h-full rounded-xl border border-light-border dark:border-border-subtle bg-light-surface dark:bg-surface-1 p-8 transition hover:border-purple-400/50 hover:shadow-lg dark:hover:shadow-[0_0_30px_rgba(124,58,237,0.15)]"
+                className="panel panel-link block h-full p-6"
               >
                 <h3 className="text-xl font-bold mb-3">{project.title}</h3>
-                <p className="text-light-muted dark:text-text-muted text-sm leading-relaxed mb-6">
+                <p className="mb-5 text-sm leading-relaxed text-light-muted dark:text-text-muted">
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -89,19 +82,6 @@ const FeaturedProjects = () => {
             </RevealChild>
           ))}
         </div>
-
-        <RevealChild visible={inView} delay={600}>
-          <div className="text-center mt-12">
-            <a
-              href="https://projects.ibtisam-iq.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-purple-600 dark:text-purple-400 font-semibold text-lg hover:text-purple-500 dark:hover:text-purple-300 transition"
-            >
-              View all projects &rarr;
-            </a>
-          </div>
-        </RevealChild>
       </div>
     </section>
   );

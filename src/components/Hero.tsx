@@ -1,8 +1,23 @@
+// The homepage hero: the live strip, the claim, and the four figures that support it.
+
 import { useState, useEffect, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import { useCountUp } from "../hooks/useCountUp";
-import { TOTAL_TOOLS } from "../data/skills";
+import { PROJECT_COUNT, TOTAL_TOOLS, EVIDENCED_COUNT } from "../data/generated";
+import { stats as publicStats, formatCount } from "../data/stats";
+import { contributions } from "../data/contributions";
+import { StatBand, StatFigure } from "./StatFigure";
+import { relativeTime } from "../lib/relativeTime";
+import { source, longDate, shortDate } from "../lib/provenance";
+import { useNow } from "../lib/useNow";
+import AvailabilityPill from "./AvailabilityPill";
+import AmbientCanvas from "./AmbientCanvas";
+import { Tooltip } from "./Tooltip";
+
+const DOCKER_HUB_URL = "https://hub.docker.com/u/mibtisam";
+const GITHUB_URL = "https://github.com/ibtisam-iq";
+const PROJECTS_SITE = "https://projects.ibtisam-iq.com";
 
 const hidden = (delay: number): CSSProperties => ({
   opacity: 0,
@@ -18,30 +33,63 @@ const shown = (delay: number): CSSProperties => ({
   transitionDelay: `${delay}ms`,
 });
 
-const stats = [
-  { value: 8, suffix: "", label: "Projects", animate: true },
-  { value: TOTAL_TOOLS, suffix: "+", label: "Tools", animate: true },
-  { value: 0, suffix: "CKA + CKAD", label: "Certified", animate: false },
-  { value: 0, suffix: "AWS + K8s", label: "Core Focus", animate: false },
-];
-
-const GITHUB_AVATAR = "https://avatars.githubusercontent.com/u/174851199?v=4&s=400";
-
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
-  // Local public/profile.png takes priority; falls back to GitHub avatar
-  const [photoSrc, setPhotoSrc] = useState("/profile.png");
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
   }, []);
 
-  const projectCount = useCountUp(8, 1400, mounted);
-  const toolCount = useCountUp(TOTAL_TOOLS, 1800, mounted);
+  const projectCount = useCountUp(PROJECT_COUNT, 1400, mounted);
+  const pullCount = useCountUp(publicStats.dockerPulls, 2200, mounted);
+  const contributionCount = useCountUp(contributions.total, 2000, mounted);
   const s = (d: number) => (mounted ? shown(d) : hidden(d));
 
+  // Ages the shipping line while the tab is open. A minute is the smallest unit
+  // `relativeTime` prints, so ticking faster would redraw for nothing.
+  const now = useNow(60000);
+
+
+  // Ordered by what a stranger cannot fake over a weekend. The first two were counted by
+  // Docker and GitHub rather than by this site, which is why both link out to the page
+  // that proves them.
+  const heroStats = [
+    {
+      value: formatCount(pullCount),
+      widthOf: formatCount(publicStats.dockerPulls),
+      label: "Docker pulls",
+      sub: `${publicStats.dockerImages} images \u00b7 ${shortDate(publicStats.measuredAt)}`,
+      href: DOCKER_HUB_URL,
+      title: source("Docker Hub", publicStats.measuredAt),
+    },
+    {
+      value: formatCount(contributionCount),
+      widthOf: formatCount(contributions.total),
+      label: "GitHub contributions",
+      sub: `${contributions.activeDays} active days`,
+      href: GITHUB_URL,
+      title: source("GitHub", contributions.measuredAt),
+    },
+    {
+      value: String(projectCount),
+      widthOf: String(PROJECT_COUNT),
+      label: "Documented projects",
+      sub: `${TOTAL_TOOLS} tools, ${EVIDENCED_COUNT} evidenced`,
+      href: PROJECTS_SITE,
+      title: source("projects.ibtisam-iq.com", publicStats.measuredAt),
+    },
+    {
+      value: "2",
+      label: "CNCF certifications",
+      sub: "CKA and CKAD",
+      href: "/certificates",
+      // The only figure here nothing counts, so it names where to check instead.
+      title: "Credential IDs on the certifications page",
+    },
+  ];
+
   return (
-    <section className="relative overflow-hidden pt-16 pb-4 md:pt-20 md:pb-6">
+    <section className="relative overflow-hidden pb-4 pt-5 md:pb-6 md:pt-6">
       <div
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
         aria-hidden="true"
@@ -54,13 +102,63 @@ const Hero = () => {
         }}
       />
 
-      <div className="relative max-w-6xl mx-auto px-6 md:px-10">
-        <div className="flex flex-col md:flex-row md:items-center md:gap-16">
+      {/* Sits over the grid and under everything else. Renders nothing at all under
+          reduced motion, and stops its loop when the tab is hidden or the hero is
+          scrolled past. */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <AmbientCanvas />
+      </div>
+
+      <div className="page-frame relative">
+        {/* The live strip, and the first line on the page. It holds the two facts here
+            that are true right now rather than at build time, which is why they share a
+            row and why nothing else on this screen is allowed into it. */}
+        {now !== null && (
+          <div
+            style={s(0)}
+            className="mb-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-b border-light-border pb-4 dark:border-border-subtle"
+          >
+            <Tooltip
+              text={`Newest push across all public repos \u00b7 ${longDate(publicStats.lastShipped.pushedAt)}`}
+            >
+              {(t) => (
+                <a
+                  href={publicStats.lastShipped.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-[0.1em] text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
+                  {...t}
+                >
+              <span className="relative flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
+                <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
+              </span>
+              last push to
+              <span className="font-semibold text-light-text dark:text-text-primary">
+                {publicStats.lastShipped.repo}
+              </span>
+                  {relativeTime(publicStats.lastShipped.pushedAt, now)}
+                </a>
+              )}
+            </Tooltip>
+
+            {/* `status`, not the badge: at the top of the page a tinted panel would take
+                the fold ahead of the h1. See src/components/AvailabilityPill.tsx. */}
+            <AvailabilityPill variant="status" />
+          </div>
+        )}
+
+        {/*
+         * Claim left, the figures backing it right. The ratio is measured against this
+         * heading, which is hand-rolled and breaks about 60px sooner than `.title-page`:
+         * re-measure on the rendered element. `lg`, not `md`, or the band is crushed.
+         */}
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-16">
           {/* Text (left on desktop, top on mobile) */}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0">
           <p
             style={s(0)}
-            className="text-sm font-semibold uppercase tracking-widest text-purple-600 dark:text-purple-400 mb-4"
+            className="eyebrow"
           >
             DevOps & Cloud Engineer
           </p>
@@ -70,7 +168,7 @@ const Hero = () => {
             className="text-5xl md:text-6xl font-bold mb-5 text-light-text dark:text-white leading-tight"
           >
             I think in{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+            <span className="text-teal-accent">
               systems
             </span>
             , not tools.
@@ -93,59 +191,44 @@ const Hero = () => {
             terminal sessions on the ones worth replaying.
           </p>
 
-          <div style={s(330)} className="flex flex-wrap items-center gap-4 mb-12">
-            <Link
-              to="/contact"
-              className="px-7 py-3.5 bg-purple-600 text-white rounded-lg font-semibold text-base hover:bg-purple-700 transition-colors"
-            >
-              Contact Me
-            </Link>
+          {/* One filled button, pointing at the evidence: two solid buttons is two
+              primaries and therefore none. */}
+
+          {/* Stacked and full width below `sm`, or each button sits at its own text width
+              and the pair reads as a ragged edge with no ranking. */}
+
+          {/* No bottom margin: the figure band this once separated is in the other column
+              now, and the leftover space would end this box below its last visible pixel. */}
+          <div
+            style={s(330)}
+            className="flex flex-col items-stretch gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+          >
             <a
-              href="https://projects.ibtisam-iq.com"
+              href={PROJECTS_SITE}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-7 py-3.5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-lg font-semibold text-base hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+              className="rounded-lg px-7 py-3.5 text-center text-base font-semibold bg-light-text text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-surface-0"
             >
-              View Projects &rarr;
+              View the projects &#8599;
             </a>
+            <Link
+              to="/contact"
+              className="rounded-lg border border-light-border px-7 py-3.5 text-center text-base font-semibold text-light-text transition-colors hover:border-teal-accent hover:text-teal-accent dark:border-border-subtle dark:text-text-primary dark:hover:border-teal-accent dark:hover:text-teal-accent"
+            >
+              Get in touch
+            </Link>
           </div>
 
-          <div style={s(450)} className="flex flex-wrap gap-3">
-            {stats.map((stat, i) => (
-              <div
-                key={stat.label}
-                className="flex items-center gap-2 rounded-full border border-light-border bg-light-surface px-4 py-2 dark:border-border-subtle dark:bg-surface-1"
-                style={{
-                  animation: mounted
-                    ? `fadeIn 0.4s ease-out ${500 + i * 100}ms both`
-                    : "none",
-                }}
-              >
-                <span className="font-mono text-sm font-semibold text-teal-accent">
-                  {stat.animate
-                    ? `${stat.label === "Projects" ? projectCount : toolCount}${stat.suffix}`
-                    : stat.suffix}
-                </span>
-                <span className="text-xs text-light-muted dark:text-text-muted">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </div>
           </div>
 
-          {/* Photo (right on desktop, below text on mobile) */}
-          <div style={s(200)} className="mt-10 flex justify-center md:mt-0 md:shrink-0">
-            <img
-              src={photoSrc}
-              onError={() => {
-                if (photoSrc !== GITHUB_AVATAR) setPhotoSrc(GITHUB_AVATAR);
-              }}
-              alt="Muhammad Ibtisam Iqbal"
-              width={280}
-              height={280}
-              className="h-48 w-48 rounded-full border-2 border-light-border object-cover dark:border-border-subtle md:h-64 md:w-64 lg:h-72 lg:w-72"
-            />
+          {/* Two across on a phone, where this is the full frame; one from `lg`, where it
+              is a 412px column. See the `column` entry in StatFigure's `COLUMNS`. */}
+          <div style={s(450)}>
+            <StatBand columns="column">
+              {heroStats.map((stat) => (
+                <StatFigure key={stat.label} tier="headline" {...stat} />
+              ))}
+            </StatBand>
           </div>
         </div>
 
