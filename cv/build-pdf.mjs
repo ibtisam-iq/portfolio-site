@@ -53,6 +53,11 @@ const SITE = 'https://ibtisam-iq.com'
 const MONTH = new Intl.DateTimeFormat('en-GB', { month: 'short', year: 'numeric' })
 const kebab = (s) => s.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
+// For text placed inside an HTML attribute or a title, where "DevOps & Cloud Engineer" is a
+// real subtitle a crawler will otherwise choke on: an unescaped & is invalid HTML5.
+const escapeHtml = (s) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
 /**
  * The one path segment a variant lives at. Twelve hex characters is 48 bits, and the role
  * is prefixed in the clear because it is a description, not a key. The id is the HMAC
@@ -106,7 +111,14 @@ async function render({ file, fields, isPublic = false, outputPath }) {
     margin: { top: '0', bottom: '0', left: '0', right: '0' },
   })
   await page.close()
-  return path
+  return { path, meta }
+}
+
+// "Name, Role, CV", read from the document rather than typed here, so a variant whose
+// subtitle changes gets the right title with no edit in this file.
+const titleFor = (meta) => {
+  const text = meta.role ? `${meta.name}, ${meta.role}, CV` : `${meta.name}, CV`
+  return escapeHtml(text)
 }
 
 const written = []
@@ -114,29 +126,25 @@ const shortLinks = []
 
 for (const variant of VARIANTS) {
   if (variant.alsoPublic) {
-    written.push(
-      await render({
-        file: variant.file,
-        fields: null,
-        isPublic: true,
-        outputPath: () => join(publicDir, 'cv.pdf'),
-      })
-    )
+    const { path } = await render({
+      file: variant.file,
+      fields: null,
+      isPublic: true,
+      outputPath: () => join(publicDir, 'cv.pdf'),
+    })
+    written.push(path)
   }
 
   if (buildsPrivate) {
     const dir = join(publicDir, PRIVATE_ROOT, segmentFor(variant))
-    const path = await render({
+    const { path, meta } = await render({
       file: variant.file,
       fields: privateFields,
-      outputPath: (meta) =>
-        join(
-          dir,
-          `${kebab(meta.name)}-${kebab(meta.role)}-CV-${kebab(MONTH.format(new Date()))}.pdf`
-        ),
+      outputPath: (m) =>
+        join(dir, `${kebab(m.name)}-${kebab(m.role)}-CV-${kebab(MONTH.format(new Date()))}.pdf`),
     })
     written.push(path)
-    shortLinks.push({ dir, url: urlFor(variant), file: path.split('/').pop() })
+    shortLinks.push({ dir, url: urlFor(variant), file: path.split('/').pop(), title: titleFor(meta) })
   }
 }
 
@@ -145,7 +153,7 @@ await browser.close()
 // Generated at build time rather than committed, because these files either name the
 // secret directory or only exist when there is one.
 if (buildsPrivate) {
-  for (const { dir, file } of shortLinks) {
+  for (const { dir, file, title } of shortLinks) {
     // A meta refresh, not a header: GitHub Pages serves no redirects. The visible link is
     // the fallback for a browser that blocks the refresh.
     writeFileSync(
@@ -156,7 +164,12 @@ if (buildsPrivate) {
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta http-equiv="refresh" content="0; url=${encodeURI(file)}">
-<title>Muhammad Ibtisam Iqbal, CV</title>
+<title>${title}</title>
+<meta property="og:title" content="${title}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="Opens the PDF.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${title}">
 <link rel="canonical" href="${encodeURI(file)}">
 <style>
   body{font:15px/1.6 system-ui,sans-serif;margin:0;min-height:100vh;display:grid;
