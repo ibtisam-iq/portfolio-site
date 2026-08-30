@@ -9,7 +9,7 @@ ARG BUILD_DATE
 ARG GIT_SHA
 
 # -----------------------------------------------------------------------------
-# Stage 1 — deps: isolated npm ci layer, cached until lockfile changes
+# Stage 1 (deps): isolated npm ci layer, cached until the lockfile changes
 # -----------------------------------------------------------------------------
 FROM node:${NODE_VERSION} AS deps
 
@@ -23,7 +23,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # -----------------------------------------------------------------------------
-# Stage 2 — builder: tsc -b && vite build -> /app/dist
+# Stage 2 (builder): tsc -b && vite build -> /app/dist
 # -----------------------------------------------------------------------------
 FROM node:${NODE_VERSION} AS builder
 
@@ -38,26 +38,35 @@ COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
 COPY vite.config.ts postcss.config.js tailwind.config.js eslint.config.js ./
 COPY index.html ./
 
-# Source last: highest churn, invalidates only the layers below
+# scripts/ before src/: scripts/prerender-meta.js is part of `npm run build`, and it
+# changes less often than the site source does
+COPY scripts ./scripts
+
+# Source last: highest churn, invalidates only the layers below.
+# public/ must already contain cv.pdf and src/data/ the generated modules, both produced by
+# `npm run generate` on the host or the runner before this build. See the RUN below.
 COPY src ./src
 COPY public ./public
 
 # Required for Vite minification + Tailwind CSS purge
 ENV NODE_ENV=production
 
-RUN npm run build
+# --ignore-scripts skips `prebuild`, so nothing is generated in here: the CV renderer needs
+# a Chromium that will not run on Alpine, and the data scripts need network and a token and
+# would differ on every rebuild of the same commit.
 
-# -----------------------------------------------------------------------------
-# Stage 3 — production: nginx:alpine serving /app/dist
-# Node, npm, tsc — none present in this stage
-# -----------------------------------------------------------------------------
+# So `npm run generate` runs once outside, on the runner or the host, and this stage
+# compiles what it produced. Skip it and the image ships without a CV.
+RUN npm run build --ignore-scripts
+
+# Stage 3 (production): nginx:alpine serving /app/dist, with no Node toolchain present.
 FROM nginx:${NGINX_VERSION} AS production
 
 # ARGs re-declared post-FROM to inherit outer scope (Docker scoping rule)
 ARG BUILD_DATE
 ARG GIT_SHA
 LABEL org.opencontainers.image.title="portfolio-site" \
-      org.opencontainers.image.description="Ibtisam Iqbal — Portfolio (React 19 + Vite 7 + Tailwind)" \
+      org.opencontainers.image.description="Muhammad Ibtisam, Portfolio (React 19 + Vite 7 + Tailwind)" \
       org.opencontainers.image.source="https://github.com/ibtisam-iq/portfolio-site" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.created="${BUILD_DATE}" \
