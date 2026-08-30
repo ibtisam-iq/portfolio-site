@@ -1,3 +1,5 @@
+// Vite build configuration: the React plugin, the base path, and the output directory.
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -5,8 +7,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
 
-  // Production: VITE_BASE_PATH is unset → defaults to '/'
-  // PR preview: VITE_BASE_PATH = '/pr-preview/pr-N/' (injected by deploy.yml)
+  // Unset in production, so the site is served from the domain root. A pull-request
+  // preview sets it to the sub-path it is served from; .github/workflows/pages.yml is
+  // where that value comes from, and it has to match the deploy step's umbrella directory.
   base: process.env.VITE_BASE_PATH ?? '/',
 
   build: {
