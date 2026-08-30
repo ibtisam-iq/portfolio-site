@@ -1,3 +1,11 @@
+// Animates a figure from zero to its final value over `duration`, on requestAnimationFrame.
+// Used by the hero band, where the numbers are the argument of the page and arriving at
+// them reads as counting rather than as loading.
+//
+// Cubic ease-out: most of the distance is covered early, so the figure is legible for most
+// of the animation instead of racing at the end. A caller that needs the row not to reflow
+// mid-count reserves the final width; see StatFigure's `widthOf`.
+
 import { useEffect, useState } from "react";
 
 export function useCountUp(target: number, duration = 1500, active = true) {

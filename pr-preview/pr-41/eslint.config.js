@@ -1,3 +1,5 @@
+// Lint rules. Run with `npm run lint`, and in CI before every build.
+
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'

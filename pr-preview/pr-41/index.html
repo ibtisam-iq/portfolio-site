@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Google tag (gtag.js) -->
+    <!-- The theme, applied before first paint so a light-mode visitor sees no dark flash.
+         Blocking on purpose: deferring it is the flash. -->
+    <script src="%BASE_URL%theme.js"></script>
+
+    <!-- Google tag. The config lives in a file rather than inline, so the container's
+         content security policy needs no script hash. -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XP2J3MPRYJ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XP2J3MPRYJ');
-    </script>
+    <script src="%BASE_URL%analytics.js"></script>
 
     <!-- Page Title -->
     <title>Muhammad Ibtisam Iqbal | DevOps & Cloud Engineer</title>
@@ -18,7 +18,7 @@
     <!-- Meta Description -->
     <meta
       name="description"
-      content="Muhammad Ibtisam Iqbal is a DevOps & Cloud Engineer specializing in CI/CD pipelines, Kubernetes, cloud infrastructure, and hands-on system design."
+      content="Muhammad Ibtisam Iqbal, CKA and CKAD certified DevOps & Cloud Engineer. Kubernetes, EKS, Terraform, GitOps with ArgoCD, DevSecOps on Jenkins and GitHub Actions."
     />
 
     <!-- Fonts -->
@@ -41,7 +41,6 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Ibtisam" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -54,7 +53,7 @@
     />
     <meta
       property="og:description"
-      content="DevOps & Cloud Engineer specializing in CI/CD pipelines, Kubernetes, cloud infrastructure, and hands-on system design."
+      content="CKA and CKAD certified DevOps & Cloud Engineer. Kubernetes on kubeadm and EKS, Terraform, GitOps with ArgoCD, DevSecOps pipelines on Jenkins and GitHub Actions. Islamabad, Pakistan."
     />
     <meta property="og:url" content="https://ibtisam-iq.com/" />
     <meta property="og:image" content="https://ibtisam-iq.com/og-image.png" />
@@ -70,22 +69,13 @@
     />
     <meta
       name="twitter:description"
-      content="DevOps & Cloud Engineer specializing in CI/CD pipelines, Kubernetes, cloud infrastructure, and hands-on system design."
+      content="CKA and CKAD certified DevOps & Cloud Engineer. Kubernetes on kubeadm and EKS, Terraform, GitOps with ArgoCD, DevSecOps pipelines on Jenkins and GitHub Actions. Islamabad, Pakistan."
     />
-    <!-- Structured Data -->
+    <!-- The anchor scripts/prerender-meta.js matches on, kept minimal: it is replaced at
+         build time with the full graph derived from scripts/profile.js, so anything spelled
+         out here is a second copy that drifts. Never what production serves. -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Muhammad Ibtisam Iqbal",
-      "url": "https://ibtisam-iq.com",
-      "jobTitle": "DevOps & Cloud Engineer",
-      "sameAs": [
-        "https://github.com/ibtisam-iq",
-        "https://www.linkedin.com/in/ibtisam-iq"
-      ],
-      "knowsAbout": ["Kubernetes", "AWS", "CI/CD", "Docker", "Infrastructure as Code", "DevOps"]
-    }
+      { "@context": "https://schema.org", "@type": "Person", "name": "Muhammad Ibtisam Iqbal" }
     </script>
   </head>
 

@@ -1,48 +1,38 @@
+// How a project moves from work to published surface.
+
 import type { CSSProperties } from "react";
 import { useInView } from "../hooks/useInView";
-import { useTypewriter } from "../hooks/useTypewriter";
-
-const LOG_LINES = [
-  "$ cat methodology.log",
-  "[phase-02] silverstack   -> reusable infra, run again not read once",
-  "[phase-02] blog          -> distilled, problem-first write-ups",
-  "[phase-02] projects      -> integrated systems, end-to-end pipelines",
-  "[phase-02] runbook       -> daily decisions and debugging, written while fresh",
-  "[phase-01] nectar        -> 200+ pages, survived contact with reality",
-  "---------------------------------------------------------------",
-  "status: nothing here is a tutorial followed once",
-];
 
 const OUTPUTS = [
   {
     title: "Repeatable",
     body: "If I build it more than once, it becomes a script, a module, or a container image. SilverStack collects the reusable pieces: provisioning scripts, OCI rootfs images, systemd units.",
-    accent: "text-green-600 dark:text-green-400",
-    bar: "bg-green-600 dark:bg-green-400",
+    accent: "text-teal-accent",
+    bar: "bg-teal-accent",
     label: "SilverStack",
     url: "https://github.com/ibtisam-iq/silver-stack",
   },
   {
     title: "Explained",
     body: "If something cost me hours to debug or understand, it becomes a write-up. Problem first, solution second, no filler.",
-    accent: "text-orange-500 dark:text-orange-400",
-    bar: "bg-orange-500 dark:bg-orange-400",
+    accent: "text-teal-accent",
+    bar: "bg-teal-accent",
     label: "Blog",
     url: "https://blog.ibtisam-iq.com",
   },
   {
     title: "Assembled",
     body: "When the pieces come together into something end-to-end, it becomes a project with its own repo, domain, and deployment pipeline.",
-    accent: "text-purple-600 dark:text-purple-400",
-    bar: "bg-purple-600 dark:bg-purple-400",
+    accent: "text-teal-accent",
+    bar: "bg-teal-accent dark:bg-teal-accent",
     label: "Projects",
     url: "https://projects.ibtisam-iq.com",
   },
   {
     title: "Documented",
     body: "Every decision, debugging session, and config change gets written down while it's still fresh. A searchable MkDocs site, not a pile of bookmarks.",
-    accent: "text-blue-500 dark:text-blue-400",
-    bar: "bg-blue-500 dark:bg-blue-400",
+    accent: "text-teal-accent dark:text-teal-accent",
+    bar: "bg-teal-accent dark:bg-teal-accent",
     label: "Runbook",
     url: "https://runbook.ibtisam-iq.com",
   },
@@ -65,9 +55,13 @@ const Connector = ({ style }: { style?: CSSProperties }) => (
   </div>
 );
 
-const Methodology = () => {
+/**
+ * The three stages every project moves through, and the surface each produces. It lives on
+ * About because it is true and cannot be checked in one click, so it belongs after an essay
+ * rather than on a homepage a stranger is scanning.
+ */
+const Pipeline = () => {
   const { ref: pipelineRef, inView } = useInView({ threshold: 0.15 });
-  const typed = useTypewriter(LOG_LINES, inView);
 
   const fade = (delay: number): CSSProperties =>
     prefersReducedMotion()
@@ -79,42 +73,42 @@ const Methodology = () => {
         };
 
   return (
-    <section className="pt-6 pb-16 text-light-text dark:text-text-primary">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="mb-10 text-center">
-          <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-light-muted dark:text-text-faint">
+    <section className="section-y text-light-text dark:text-text-primary">
+      <div>
+        <div className="mb-10">
+          <p className="eyebrow">
             Methodology
           </p>
-          <h2 className="mb-4 text-4xl font-extrabold text-light-text dark:text-text-primary md:text-5xl">
-            How I Work
+          <h2 className="title-section mb-4">
+            How I work
           </h2>
-          <p className="mx-auto max-w-xl text-lg text-light-muted dark:text-text-muted">
-            Every project on this site moves through the same pipeline. Two ways
-            in, one synthesis stage, four ways out.
+          <p className="max-w-2xl text-lg text-light-muted dark:text-text-muted">
+            Every project on this site moves through the same pipeline. Two ways in,
+            one synthesis stage, four ways out.
           </p>
         </div>
 
         <div ref={pipelineRef}>
           {/* PHASE 00: TRIGGER */}
           <div className="mb-5 flex items-baseline gap-3" style={fade(0)}>
-            <span className="font-mono text-[40px] font-bold leading-none text-red-500/20 dark:text-red-400/20">
+            <span aria-hidden="true" className="font-mono text-xl font-bold leading-none text-light-faint/40 dark:text-text-faint/40">
               00
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-red-500 dark:text-red-400">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-light-muted dark:text-text-muted">
               trigger
             </span>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div
-              className="relative overflow-hidden rounded-xl border border-light-border bg-light-surface p-6 dark:border-border-subtle dark:bg-surface-1"
+              className="panel relative overflow-hidden p-6"
               style={fade(80)}
             >
               <div
-                className="absolute inset-y-0 left-0 w-1 bg-red-500 dark:bg-red-400"
+                className="absolute inset-y-0 left-0 w-1 bg-light-muted dark:bg-text-muted"
                 aria-hidden="true"
               />
-              <h3 className="mb-2 text-lg font-semibold text-red-500 dark:text-red-400">
+              <h3 className="mb-2 text-lg font-semibold text-light-muted dark:text-text-muted">
                 Don't understand it
               </h3>
               <p className="text-sm text-light-muted dark:text-text-muted">
@@ -124,14 +118,14 @@ const Methodology = () => {
             </div>
 
             <div
-              className="relative overflow-hidden rounded-xl border border-light-border bg-light-surface p-6 dark:border-border-subtle dark:bg-surface-1"
+              className="panel relative overflow-hidden p-6"
               style={fade(160)}
             >
               <div
-                className="absolute inset-y-0 left-0 w-1 bg-purple-600 dark:bg-purple-400"
+                className="absolute inset-y-0 left-0 w-1 bg-teal-accent dark:bg-teal-accent"
                 aria-hidden="true"
               />
-              <h3 className="mb-2 text-lg font-semibold text-purple-600 dark:text-purple-400">
+              <h3 className="mb-2 text-lg font-semibold text-teal-accent">
                 Run it for real
               </h3>
               <p className="text-sm text-light-muted dark:text-text-muted">
@@ -145,7 +139,7 @@ const Methodology = () => {
 
           {/* PHASE 01: SYNTHESIS */}
           <div className="mb-5 flex items-baseline gap-3" style={fade(300)}>
-            <span className="font-mono text-[40px] font-bold leading-none text-teal-accent/20">
+            <span aria-hidden="true" className="font-mono text-xl font-bold leading-none text-teal-accent/20">
               01
             </span>
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-teal-accent">
@@ -164,7 +158,7 @@ const Methodology = () => {
                 Nectar
               </h3>
               <p className="mb-4 text-sm text-light-muted dark:text-text-muted">
-                200+ pages. A concept doesn't count as understood until it
+                365 pages. A concept doesn't count as understood until it
                 survives contact with what I actually built.
               </p>
               <span className="font-mono text-xs text-teal-accent transition group-hover:text-teal-accent/80">
@@ -177,10 +171,10 @@ const Methodology = () => {
 
           {/* PHASE 02: OUTPUT */}
           <div className="mb-5 flex items-baseline gap-3" style={fade(500)}>
-            <span className="font-mono text-[40px] font-bold leading-none text-green-500/20 dark:text-green-400/20">
+            <span aria-hidden="true" className="font-mono text-xl font-bold leading-none text-teal-accent/20">
               02
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-green-600 dark:text-green-400">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-teal-accent">
               output
             </span>
           </div>
@@ -189,7 +183,7 @@ const Methodology = () => {
             {OUTPUTS.map((card, i) => (
               <div
                 key={card.title}
-                className="relative flex flex-col overflow-hidden rounded-xl border border-light-border bg-light-surface p-6 dark:border-border-subtle dark:bg-surface-1"
+                className="panel relative flex flex-col overflow-hidden p-6"
                 style={fade(560 + i * 80)}
               >
                 <div
@@ -215,26 +209,9 @@ const Methodology = () => {
           </div>
         </div>
 
-        {/* Terminal summary */}
-        <div className="mt-16 border-t border-light-border pt-12 dark:border-border-subtle">
-          <div className="mx-auto max-w-2xl overflow-hidden rounded-xl border border-light-border dark:border-border-subtle">
-            <div className="flex items-center gap-1.5 border-b border-light-border bg-light-surface-2 px-4 py-2.5 dark:border-border-subtle dark:bg-surface-1">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-              <span className="ml-3 font-mono text-xs text-light-muted dark:text-text-faint">
-                methodology.log
-              </span>
-            </div>
-            <pre className="min-h-[140px] overflow-x-auto bg-light-surface px-4 py-4 font-mono text-[13px] leading-relaxed text-green-700 dark:bg-surface-0 dark:text-green-400">
-              {typed.join("\n")}
-              <span className="ml-0.5 inline-block h-3.5 w-2 animate-pulse bg-green-700 align-middle dark:bg-green-400" />
-            </pre>
-          </div>
-        </div>
       </div>
     </section>
   );
 };
 
-export default Methodology;
+export default Pipeline;

@@ -1,20 +1,33 @@
+// The About page: the account of how the work started, followed by the two things that
+// came out of it, the pipeline and a year of activity.
+
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import ContributionYear from "../components/ContributionYear";
+import Pipeline from "../components/Pipeline";
 
 const HowItStarted = () => {
   useDocumentTitle("About");
+  // Top padding only. This is the one page whose children are themselves `section-y`
+  // sections, so a `section-y` here would stack its bottom padding under theirs and leave
+  // twice the space before the footer that every other page has.
   return (
-    <section className="px-6 md:px-12 lg:px-20 py-20 text-light-text dark:text-white">
+    <section className="pt-12 text-light-text dark:text-white md:pt-16">
 
       {/* CENTERED CONTAINER FOR BOTH TITLE + CONTENT */}
-      <div className="max-w-4xl mx-auto">
+      <div className="page-frame">
 
-        {/* PAGE TITLE */}
-        <h1 className="text-5xl font-extrabold mb-10 tracking-tight">
+        {/* Every page names itself above its h1. */}
+        <p className="eyebrow">About</p>
+        <h1 className="title-page mb-8 text-4xl md:text-5xl">
           Before I knew it was cloud
         </h1>
 
-        {/* CONTENT */}
-        <div className="space-y-6 text-lg text-light-muted dark:text-gray-400 leading-relaxed">
+        {/* The opening paragraph takes the lead treatment a long essay gets in print, so
+            the page has an entry point rather than starting at full density. */}
+
+        {/* The words are Ibtisam's own account. The writing rules for this repository
+            govern its comments and its interface copy, not this. */}
+        <div className="max-w-[68ch] space-y-6 text-lg leading-relaxed text-light-muted first:*:text-xl first:*:leading-relaxed first:*:text-light-text dark:text-gray-400 dark:first:*:text-text-primary">
 
           <p>
             I didn’t grow up around computers. My early education was in medical sciences,
@@ -152,6 +165,20 @@ const HowItStarted = () => {
           </p>
 
         </div>
+
+        {/*
+         * The turn from the story to the two sections that come out of it. The order is an
+         * argument: the essay ends on a claim about method, the pipeline is that method, and
+         * the year is the evidence. A hairline alone does not carry it.
+         */}
+        <p className="mt-14 max-w-[68ch] border-t border-light-border pt-12 text-lg leading-relaxed text-light-muted dark:border-border-subtle dark:text-gray-400">
+          That is where the habit came from. The rest of this page is what it turned into:
+          the shape every project moves through, and the year of actually moving them.
+        </p>
+
+        <Pipeline />
+
+        <ContributionYear />
       </div>
     </section>
   );

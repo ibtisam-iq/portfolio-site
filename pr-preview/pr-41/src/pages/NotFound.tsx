@@ -1,3 +1,6 @@
+// The 404 page. Also what a static host serves for an unknown path, through the 404.html
+// that scripts/prerender-meta.js writes.
+
 import { Link } from "react-router-dom";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
@@ -5,10 +8,10 @@ const NotFound = () => {
   useDocumentTitle("Page Not Found");
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6 text-light-text dark:text-text-primary">
-      <p className="mb-2 font-mono text-sm uppercase tracking-[0.2em] text-light-muted dark:text-text-faint">
+      <p className="eyebrow mb-2">
         Error
       </p>
-      <p className="mb-4 text-8xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+      <p className="mb-4 text-8xl font-bold text-teal-accent">
         404
       </p>
       <h1 className="mb-4 text-3xl font-bold tracking-tight">
@@ -19,7 +22,7 @@ const NotFound = () => {
       </p>
       <Link
         to="/"
-        className="rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-700"
+        className="rounded-lg px-6 py-3 font-semibold bg-light-text text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-surface-0"
       >
         Back to Home
       </Link>

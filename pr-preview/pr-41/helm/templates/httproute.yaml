@@ -1,3 +1,6 @@
+# The Gateway API route, for a cluster running Gateway API instead of an Ingress
+# controller. Enable one of the two, not both.
+
 {{- if .Values.httpRoute.enabled -}}
 {{- $fullName := include "ibtisam-iq.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}

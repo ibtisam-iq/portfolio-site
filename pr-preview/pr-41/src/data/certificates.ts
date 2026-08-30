@@ -1,3 +1,9 @@
+// The certifications shown on /certificates: what each one is, who issues it, and the
+// credential ID that lets a reader verify it directly with the issuer.
+//
+// Hand-maintained. No API is polled for these, so an expiry or a new credential is added
+// here.
+
 export type CertificateCategory =
   | "kubernetes"
   | "cloud"

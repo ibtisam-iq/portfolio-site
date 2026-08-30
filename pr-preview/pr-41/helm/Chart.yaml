@@ -1,24 +1,16 @@
+# The chart that deploys ibtisam-iq.com into a Kubernetes cluster: the nginx image built by
+# .github/workflows/ci.yml, behind a Service and either an Ingress or a Gateway API route.
+
 apiVersion: v2
 name: ibtisam-iq
-description: A Helm chart for Kubernetes
-
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+description: The portfolio site of Muhammad Ibtisam Iqbal, served from a hardened nginx image
 type: application
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# Versions are expected to follow Semantic Versioning (https://semver.org/)
+# The chart's own version, in semantic versioning. Raise it for any change to these
+# templates or values, including a change to appVersion below.
 version: 0.1.0
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning. They should reflect the version the application is using.
-# It is recommended to use it with quotes.
-appVersion: "1.16.0"
+# Stamped onto every object as app.kubernetes.io/version, and used as the image tag when
+# helm/values.yaml sets none. The site is published continuously and carries no release
+# number, so the honest value is the tag the image actually has.
+appVersion: "latest"

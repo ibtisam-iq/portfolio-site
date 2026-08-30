@@ -1,3 +1,9 @@
+// Fades a section up as it first enters the viewport, once.
+//
+// `Reveal` observes itself. `RevealChild` does not observe anything: it takes `visible`
+// from a parent, so a list can stagger its items off one observation instead of one per
+// item.
+
 import { type ReactNode, type CSSProperties } from "react";
 import { useInView } from "../hooks/useInView";
 

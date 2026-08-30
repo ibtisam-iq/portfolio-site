@@ -1,3 +1,10 @@
+// The router, and the shell every route renders inside: the header, the skip link, the
+// error boundary and the footer.
+//
+// This is the only definition of what pages exist. scripts/check-contrast.mjs reads its
+// route list rather than the sitemap, so a route added here is checked without a second
+// list being kept in step.
+
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, type PropsWithChildren } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -7,7 +14,9 @@ import { useCanonical } from "./hooks/useCanonical";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import FeaturedProjects from "./components/FeaturedProjects";
-import Methodology from "./components/Methodology";
+import DebugBox from "./components/DebugBox";
+import Ecosystem from "./components/Ecosystem";
+import Terminal from "./components/Terminal";
 import Footer from "./components/Footer";
 
 import HowItStarted from "./pages/HowItStarted";
@@ -45,14 +54,16 @@ function App() {
                   <>
                     <Hero />
                     <FeaturedProjects />
-                    <Methodology />
+                    <DebugBox />
+                    <Ecosystem />
+                    <Terminal />
                   </>
                 }
               />
               <Route path="/certificates" element={<Certificates />} />
               <Route path="/about" element={<HowItStarted />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/skills" element={<Skills />} />
+              <Route path="/tools" element={<Skills />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             </ErrorBoundary>
