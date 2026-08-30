@@ -1,3 +1,6 @@
+/* Every style here that is not a Tailwind utility: the theme accents and base rules, the
+   named surfaces and containers, and the beam. See REFERENCE.md. */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,6 +8,15 @@
 @layer base {
   :root {
     color-scheme: dark light;
+
+    /* Raw channels, so Tailwind's opacity modifiers work. Two values because one hue
+       cannot clear 4.5:1 on both grounds. Never spell the accent out as hex: a literal is
+       correct in one theme and broken in the other. */
+    --accent-rgb: 0 97 117;
+  }
+
+  .dark {
+    --accent-rgb: 0 180 216;
   }
 
   html {
@@ -12,13 +24,13 @@
   }
 
   body {
-    background-color: #f6f8fa;
-    color: #1f2328;
+    background-color: #FFFFFF;
+    color: #0A0A0A;
   }
 
   .dark body {
-    background-color: #0B0F19;
-    color: #e6edf3;
+    background-color: #0A0A0A;
+    color: #FAFAFA;
   }
 
   ::-webkit-scrollbar {
@@ -28,20 +40,22 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(99, 110, 123, 0.4);
+    background: rgba(255, 255, 255, 0.14);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 110, 123, 0.8);
+    background: rgba(255, 255, 255, 0.28);
   }
 
   ::selection {
-    background: rgba(0, 180, 216, 0.25);
+    background: rgb(var(--accent-rgb) / 0.25);
     color: inherit;
   }
 
+  /* WCAG 1.4.11 asks 3:1. Through the variable this is 6.44:1 at its worst light surface;
+     pinned to the dark accent it would be 2.46:1. */
   :focus-visible {
-    outline: 2px solid #00b4d8;
+    outline: 2px solid rgb(var(--accent-rgb));
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -57,6 +71,196 @@
   }
 }
 
+@layer components {
+  /* The one container, used by every page and section. Narrower content sets its own
+     max-width inside it and stays left-aligned, so the left edge never moves. */
+  .page-frame {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  /* The one rhythm. A half-gap: sections stack their padding, so 64 gives 128 between
+     them. Ladder: 24 card, 40 heading, 64 page edge, 128 section. A page needing another
+     rhythm gets a named class, never an inline value. */
+  .section-y {
+    @apply py-12 md:py-16;
+  }
+
+  /* Three label roles, which is the number this site has. */
+
+  /* One treatment for page and section. A second style lets a subsection outrank the page
+     holding it. */
+  .eyebrow {
+    @apply mb-3 text-sm font-semibold uppercase tracking-widest text-teal-accent;
+  }
+
+  /* Names a group inside a section: a tool category, a footer column, a card's field. */
+  .label {
+    @apply mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-light-muted dark:text-text-faint;
+  }
+
+  /* Section heading. Page headings stay larger; see .title-page. */
+  .title-section {
+    @apply text-3xl font-bold leading-tight tracking-[-0.02em] md:text-4xl;
+  }
+
+  .title-page {
+    @apply mb-4 text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] md:text-5xl;
+  }
+}
+
+@layer components {
+  /* The raised surface. Depth is three things together: the top hairline, a long soft
+     shadow, and a fill that is not fully opaque. Dropping the hairline leaves a rectangle
+     in a different colour. */
+  .panel {
+    /* 14px is the radius of every raised surface on the site. The dark border sits at 12%
+       white: below about 10%, over a translucent fill, the edge stops reading as a line
+       and a figure band becomes a smudge. */
+    @apply rounded-[14px] border border-light-border bg-light-surface/85 backdrop-blur-[2px] dark:border-white/[0.12] dark:bg-surface-1/70;
+    /* In light mode the shadow is the whole effect: the fill and the highlight both
+       composite to white. Three stops, not one. */
+    box-shadow:
+      0 1px 1px rgba(0, 0, 0, 0.04),
+      0 4px 8px -2px rgba(0, 0, 0, 0.06),
+      0 16px 32px -12px rgba(0, 0, 0, 0.10);
+  }
+
+  .dark .panel {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.45),
+      0 14px 36px -18px rgba(0, 0, 0, 0.75),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+
+  /* The recessed surface, one level below `.panel`. Sunk, raised and the page are the
+     whole scale: reaching past them for a raw surface token picks a colour, not a level. */
+  .well {
+    @apply bg-light-surface-2 dark:bg-[#050505];
+    box-shadow: inset 0 2px 6px -2px rgba(0, 0, 0, 0.09);
+  }
+
+  /* Radius and border are separate so a well can be a rounded code row or an edge-to-edge
+     terminal body without either shape fighting the class. */
+  .well-edge {
+    @apply rounded-[10px] border border-light-border dark:border-white/[0.1];
+  }
+
+  .dark .well {
+    box-shadow: inset 0 2px 8px -2px rgba(0, 0, 0, 0.7);
+  }
+
+
+  /* The generated tool mark. Only --mark-hue varies; saturation and lightness are fixed
+     per theme, at or above 4.5:1 on the surface they land on. `npm run check:contrast`
+     measures every mark. */
+  .mark {
+    @apply flex shrink-0 items-center justify-center rounded-[10px] font-mono font-bold tabular-nums;
+    background-color: hsl(var(--mark-hue) 42% 94%);
+    color: hsl(var(--mark-hue) 55% 27%);
+    box-shadow: inset 0 0 0 1px hsl(var(--mark-hue) 40% 82%);
+  }
+
+  .dark .mark {
+    background-color: hsl(var(--mark-hue) 38% 16%);
+    color: hsl(var(--mark-hue) 62% 74%);
+    box-shadow: inset 0 0 0 1px hsl(var(--mark-hue) 35% 28%);
+  }
+
+
+  /* The band's 1px grid gaps are its dividers, so no cell needs a border. Fading this
+     backdrop at both ends stops every divider short of the edge, in one gradient. */
+  .stat-band {
+    background-color: transparent;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.13) 16%,
+      rgba(0, 0, 0, 0.13) 84%,
+      transparent 100%
+    );
+  }
+
+  .dark .stat-band {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 16%,
+      rgba(255, 255, 255, 0.15) 84%,
+      transparent 100%
+    );
+  }
+
+
+  /* For the element that is the point of its screen, never for a card. Four carry it: the
+     three figure bands and the terminal. Dark spills accent light, light casts a deeper
+     achromatic shadow, because there is no darkness on white to spill into. */
+  .glow {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      0 8px 16px -4px rgba(0, 0, 0, 0.08),
+      0 24px 48px -16px rgba(0, 0, 0, 0.14);
+  }
+
+  /* Wins on specificity, so the coloured version stays dark-only. */
+  .dark .glow {
+    box-shadow:
+      /* A coloured hairline just outside the border. This is the part that reads as a
+         lit edge rather than as a blurred shadow, and it is the half most versions of
+         this effect leave out. */
+      0 0 0 1px rgba(0, 180, 216, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.45),
+      0 16px 40px -20px rgba(0, 0, 0, 0.8),
+      0 0 72px -8px rgba(0, 180, 216, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* A figure cell's hover: light added from the bottom edge, not paint over the
+     rectangle. */
+  .stat-cell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      140% 95% at 50% 100%,
+      rgb(var(--accent-rgb) / 0.26),
+      transparent 74%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  .stat-cell:hover::after {
+    opacity: 1;
+  }
+
+  /* Hover for a panel that is a link. The border warms and the shadow spreads rather than
+     the card moving: at four across, a translate reflows nothing and still reads as
+     jitter. */
+  .panel-link {
+    @apply transition-[border-color,box-shadow] duration-200;
+  }
+
+  /* The halo reads the accent variable. This is the light-mode rule, so a spelled-out
+     dark accent here would pair a themed border with a cyan glow. */
+  .panel-link:hover {
+    @apply border-teal-accent/40;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      0 14px 34px -14px rgb(var(--accent-rgb) / 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  .dark .panel-link:hover {
+    @apply border-teal-accent/40;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.45),
+      0 18px 44px -18px rgba(0, 180, 216, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -65,10 +269,84 @@
 }
 
 .skip-link {
-  @apply absolute -top-10 left-4 z-[100] rounded-md bg-[#00b4d8] px-4 py-2 text-sm font-medium text-white;
+  /* Inverted rather than accent-filled: white on the dark accent is 2.46:1, and this is
+     the first control a keyboard user meets. */
+    @apply absolute -top-10 left-4 z-[100] rounded-md bg-light-text px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-surface-0;
   transition: top 0.2s;
 }
 .skip-link:focus {
   @apply top-4;
 }
 
+
+/* The beam: a conic gradient masked to the 1px ring. `@property` is what makes the angle
+   animatable. On hover for cards, always for the terminal, and never on many at once.
+   Without `@property` support there is no beam and nothing else changes. */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+/* Worn by the terminal, the contribution grid, the contact panel, a selected tool tile and
+   the CV link. The CV link is in a sticky header and runs for the whole visit, which is
+   decided; see src/components/Navbar.tsx. */
+.panel-link,
+.beam {
+  position: relative;
+}
+
+.panel-link::before,
+.beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0deg,
+    transparent 295deg,
+    rgb(var(--accent-rgb) / 0.9) 340deg,
+    rgb(var(--accent-rgb) / 0.35) 352deg,
+    transparent 360deg
+  );
+  /* Punches out the interior so only the 1px ring paints. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.panel-link:hover::before {
+  opacity: 1;
+  animation: beam-spin 2.8s linear infinite;
+}
+
+.beam::before {
+  opacity: 1;
+  animation: beam-spin 4.5s linear infinite;
+}
+
+/* The global reduced-motion rule collapses animations to a single 0.01ms pass, which
+   would leave the arc frozen somewhere on the ring rather than removing it. */
+@media (prefers-reduced-motion: reduce) {
+  .panel-link:hover::before,
+  .beam::before {
+    opacity: 0;
+  }
+}
