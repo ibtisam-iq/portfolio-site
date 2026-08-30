@@ -133,7 +133,7 @@ const Hero = () => {
                 <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
               </span>
-              last push to
+              shipped
               <span className="font-semibold text-light-text dark:text-text-primary">
                 {publicStats.lastShipped.repo}
               </span>
