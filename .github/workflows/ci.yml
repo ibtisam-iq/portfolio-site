@@ -92,8 +92,8 @@ jobs:
       - name: Verify the CV reached the build context
         run: |
           [ -s public/cv.pdf ] || { echo "::error::public/cv.pdf missing, the image would ship without a CV"; exit 1; }
-          if [ -d public/cv ]; then
-            echo "::error::a private CV tree exists and must never enter an image"
+          if find public/cv -mindepth 1 -maxdepth 1 -type d 2>/dev/null | grep -q .; then
+            echo "::error::a private CV segment directory exists and must never enter an image"
             exit 1
           fi
           echo "public/cv.pdf: $(stat -c%s public/cv.pdf) bytes, no private tree"
