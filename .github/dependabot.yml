@@ -1,3 +1,5 @@
+# Dependency update pull requests, opened by Dependabot on a schedule.
+
 version: 2
 updates:
   - package-ecosystem: "github-actions"

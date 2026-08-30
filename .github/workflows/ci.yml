@@ -1,4 +1,8 @@
-name: CI — Build & Push
+name: CI Build & Push
+
+# cv/** is deliberately NOT in paths-ignore. No workflow commits a PDF any more, so if it
+# were ignored a CV change would never reach the image and every published image would
+# serve a stale one.
 
 on:
   push:
@@ -8,7 +12,6 @@ on:
       - '**/LICENSE'
       - 'docs/**'
       - 'helm/**'
-      - 'cv/**'
       - '.github/**'
   pull_request:
     branches: [main]
@@ -17,7 +20,6 @@ on:
       - '**/LICENSE'
       - 'docs/**'
       - 'helm/**'
-      - 'cv/**'
       - '.github/**'
   workflow_dispatch:
 
@@ -33,7 +35,7 @@ env:
 jobs:
 
   # ────────────────────────────────────────────────────────────────
-  # JOB 1 — Build & Push (per platform)
+  # JOB 1: Build & Push (per platform)
   # ────────────────────────────────────────────────────────────────
   build-and-push:
     name: Build & Push (${{ matrix.platform }})
@@ -57,6 +59,45 @@ jobs:
       - name: Prepare platform slug
         id: slug
         run: echo "value=$(echo ${{ matrix.platform }} | tr '/' '-')" >> $GITHUB_OUTPUT
+
+      # Generate before building. The Dockerfile compiles what is in the context and
+      # generates nothing itself, so without these steps the image ships with no CV and
+      # stale data.
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # cv/cv.html asks for Arial, which no Linux runner has. Liberation Sans is metrically
+      # identical, so pinning it keeps pagination the same as a local macOS build. Without
+      # it the runner picks a wider fallback and the page breaks move.
+      - name: Install metric-compatible fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-liberation
+          fc-match Arial
+
+      # No CV_SECRET and no CV_PHONE here, deliberately: this build emits the public CV
+      # only. An image is pulled and retagged by anyone with registry access, which would
+      # turn a secret URL into a file they can extract.
+      - name: Generate site data and the public CV
+        run: npm run generate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify the CV reached the build context
+        run: |
+          [ -s public/cv.pdf ] || { echo "::error::public/cv.pdf missing, the image would ship without a CV"; exit 1; }
+          if [ -d public/cv ]; then
+            echo "::error::a private CV tree exists and must never enter an image"
+            exit 1
+          fi
+          echo "public/cv.pdf: $(stat -c%s public/cv.pdf) bytes, no private tree"
+
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
@@ -91,7 +132,7 @@ jobs:
             ${{ env.GHCR_IMAGE }}
           labels: |
             org.opencontainers.image.title=portfolio-site
-            org.opencontainers.image.description=Muhammad Ibtisam — Portfolio
+            org.opencontainers.image.description=Muhammad Ibtisam, Portfolio
             org.opencontainers.image.url=https://ibtisam-iq.com
             org.opencontainers.image.source=https://github.com/ibtisam-iq/portfolio-site
             org.opencontainers.image.vendor=Muhammad Ibtisam
@@ -106,7 +147,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
       # Under act : load into local daemon, tag as :local (no outputs/digest needed)
-      # On CI push: push raw digest only (no tags — tags applied in merge-and-tag job)
+      # On CI push: push raw digest only (no tags; they are applied in the merge-and-tag job)
       # On CI PR  : build only, no push, no digest export
       - name: Build & push
         id: build
@@ -143,7 +184,7 @@ jobs:
           retention-days: 1
 
   # ────────────────────────────────────────────────────────────────
-  # JOB 2 — Merge manifests & tag
+  # JOB 2: Merge manifests & tag
   # ────────────────────────────────────────────────────────────────
   merge-and-tag:
     name: Merge manifests & tag

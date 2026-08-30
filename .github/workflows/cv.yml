@@ -1,23 +1,27 @@
-name: Build CV PDF
+name: CV
+
+# A check, not a build: it ships nothing and commits nothing. The PDFs are generated during
+# the site build and reach dist/ from there.
+
+# cv/cv.html is rendered by a headless browser, so a change that breaks the render fails on
+# the pull request rather than silently shipping a blank page. See cv/README.md.
 
 on:
-  push:
-    branches: [main]
+  pull_request:
     paths:
       - 'cv/**'
   workflow_dispatch:
 
 concurrency:
-  group: cv-build
+  group: cv-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-cv:
-    name: Build CV PDF
+  render-check:
+    name: CV renders
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout
@@ -32,32 +36,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # cv.html asks for Arial, which no Linux runner has. Liberation Sans is
-      # metrically identical, so pinning it here keeps CI pagination the same as
-      # a local macOS build. Without it the runner picks an arbitrary wider
-      # fallback and the page breaks move.
+      # cv/cv.html asks for Arial, which no Linux runner has. Liberation Sans is metrically
+      # identical, so pinning it keeps CI pagination the same as a local macOS build.
+      # Without it the runner picks a wider fallback and the page breaks move.
       - name: Install metric-compatible fonts
         run: |
           sudo apt-get update
           sudo apt-get install -y fonts-liberation
           fc-match Arial
 
-      - name: Build PDF
+      # No secrets: this renders the public form only, which is the one that must never
+      # break. A pull request from a fork could not read them anyway.
+      - name: Render
         run: node cv/build-pdf.mjs
 
-      - name: Commit updated PDF
-        id: commit
+      - name: Check the render, and that nothing private is in it
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/cv.pdf
-          if git diff --cached --quiet; then
-            echo "No changes to CV PDF"
-            echo "committed=false" >> "$GITHUB_OUTPUT"
-          else
-            git commit -m "chore: rebuild CV PDF"
-            git pull --rebase
-            git push
-            echo "committed=true" >> "$GITHUB_OUTPUT"
+          sudo apt-get install -y poppler-utils
+          f=public/cv.pdf
+          [ -s "$f" ] || { echo "::error::$f is empty or missing"; exit 1; }
+          pages=$(pdfinfo "$f" | awk '/^Pages:/ {print $2}')
+          echo "pages: $pages"
+          [ "${pages:-0}" -ge 1 ] || { echo "::error::$f has no pages"; exit 1; }
+          # The public CV is the one that gets crawled. A phone number reaching it is not
+          # a cosmetic problem, and grep is cheaper than noticing six months later.
+          if pdftotext "$f" - | grep -qE '\+92|[0-9]{3}[ -][0-9]{7}'; then
+            echo "::error::a phone number reached the public CV"
+            exit 1
           fi
-
+          # The other direction. This line is what tells a recruiter with a narrow role
+          # that a focused CV exists, and it is added by a data-public-only attribute that
+          # a careless edit to the strip logic would silently remove from every build.
+          if ! pdftotext "$f" - | grep -q 'General CV'; then
+            echo "::error::the public CV lost its 'General CV' line"
+            exit 1
+          fi
