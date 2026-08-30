@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Google tag (gtag.js) -->
+    <!-- The theme, applied before first paint so a light-mode visitor sees no dark flash.
+         Blocking on purpose: deferring it is the flash. -->
+    <script src="%BASE_URL%theme.js"></script>
+
+    <!-- Google tag. The config lives in a file rather than inline, so the container's
+         content security policy needs no script hash. -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XP2J3MPRYJ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XP2J3MPRYJ');
-    </script>
+    <script src="%BASE_URL%analytics.js"></script>
 
     <!-- Page Title -->
     <title>Muhammad Ibtisam Iqbal | DevOps & Cloud Engineer</title>
@@ -41,7 +41,6 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Ibtisam" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -72,14 +71,9 @@
       name="twitter:description"
       content="CKA and CKAD certified DevOps & Cloud Engineer. Kubernetes on kubeadm and EKS, Terraform, GitOps with ArgoCD, DevSecOps pipelines on Jenkins and GitHub Actions. Islamabad, Pakistan."
     />
-    <!--
-      Structured Data. Replaced at build time by scripts/prerender-meta.js with the
-      full schema.org Person graph derived from scripts/profile.js, then cloned into
-      every route shell. The block below is the anchor that script matches on, kept
-      deliberately minimal: spelling out the credentials, profile links and topics
-      here would create a second copy that drifts the first time profile.js changes.
-      It is never what production serves. Edit scripts/profile.js instead.
-    -->
+    <!-- The anchor scripts/prerender-meta.js matches on, kept minimal: it is replaced at
+         build time with the full graph derived from scripts/profile.js, so anything spelled
+         out here is a second copy that drifts. Never what production serves. -->
     <script type="application/ld+json">
       { "@context": "https://schema.org", "@type": "Person", "name": "Muhammad Ibtisam Iqbal" }
     </script>
