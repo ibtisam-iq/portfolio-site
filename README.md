@@ -1,8 +1,8 @@
 # ibtisam-iq.com
 
 [![Deploy to Pages](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/pages.yml)
-[![Build CV PDF](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml)
 [![CI: Build & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/ci.yml)
+[![CV renders](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/cv.yml)
 [![Helm: Package & Push](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml/badge.svg)](https://github.com/ibtisam-iq/portfolio-site/actions/workflows/helm-release.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react)](https://react.dev/)
@@ -12,236 +12,210 @@
 [![Docker Hub](https://img.shields.io/badge/Docker_Hub-mibtisam%2Fmibtisam-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/mibtisam/mibtisam)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Source code for **[ibtisam-iq.com](https://ibtisam-iq.com)**. Static site deployed to GitHub Pages, containerized for self-hosting, and packaged as a Helm chart. Four GitHub Actions workflows produce four artifacts from one push.
+Source for **[ibtisam-iq.com](https://ibtisam-iq.com)**, the portfolio of Muhammad Ibtisam
+Iqbal. One codebase, published two ways: a static site on GitHub Pages, and a rootless
+nginx image for self-hosting, with a Helm chart to install it.
+
+**Every number on the site is derived, not typed.** Docker pulls, GitHub contributions,
+project counts, the tools grid, container image sizes: each is read from a source anyone can
+inspect, written into a file at build time, and shown alongside a note saying where it came
+from and when it was measured. Most of what is unusual about this repository follows from
+that one decision.
+
+For how any of it works and why it was built this way, see **[REFERENCE.md](./REFERENCE.md)**.
 
 ---
 
-## Ecosystem
+## The site
 
-The main site links out to independently deployed surfaces, each in its own repository with its own stack and pipeline.
+| Route | What is on it |
+| --- | --- |
+| `/` | The claim, four measured figures, featured projects, the ecosystem, an interactive terminal |
+| `/tools` | 71 tools in 6 domains, each cross-referenced to the projects using it |
+| `/certificates` | CKA and CKAD earned, CKS and AWS SAA in preparation, with credential IDs |
+| `/about` | How the work started, the pipeline it turned into, and a year of activity |
+| `/contact` | Availability, terms, and a subject picker that pre-writes the message |
+| `/cv.pdf` | The CV, rendered from HTML at build time |
 
-### External surfaces
+The terminal on the homepage is real. It takes input and answers from the site's own
+generated data.
 
-| Surface | Purpose | Live | Repo |
+## The ecosystem
+
+The site links to five places the work lives, each independently deployed from its own
+repository.
+
+| Surface | Purpose | Live | Repository |
 | --- | --- | --- | --- |
-| **Projects** | Infrastructure and cloud projects | [projects.ibtisam-iq.com](https://projects.ibtisam-iq.com) | [`projects`](https://github.com/ibtisam-iq/projects) |
-| **Runbook** | Documented steps from real implementation work | [runbook.ibtisam-iq.com](https://runbook.ibtisam-iq.com) | [`runbook`](https://github.com/ibtisam-iq/runbook) |
-| **Nectar** | Engineering knowledge base (365 pages) | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [`nectar`](https://github.com/ibtisam-iq/nectar) |
-| **Cert Vault** | Kubernetes and cloud certification prep | [cert-vault.ibtisam-iq.com](https://cert-vault.ibtisam-iq.com) | [`certification-practice-vault`](https://github.com/ibtisam-iq/certification-practice-vault) |
-| **DebugBox** | Multi-variant Docker debugging toolkit | [debugbox.ibtisam-iq.com](https://debugbox.ibtisam-iq.com) | [`debugbox`](https://github.com/ibtisam-iq/debugbox) |
-| **Blog** | Write-ups of what was built and debugged | [blog.ibtisam-iq.com](https://blog.ibtisam-iq.com) | [`blog`](https://github.com/ibtisam-iq/blog) |
-| **Achievements** | Professional milestones | [achievements.ibtisam-iq.com](https://achievements.ibtisam-iq.com) | [`achievements`](https://github.com/ibtisam-iq/achievements) |
-| **Roadmaps** | Engineering roadmaps | [roadmaps.ibtisam-iq.com](https://roadmaps.ibtisam-iq.com) | [`roadmaps`](https://github.com/ibtisam-iq/roadmaps) |
+| **Projects** | Infrastructure and cloud projects, and the source of this site's project data | [projects.ibtisam-iq.com](https://projects.ibtisam-iq.com) | [projects](https://github.com/ibtisam-iq/projects) |
+| **Runbook** | Documented steps from real implementation work | [runbook.ibtisam-iq.com](https://runbook.ibtisam-iq.com) | [runbook](https://github.com/ibtisam-iq/runbook) |
+| **Blog** | Write-ups of what was built and debugged | [blog.ibtisam-iq.com](https://blog.ibtisam-iq.com) | |
+| **Nectar** | Engineering knowledge base | [nectar.ibtisam-iq.com](https://nectar.ibtisam-iq.com) | [nectar](https://github.com/ibtisam-iq/nectar) |
+| **SilverStack** | Reusable infrastructure: provisioning scripts, OCI rootfs images, systemd units | | [silver-stack](https://github.com/ibtisam-iq/silver-stack) |
 
-Related: [SilverStack](https://github.com/ibtisam-iq/silver-stack) (reusable infrastructure: provisioning scripts, OCI rootfs images, systemd units).
-
-### Internal routes
-
-| Route | Purpose |
-| --- | --- |
-| `/` | Landing page with featured projects and methodology |
-| `/tools` | 66 tools across 9 categories with project cross-references |
-| `/certificates` | CKA, CKAD earned; CKS and AWS SAA in progress |
-| `/about` | Background and bio |
-| `/contact` | Contact and availability |
-| `/cv.pdf` | Auto-generated resume (HTML to PDF via Puppeteer) |
+Alongside them: [Cert Vault](https://cert-vault.ibtisam-iq.com) for certification practice,
+[SideQuest](https://sidequest.ibtisam-iq.com), and
+[DebugBox](https://github.com/ibtisam-iq/debugbox), a multi-variant container debugging
+image whose size table on the homepage is read from its own README at build time.
 
 ---
 
-## Tech Stack
+## Running it
 
-| Layer | Choice |
-| --- | --- |
-| **Language** | TypeScript 5.9 |
-| **UI** | React 19, react-icons |
-| **Build** | Vite 7 |
-| **Styling** | Tailwind CSS 3, PostCSS |
-| **Routing** | React Router 7 |
-| **Quality** | ESLint (flat config), typescript-eslint |
-| **CI/CD** | GitHub Actions (4 workflows) |
-| **Container** | Docker multi-stage, nginx:alpine, rootless |
-| **Packaging** | Helm chart published to GHCR as OCI artifact |
-| **Hosting** | GitHub Pages |
-| **DNS** | Cloudflare |
+```bash
+npm ci
+npm run dev              # generate, then the dev server
+npm run build            # generate, compile, prerender per-route metadata into dist/
+npm run preview          # serve the production build
+```
 
----
+`npm run generate` runs automatically before `dev` and `build`. It reaches the network to
+read the upstream repositories and the Docker Hub and GitHub APIs. A clone with no network
+still builds, because every generated file is committed alongside the code.
 
-## CI/CD
+### Checks
 
-Four workflows, each scoped to the paths it cares about. No workflow triggers another unless it has to.
+```bash
+npm run lint             # ESLint
+npm run check:prose      # the writing rules for every comment and document here
+npm run check:contrast   # colour contrast, in a real browser, against dist/
+```
 
-| Workflow | Trigger | What it does |
-| --- | --- | --- |
-| **`pages.yml`** | Push to `main` (site source) | Lint, build, prerender per-route metadata, verify it, deploy to GitHub Pages. PRs get isolated preview deploys. |
-| **`cv.yml`** | Push to `main` (`cv/**`) | Renders `cv/cv.html` to PDF via Puppeteer, commits `public/cv.pdf`. That commit triggers `pages.yml` and `ci.yml` to pick up the new file. |
-| **`ci.yml`** | Push to `main` (site source) | Multi-arch Docker build (`amd64` + `arm64`), push to GHCR and Docker Hub. PRs build without pushing. |
-| **`helm-release.yml`** | Push to `main` (`helm/**`) | Lint, package, and push the Helm chart to GHCR as an OCI artifact. |
+`check:contrast` measures every text node against its composited background, plus the
+generated tool marks and overflow at 375px. It reads `dist/`, so build first. `check:prose`
+enforces the rules the comments here follow. Both run in CI on every push.
 
-### Per-route metadata
+### The CV
 
-The site is client-rendered, so every route serves the same `index.html`. `useCanonical` corrects `canonical` and `og:url` in the browser, but crawlers that do not execute JavaScript (LinkedIn, Slack, Twitter) read the raw HTML and would see the site-root values on every page, collapsing every deep link back to `/`.
+```bash
+npm run cv
+```
 
-After `vite build`, [`scripts/prerender-meta.js`](./scripts/prerender-meta.js) clones `dist/index.html` once per route and rewrites eight tags: `<title>`, `description`, `canonical`, `og:title`, `og:description`, `og:url`, `twitter:title`, and `twitter:description`. React still renders the page on the client, unchanged. `og:image` stays site-wide.
+Renders `cv/cv.html` to PDF. The public form carries no phone number. Private per-recruiter
+variants are generated behind unguessable URLs and are excluded from git, from the container
+image and from every build that does not hold the secret. See
+[cv/README.md](./cv/README.md).
 
-Routes are declared in the script rather than derived, since they are a fixed set defined in `src/App.tsx`. Adding a route there means adding it there too, and the build fails until it is. If the head in `index.html` changes so a tag no longer matches, the build fails rather than emitting a shell with stale metadata.
+### Container
 
-`dist/404.html` is built by the same script instead of being copied from `index.html`. GitHub Pages serves it on any unmatched path, so a copy would give every dead URL the home page's title, canonical and `index, follow`. The generated one carries its own title, a self-referential canonical, and `noindex`.
-
-### Identity and discovery
-
-The same facts surface in several artifacts: certifications in the JSON-LD, profile URLs in `sameAs`, sitemap locations in `robots.txt`, and a description of the estate in `llms.txt`. None of these are rendered in the browser, so a copy that falls out of date gives no visible signal that it has.
-
-[`scripts/profile.js`](./scripts/profile.js) holds them once. After `vite build`, `prerender-meta.js` derives five artifacts from it:
-
-| Artifact | Contents |
-| --- | --- |
-| JSON-LD | `schema.org/Person` in every route shell: credentials with their Credly URLs, `sameAs`, `knowsAbout` |
-| `robots.txt` | User-agent rules and every sitemap across the estate |
-| `llms.txt` | What an agent reads before crawling, separating third-party verifiable records from self-reported ones |
-| `sitemap.xml` | This site's routes, from the same array the shells come from |
-| `profile.json` | The full record, machine-readable |
-
-Each site in `profile.js` records its sitemap URL or `null`. Nothing is fetched at build time, so that field is a manual check: a subdomain whose sitemap 404s or falls through to an SPA shell is left `null` and appears in `robots.txt` as a commented-out line rather than a live `Sitemap:` directive. `profile.json` is published so other repositories read it over HTTP rather than holding a copy of their own.
-
-### Trigger isolation
-
-Each workflow ignores paths it does not need. A single commit that touches multiple areas triggers only the relevant workflows, with no redundant runs.
-
-| Changed paths | pages | cv | ci | helm |
-| --- | --- | --- | --- | --- |
-| `src/`, `public/`, configs | runs | - | runs | - |
-| `cv/**` | - | runs (commits PDF, that push triggers pages + ci) | - | - |
-| `helm/**` | - | - | - | runs |
-| `.github/**`, `*.md` | - | - | - | - |
-
-### Published images
-
-Multi-arch (`linux/amd64`, `linux/arm64`) pushed to two registries:
-
-| Registry | Image |
-| --- | --- |
-| **GHCR** | `ghcr.io/ibtisam-iq/ibtisam-iq` |
-| **Docker Hub** | `docker.io/mibtisam/mibtisam` |
+Three stages, ending in `nginx:alpine` with no Node toolchain. Runs rootless, listens on
+8080, carries a healthcheck.
 
 ```bash
 docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
-# → http://localhost:8080
 ```
 
-### Helm chart
+```bash
+npm run generate         # the image build does not generate; it compiles what is here
+docker build -t portfolio-site .
+docker run --rm -p 8080:8080 portfolio-site
+```
+
+Published to `ghcr.io/ibtisam-iq/ibtisam-iq` and `docker.io/mibtisam/mibtisam`, for
+`linux/amd64` and `linux/arm64`.
+
+### Running the pipelines locally
+
+Both publishing workflows run under [act](https://github.com/nektos/act).
+
+```bash
+act push -W .github/workflows/pages.yml   # everything but the three steps that publish
+act push -W .github/workflows/ci.yml      # single-arch, loaded locally instead of pushed
+docker run --rm -p 8080:8080 mibtisam/mibtisam:local
+```
+
+The image build adapts rather than opts out, so a local run ends with an image that starts.
+The CV check needs no guards and runs as it is; the chart workflow is a registry push
+throughout and has little left to run.
+
+### Helm
 
 ```bash
 helm install portfolio-site oci://ghcr.io/ibtisam-iq/ibtisam-iq --version 0.1.0
 ```
 
-### CV pipeline
-
-The resume is a single HTML file (`cv/cv.html`) with inline CSS for print layout. Puppeteer renders it to an A4 PDF with zero margins.
-
-```
-cv/cv.html  →  Puppeteer (build-pdf.mjs)  →  public/cv.pdf  →  ibtisam-iq.com/cv.pdf
-```
-
-Build locally:
-
-```bash
-node cv/build-pdf.mjs
-```
+The chart is in [helm/](./helm), with its own [README](./helm/README.md).
 
 ---
 
-## Architecture
+## Stack
 
-```
-                          ┌──────────────────────┐
-                          │   Cloudflare DNS     │
-                          └───────────┬──────────┘
-                                      │
-        ┌──────────────────┬──────────┼──────────────────┬──────────────────┐
-        │                  │          │                  │                  │
-  ibtisam-iq.com    projects.*    runbook.*         blog.*           nectar.*
-   (this repo)      (separate)    (separate)       (separate)       (separate)
-        │
-   push to main
-        │
-   ┌────┴─────────────────────────────────────────────────────┐
-   │  GitHub Actions                                          │
-   │  ├─ pages.yml        → build, deploy to Pages            │
-   │  ├─ cv.yml           → HTML → PDF, commit                │
-   │  ├─ ci.yml           → multi-arch image → GHCR + Hub     │
-   │  └─ helm-release.yml → chart → GHCR OCI                  │
-   └──────────────────────────────────────────────────────────┘
-```
-
-Static site on GitHub Pages. No SSR. No application server in the request path.
+| Layer | Choice |
+| --- | --- |
+| Language | TypeScript 5.9 |
+| UI | React 19, react-icons |
+| Build | Vite 8 |
+| Styling | Tailwind CSS 3, PostCSS |
+| Routing | React Router 7 |
+| Quality | ESLint 10 flat config, typescript-eslint, two project-specific checkers |
+| Runtime for the build | Node 24 |
+| CI/CD | GitHub Actions, four workflows |
+| Container | Multi-stage Docker, nginx:alpine, rootless |
+| Packaging | Helm chart, published to GHCR as an OCI artifact |
+| Hosting | GitHub Pages |
+| DNS | Cloudflare |
 
 ---
 
-## Project Structure
+## Pipelines
+
+Four workflows, each scoped to the paths it needs.
+
+| Workflow | Trigger | What it does |
+| --- | --- | --- |
+| [.github/workflows/pages.yml](./.github/workflows/pages.yml) | push to `main`, a daily schedule, or manually | Lint, prose check, generate, build, verify every route's metadata, contrast check, deploy to GitHub Pages. Pull requests get an isolated preview. |
+| [.github/workflows/ci.yml](./.github/workflows/ci.yml) | push to `main` | Generate on the runner, then a multi-architecture image build pushed to GHCR and Docker Hub. Pull requests build without pushing. |
+| [.github/workflows/cv.yml](./.github/workflows/cv.yml) | pull requests touching `cv/**` | Renders the public CV and fails if it is blank, if it lost a required line, or if a phone number reached it. Commits nothing. |
+| [.github/workflows/helm-release.yml](./.github/workflows/helm-release.yml) | push to `main` touching `helm/**` | Lint, package, and push the chart to GHCR as an OCI artifact. |
+
+The schedule exists because two of the site's four data sources change with no commit at
+all. Without it the published numbers would only refresh when this repository happens to be
+pushed.
+
+Nothing is committed by a workflow. No PDF and no generated artifact is written back to the
+repository, so a deploy always reflects the source rather than whatever was last committed
+by a robot.
+
+### Per-route metadata
+
+The site is client-rendered, so a crawler that does not execute JavaScript would otherwise
+resolve every deep link back to the root.
+[scripts/prerender-meta.js](./scripts/prerender-meta.js) writes a shell per route with its
+own metadata, plus `404.html`, a sitemap, `robots.txt`, `llms.txt` and `profile.json`, all
+derived from [scripts/profile.js](./scripts/profile.js) and none of it committed.
+
+---
+
+## Layout
 
 ```text
 portfolio-site/
-├── .github/workflows/      # pages.yml, cv.yml, ci.yml, helm-release.yml
-├── cv/                     # Resume source (cv.html + build-pdf.mjs → public/cv.pdf)
-├── helm/                   # Helm chart (published to GHCR as OCI artifact)
-│   ├── Chart.yaml
-│   ├── values.yaml
-│   └── templates/
-├── public/                 # Static assets (favicons, cv.pdf, webmanifest)
+├── .github/workflows/   pages.yml, ci.yml, cv.yml, helm-release.yml
+├── cv/                  the CV source, its renderer, and how the private links work
+├── helm/                the Kubernetes chart
+├── public/              static files, copied verbatim into dist/
 ├── scripts/
-│   ├── profile.js          # Single source: identity, credentials, sites, profiles. Edit only here.
-│   └── prerender-meta.js   # After the build: per-route shells, 404.html, sitemap.xml,
-│                           # robots.txt, llms.txt, profile.json.
+│   ├── generate-from-projects.js    the projects repository  → src/data/generated.ts
+│   ├── generate-debugbox.js         the DebugBox README      → src/data/debugbox.ts
+│   ├── generate-stats.js            Docker Hub and GitHub    → src/data/stats.ts
+│   ├── generate-contributions.js    the contribution year    → src/data/contributions.ts
+│   ├── profile.js                   identity, credentials and sites, edited only here
+│   ├── prerender-meta.js            per-route shells, sitemap, robots, llms, profile
+│   ├── check-contrast.mjs           contrast, in a real browser
+│   └── check-prose.mjs              the writing rules
 ├── src/
-│   ├── components/         # Hero, Navbar, Footer, FeaturedProjects, Methodology, Reveal
-│   ├── context/            # ThemeContext (dark/light mode)
-│   ├── data/               # certificates.ts, toolProjects.ts
-│   ├── hooks/              # useCountUp, useDocumentTitle, useInView, useTypewriter
-│   ├── pages/              # Tools, Certificates, ContactPage, HowItStarted, NotFound
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── index.css
-├── Dockerfile              # Multi-stage → rootless nginx:alpine
-├── nginx.conf              # Hardened config (port 8080, CSP headers, caching)
-├── index.html
-├── tailwind.config.js
-├── vite.config.ts
-└── package.json
+│   ├── components/      the parts a page is assembled from
+│   ├── pages/           the five routes
+│   ├── data/            what the generators write, plus three hand-maintained files
+│   ├── lib/  hooks/     small pieces with no opinion about appearance
+│   ├── context/         the theme
+│   ├── App.tsx          the router, and the only definition of what pages exist
+│   └── index.css        surfaces, containers, label roles
+├── Dockerfile           three stages, ending in nginx with no Node
+├── nginx.conf           headers, caching and the SPA fallback, container only
+├── tailwind.config.js   the palette, with its measured contrast ratios
+└── REFERENCE.md         what everything is, and why it was built this way
 ```
-
----
-
-## Development
-
-```bash
-npm ci              # Install from lockfile
-npm run dev         # Vite dev server
-npm run build       # Type-check + production build
-npm run lint        # ESLint
-npm run preview     # Preview production build
-```
-
-### Container
-
-3-stage build (`deps` → `builder` → `production`). Final layer is `nginx:alpine` with no Node toolchain. Runs rootless (`USER nginx`), exposes port 8080, includes a `HEALTHCHECK`.
-
-```bash
-# Published image
-docker run --rm -p 8080:8080 ghcr.io/ibtisam-iq/ibtisam-iq:latest
-
-# Build from source
-docker build -t portfolio-site .
-docker run --rm -p 8080:8080 portfolio-site
-```
-
-### Local CI with `act`
-
-```bash
-act push -W .github/workflows/pages.yml    # Pages pipeline
-act push -W .github/workflows/ci.yml       # Docker pipeline
-```
-
-Registry pushes, artifact uploads, and deployments are skipped locally via `!env.ACT` guards.
 
 ---
 
@@ -255,7 +229,7 @@ Registry pushes, artifact uploads, and deployments are skipped locally via `!env
 
 **Muhammad Ibtisam Iqbal**
 
-DevOps & Cloud Engineer · Kubernetes · AWS · CI/CD
+DevOps and Cloud Engineer · Kubernetes · AWS · CI/CD
 
 [Website](https://ibtisam-iq.com) · [GitHub](https://github.com/ibtisam-iq)
 
