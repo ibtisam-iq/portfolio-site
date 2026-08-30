@@ -1,3 +1,9 @@
+// True once the element has entered the viewport, and true from then on: this drives
+// one-shot reveals, so the observer disconnects on first intersection.
+
+// The 1200ms timer is a floor, not a duration. If the observer never fires the content
+// would stay hidden permanently, and revealing late is recoverable where that is not.
+
 import { useEffect, useRef, useState } from "react";
 
 export function useInView<T extends HTMLElement = HTMLDivElement>(

@@ -1,3 +1,5 @@
+// Keeps the canonical link and the og:url meta in step with the current route.
+
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
