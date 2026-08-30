@@ -1,18 +1,9 @@
-// Runs AFTER `vite build`, as the last step of `npm run build`.
-// Reads:  dist/index.html (the built shell)
-// Writes: dist/<route>/index.html, one per route, with route-specific meta.
+// The last step of `npm run build`. Reads dist/index.html and writes one shell per route
+// with its own metadata, plus 404.html, the sitemap, robots.txt, llms.txt and profile.json.
+// A crawler that does not run JavaScript would otherwise see the site root on every page.
 //
-// Why this exists: the site is a client-rendered SPA, so every route serves the
-// same index.html. useCanonical fixes the tags in the browser, but crawlers that
-// do not run JavaScript (LinkedIn, Slack, Twitter) read the raw HTML and see the
-// site-root canonical and og:url on every page. Cloning the shell per route and
-// swapping the meta block gives those crawlers the right values without adding a
-// prerenderer, a headless browser, or any runtime dependency. React still renders
-// the page itself on the client, exactly as before.
-//
-// Routes are declared here rather than in a data file: unlike projects.ibtisam-iq.com,
-// this site has a fixed set of pages defined directly in src/App.tsx. Adding a route
-// there means adding it here, and the CI check will fail until it is.
+// The `routes` array below has to track src/App.tsx. The Pages workflow derives its own
+// list from that router and fails if a route here is missing.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { profile } from './profile.js'
@@ -20,15 +11,22 @@ import { profile } from './profile.js'
 const SITE = profile.site
 const SUFFIX = ` | ${profile.name}`
 
-// The /skills description quotes a tool and category count. src/data/skills.ts is
-// where the page derives them, so read them from there rather than restating them:
-// a hardcoded figure is right until the next tool is added.
-const skillsSrc = readFileSync('src/data/skills.ts', 'utf8')
-const TOOL_COUNT = new Set([...skillsSrc.matchAll(/name:\s*["']([^"']+)["']/g)].map((m) => m[1]))
-  .size
-const CATEGORY_COUNT = (skillsSrc.match(/title:\s*["']/g) || []).length
+// Counts are read back out of src/data/generated.ts rather than restated: a figure typed
+// here is right only until the next technology is registered upstream.
+const generatedSrc = readFileSync('src/data/generated.ts', 'utf8')
+const TOOL_COUNT = Number(generatedSrc.match(/TOTAL_TOOLS = (\d+)/)?.[1])
+// Scoped to the categories array: "title" also appears in the project card arrays,
+// and matching those inflated this count from 6 to 18.
+const categoriesBlock = generatedSrc.slice(
+  generatedSrc.indexOf('categories: ToolCategory[]'),
+  generatedSrc.indexOf('export const TOTAL_TOOLS')
+)
+const CATEGORY_COUNT = (categoriesBlock.match(/"title":/g) || []).length
 if (!TOOL_COUNT || !CATEGORY_COUNT) {
-  throw new Error('prerender-meta: could not read tool or category counts from src/data/skills.ts')
+  throw new Error(
+    'prerender-meta: could not read TOTAL_TOOLS or category count from src/data/generated.ts. ' +
+      'Run `npm run generate` first.'
+  )
 }
 
 // Escape for use inside a double-quoted HTML attribute.
@@ -38,7 +36,10 @@ const attr = (s) =>
 // `/` keeps the shell Vite emitted, so it is not listed here.
 const routes = [
   {
-    path: '/skills',
+    // Renamed from /skills when the route was renamed. Left behind, it emitted dist/skills/
+    // while App.tsx routed /tools, so /tools returned the 404 shell on any host without an
+    // SPA fallback and its og:url and title never reached a crawler.
+    path: '/tools',
     title: 'Engineering Stack',
     description:
       `${TOOL_COUNT} tools across ${CATEGORY_COUNT} categories, each cross-referenced to the projects it was used in: Kubernetes, EKS, Docker, Terraform, ArgoCD, Jenkins, GitHub Actions, Trivy, Prometheus and Grafana.`,
@@ -148,10 +149,8 @@ for (const m of routes) {
   writeFileSync(`dist${m.path}/index.html`, html)
 }
 
-// Pages serves 404.html on any unmatched path, where React Router renders
-// NotFound. Copying index.html verbatim would hand crawlers the home page's
-// title, canonical and `index, follow` on every dead URL, so build it here
-// instead: own title, no canonical pointing at `/`, and noindex.
+// Built here, never copied from index.html: a copy would give every dead URL the home
+// page's title, canonical and `index, follow`. Own title, no canonical, noindex.
 const notFound = apply(template, [
   [/<title>[\s\S]*?<\/title>/, `<title>Page Not Found${attr(SUFFIX)}</title>`],
   [
@@ -173,10 +172,8 @@ const notFound = apply(template, [
 ])
 writeFileSync('dist/404.html', notFound)
 
-// sitemap.xml is generated from the same `routes` array the shells come from, so a
-// route can never be prerendered but missing from the sitemap, or the reverse.
-// No <lastmod>: it would be the build date on every entry, telling crawlers that
-// every page changed whenever any page did.
+// From the same `routes` array as the shells, so the two cannot disagree. No <lastmod>:
+// it would be the build date on every entry.
 const urls = ['/', ...routes.map((m) => m.path)]
   .map((p) => `  <url><loc>${SITE}${p}</loc></url>`)
   .join('\n')
@@ -186,20 +183,16 @@ writeFileSync(
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`
 )
 
-// robots.txt lists only the sitemaps profile.js records as returning XML.
-//
-// The listed sitemaps are on sibling subdomains rather than this host. A crawler is
-// free to ignore a cross-domain Sitemap directive, and Google only acts on one when
-// both hosts are verified under the same Search Console account, so this is a hint
-// and not a guarantee. Each site still serves its own robots.txt naming its own
-// sitemap, which is the path that always works.
+// Only the sitemaps scripts/profile.js records as returning XML. They are on sibling
+// subdomains, so these are hints: a cross-domain Sitemap directive may be ignored, and
+// each site serves its own robots.txt naming its own sitemap.
 const sitemaps = profile.sites.filter((s) => s.sitemap)
 const skipped = profile.sites.filter((s) => !s.sitemap)
 writeFileSync(
   'dist/robots.txt',
   [
     `# ${profile.site.replace('https://', '')}`,
-    `# ${profile.name} — ${profile.jobTitle}`,
+    `# ${profile.name}, ${profile.jobTitle}`,
     '# Generated by scripts/prerender-meta.js from scripts/profile.js. Do not edit.',
     '',
     'User-agent: *',
@@ -218,12 +211,9 @@ writeFileSync(
   ].join('\n')
 )
 
-// llms.txt is a convention rather than a standard, and nothing is obliged to fetch it.
-// It costs one generated file to answer the question an agent would otherwise answer by
-// guessing from rendered HTML, so it is worth having either way.
-//
-// section() returns null, not '', when a group is empty: the filter below drops absent
-// sections, and '' would be dropped alongside the blank lines that separate the rest.
+// A convention rather than a standard, and cheap either way. `section()` returns null
+// rather than '' for an empty group, because the filter below would otherwise drop the
+// blank lines that separate the rest.
 const section = (heading, items) =>
   items.length ? [`## ${heading}`, '', ...items, ''].join('\n') : null
 const link = (s) => `- [${s.label}](${s.url}): ${s.note}`
@@ -256,11 +246,11 @@ writeFileSync(
     .join('\n')
 )
 
-// profile.js verbatim, served over HTTP so other repositories and tooling can read
-// these facts without vendoring them.
+// scripts/profile.js verbatim, served over HTTP so other repositories and tooling can
+// read these facts without vendoring them.
 writeFileSync('dist/profile.json', JSON.stringify(profile, null, 2) + '\n')
 
 console.log(
   `✅ ${routes.length} routes, 404.html, sitemap.xml (${urls.split('\n').length} URLs), ` +
-    `robots.txt (${sitemaps.length} sitemaps), llms.txt, profile.json — all from scripts/profile.js`
+    `robots.txt (${sitemaps.length} sitemaps), llms.txt, profile.json, all from scripts/profile.js`
 )
