@@ -1,10 +1,10 @@
 // Identity, credentials, sites and profiles. scripts/prerender-meta.js derives the JSON-LD
-// graph, robots.txt, sitemap.xml, llms.txt and profile.json from this file during
-// `npm run build`. None of those are committed, so this is the only place they are edited.
-//
-// Page routes are the exception: they live in prerender-meta.js, because they have to
-// track src/App.tsx rather than anything here.
-//
+// graph, robots.txt, the sitemap, llms.txt and profile.json from this file, and none of
+// those is committed, so this is the only place they are edited.
+
+// Page routes are the exception and live in scripts/prerender-meta.js, because they have
+// to track src/App.tsx rather than anything here.
+
 // profile.json is published at https://ibtisam-iq.com/profile.json so that anything
 // needing these facts fetches them over HTTP instead of vendoring a copy.
 
@@ -29,7 +29,7 @@ export const profile = {
     'refactoring) before containerising and deploying them. Core stack: Kubernetes on ' +
     'kubeadm and EKS, Docker, Helm, Helmfile, Kustomize and ArgoCD, provisioned with ' +
     'Terraform and Ansible on Linux, delivered through Jenkins and GitHub Actions. ' +
-    'DevSecOps scanning (Trivy, Gitleaks, SonarQube, cosign) and observability ' +
+    'DevSecOps scanning (Trivy, Hadolint, SonarQube) and observability ' +
     '(Prometheus, Grafana, the Elastic Stack) are wired into the same pipelines rather ' +
     'than bolted on afterwards. Every project ships with source code, runbooks and ' +
     'architecture documentation.',
@@ -114,10 +114,9 @@ export const profile = {
     },
   ],
 
-  // `verifiable: true` where the platform produces the record, not me: commit history,
-  // a badge issued by CNCF, published image digests and pull counts. The rest are real
-  // profiles, but their contents are self-authored, so llms.txt lists them separately
-  // and does not present them as corroboration.
+  // `verifiable: true` only where the platform produces the record rather than Ibtisam:
+  // commit history, a CNCF badge, image digests and pull counts. The rest are real profiles
+  // with self-authored contents, and llms.txt lists them separately.
   profiles: [
     { label: 'GitHub', url: 'https://github.com/ibtisam-iq', verifiable: true },
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/ibtisam-iq' },
@@ -138,10 +137,9 @@ export const profile = {
     { label: 'Cal.com', url: 'https://cal.com/ibtisam-iq' },
   ],
 
-  // Topics, not an inventory: src/data/skills.ts holds the full tool list and the
-  // /skills page renders it. This is the subset worth asserting as subject matter,
-  // grouped from discipline down to specific technology. Adding a tool to skills.ts
-  // does not require a line here unless it changes what the work is about.
+  // Topics, not an inventory: src/data/generated.ts holds the full tool list and /tools
+  // renders it. Adding a tool there needs no line here unless it changes what the work is
+  // about.
   knowsAbout: [
     'DevOps',
     'DevSecOps',
