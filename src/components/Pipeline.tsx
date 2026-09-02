@@ -48,9 +48,9 @@ function prefersReducedMotion() {
 const Connector = ({ style }: { style?: CSSProperties }) => (
   <div className="flex justify-center py-3" style={style}>
     <div className="flex flex-col items-center">
-      <div className="h-6 w-px bg-gradient-to-b from-teal-accent/40 to-transparent" />
+      <div className="h-6 w-px bg-linear-to-b from-teal-accent/40 to-transparent" />
       <div className="my-0.5 h-2 w-2 rounded-full border border-teal-accent/40" />
-      <div className="h-6 w-px bg-gradient-to-b from-transparent to-teal-accent/40" />
+      <div className="h-6 w-px bg-linear-to-b from-transparent to-teal-accent/40" />
     </div>
   </div>
 );
