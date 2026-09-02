@@ -1,4 +1,4 @@
-# React 19 + TypeScript + Vite 7 + Tailwind CSS 3 + react-router-dom 7
+# React 19 + TypeScript + Vite 8 + Tailwind CSS 4 + react-router-dom 7
 # 3-stage: deps -> builder -> production (nginx:alpine, no Node in final image)
 
 ARG NODE_VERSION=22.14-alpine3.21
@@ -35,7 +35,7 @@ COPY --from=deps /app/node_modules ./node_modules
 # Config files: second-lowest churn, form a stable cache boundary
 COPY package.json package-lock.json ./
 COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
-COPY vite.config.ts postcss.config.js tailwind.config.js eslint.config.js ./
+COPY vite.config.ts postcss.config.js eslint.config.js ./
 COPY index.html ./
 
 # scripts/ before src/: scripts/prerender-meta.js is part of `npm run build`, and it

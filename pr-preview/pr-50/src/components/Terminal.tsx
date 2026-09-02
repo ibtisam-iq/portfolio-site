@@ -33,7 +33,7 @@ const OutputLine = ({ line }: { line: Line }) => {
     // The indent lives on this `pre-wrap` wrapper, not inside the anchor: an anchor is not
     // `pre`, so leading spaces in its text collapse and the URL loses its column.
     return (
-      <div className="whitespace-pre-wrap break-words">
+      <div className="whitespace-pre-wrap wrap-break-word">
         {line.indent ? " ".repeat(line.indent) : ""}
         <a
           href={line.href}
@@ -208,7 +208,7 @@ const Terminal = () => {
                   onChange={(e) => setValue(e.target.value)}
                   onKeyDown={onKeyDown}
                   placeholder="help"
-                  className="min-w-0 flex-1 bg-transparent text-light-text caret-teal-accent outline-none placeholder:text-light-faint dark:text-text-primary dark:placeholder:text-text-faint"
+                  className="min-w-0 flex-1 bg-transparent text-light-text caret-teal-accent outline-hidden placeholder:text-light-faint dark:text-text-primary dark:placeholder:text-text-faint"
                 />
               </div>
             </div>

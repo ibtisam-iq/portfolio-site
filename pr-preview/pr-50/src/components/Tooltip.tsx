@@ -59,7 +59,7 @@ export const Tooltip = ({ text, children }: TooltipProps) => {
             id={id}
             role="tooltip"
             style={{ left: at.x, top: at.y - MARGIN }}
-            className="pointer-events-none fixed z-[80] -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md border border-light-border bg-light-surface px-3 py-1.5 font-mono text-[11px] leading-snug text-light-text shadow-[0_8px_24px_-8px_rgba(0,0,0,0.22)] dark:border-white/[0.16] dark:bg-surface-2 dark:text-text-primary dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.9)]"
+            className="pointer-events-none fixed z-80 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md border border-light-border bg-light-surface px-3 py-1.5 font-mono text-[11px] leading-snug text-light-text shadow-[0_8px_24px_-8px_rgba(0,0,0,0.22)] dark:border-white/16 dark:bg-surface-2 dark:text-text-primary dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.9)]"
           >
             {text}
             {/* The caret. A rotated square with two of its borders showing, which is the
@@ -67,7 +67,7 @@ export const Tooltip = ({ text, children }: TooltipProps) => {
                 rather than a slightly different colour drawn with the border trick. */}
             <span
               aria-hidden="true"
-              className="absolute left-1/2 top-full h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-light-border bg-light-surface dark:border-white/[0.16] dark:bg-surface-2"
+              className="absolute left-1/2 top-full h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-light-border bg-light-surface dark:border-white/16 dark:bg-surface-2"
             />
           </span>,
           document.body
