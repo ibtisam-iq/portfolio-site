@@ -63,14 +63,14 @@ export const StatFigure = ({
       {href && (
         <span
           aria-hidden="true"
-          className="absolute right-3 top-3 z-[2] text-[11px] leading-none text-light-faint transition-all duration-200 group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-teal-accent dark:text-text-faint"
+          className="absolute right-3 top-3 z-2 text-[11px] leading-none text-light-faint transition-all duration-200 group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-teal-accent dark:text-text-faint"
         >
           {href.startsWith("/") ? "\u2192" : "\u2197"}
         </span>
       )}
       {/* Lifted above the cell's hover wash, which is generated content and therefore
           paints after every child of the cell. */}
-      <span className="relative z-[1] block">
+      <span className="relative z-1 block">
         {figure}
         <span className="mt-2.5 block text-[11.5px] leading-snug text-light-muted dark:text-text-muted sm:text-xs">
           {label}
@@ -137,7 +137,7 @@ const COLUMNS: Record<string, string> = {
   // The hero's band: the full frame on a phone, a single column from `lg`, where two
   // across would leave a five-digit headline figure 50px of room. The cells also swap
   // their padding asymmetry there, for the reason above `cell`.
-  column: "grid-cols-2 lg:grid-cols-1 lg:[&>*]:px-6 lg:[&>*]:py-3",
+  column: "grid-cols-2 lg:grid-cols-1 lg:*:px-6 lg:*:py-3",
 };
 
 /**
