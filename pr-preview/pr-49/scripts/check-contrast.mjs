@@ -69,10 +69,38 @@ const sitemapRoutes = async () => {
  * `aria-hidden` subtrees are skipped, because WCAG applies to text that informs.
  */
 const SWEEP = () => {
+  const toRgb = (c) => {
+    if (!c) return [0, 0, 0]
+    if (c.startsWith('rgb(') || c.startsWith('rgba(')) {
+      const m = c.match(/[\d.]+/g)
+      return m ? m.slice(0, 3).map(Number) : [0, 0, 0]
+    }
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    ctx.clearRect(0, 0, 1, 1)
+    ctx.fillStyle = c
+    ctx.fillRect(0, 0, 1, 1)
+    const data = ctx.getImageData(0, 0, 1, 1).data
+    return [data[0], data[1], data[2]]
+  }
+  const alphaOf = (c) => {
+    if (!c || c === 'transparent') return 0
+    if (c.startsWith('rgba(')) {
+      const m = c.match(/[\d.]+/g)
+      return m && m.length > 3 ? Number(m[3]) : 1
+    }
+    if (c.startsWith('rgb(')) return 1
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    ctx.clearRect(0, 0, 1, 1)
+    ctx.fillStyle = c
+    ctx.fillRect(0, 0, 1, 1)
+    return ctx.getImageData(0, 0, 1, 1).data[3] / 255
+  }
   const lum = (c) => {
-    const m = c.match(/[\d.]+/g)
-    if (!m) return null
-    const [r, g, b] = m.map(Number)
+    const [r, g, b] = toRgb(c)
     const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4) }
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
   }
@@ -81,15 +109,18 @@ const SWEEP = () => {
     let n = el
     const stack = []
     while (n && n !== document.documentElement) {
-      const m = getComputedStyle(n).backgroundColor.match(/[\d.]+/g)
-      if (m) {
-        const a = m.length > 3 ? Number(m[3]) : 1
-        if (a > 0) { stack.push([m.slice(0, 3).map(Number), a]); if (a >= 0.999) break }
+      const bg = getComputedStyle(n).backgroundColor
+      if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+        const a = alphaOf(bg)
+        if (a > 0) {
+          stack.push([toRgb(bg), a])
+          if (a >= 0.999) break
+        }
       }
       n = n.parentElement
     }
-    const base = getComputedStyle(document.body).backgroundColor.match(/[\d.]+/g)
-    let cur = base ? base.slice(0, 3).map(Number) : [255, 255, 255]
+    const base = toRgb(getComputedStyle(document.body).backgroundColor)
+    let cur = base ? base.slice(0, 3) : [255, 255, 255]
     for (let i = stack.length - 1; i >= 0; i--) cur = blend(stack[i][0], cur, stack[i][1])
     return `rgb(${cur.join(',')})`
   }
@@ -124,8 +155,23 @@ const SWEEP = () => {
 
 /** The 71 generated tool marks, whose hue varies but whose saturation and lightness do not. */
 const MARKS = () => {
+  const toRgb = (c) => {
+    if (!c) return [0, 0, 0]
+    if (c.startsWith('rgb(') || c.startsWith('rgba(')) {
+      const m = c.match(/[\d.]+/g)
+      return m ? m.slice(0, 3).map(Number) : [0, 0, 0]
+    }
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    ctx.clearRect(0, 0, 1, 1)
+    ctx.fillStyle = c
+    ctx.fillRect(0, 0, 1, 1)
+    const data = ctx.getImageData(0, 0, 1, 1).data
+    return [data[0], data[1], data[2]]
+  }
   const lum = (c) => {
-    const [r, g, b] = c.match(/[\d.]+/g).map(Number)
+    const [r, g, b] = toRgb(c)
     const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4) }
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
   }
