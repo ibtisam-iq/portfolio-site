@@ -123,8 +123,9 @@ up the squares arrives at the number above them.
 
 ## 4. The design system
 
-Two files hold it: `tailwind.config.js` names the colours and the type, and `src/index.css`
-defines the surfaces, the containers and the label roles that every page composes from.
+One file holds it: `src/index.css`. Its `@theme` block names the colours and the type
+(Tailwind v4 reads the config from CSS, not a `tailwind.config.js`), and the rest of the
+file defines the surfaces, the containers and the label roles that every page composes from.
 
 ### One accent, in two values
 

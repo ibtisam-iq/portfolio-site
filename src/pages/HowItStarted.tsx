@@ -27,7 +27,7 @@ const HowItStarted = () => {
 
         {/* The words are Ibtisam's own account. The writing rules for this repository
             govern its comments and its interface copy, not this. */}
-        <div className="max-w-[68ch] space-y-6 text-lg leading-relaxed text-light-muted first:*:text-xl first:*:leading-relaxed first:*:text-light-text dark:text-gray-400 dark:first:*:text-text-primary">
+        <div className="max-w-[68ch] space-y-6 text-lg leading-relaxed text-light-muted *:first:text-xl *:first:leading-relaxed *:first:text-light-text dark:text-text-muted dark:*:first:text-text-primary">
 
           <p>
             I didn’t grow up around computers. My early education was in medical sciences,
@@ -171,7 +171,7 @@ const HowItStarted = () => {
          * argument: the essay ends on a claim about method, the pipeline is that method, and
          * the year is the evidence. A hairline alone does not carry it.
          */}
-        <p className="mt-14 max-w-[68ch] border-t border-light-border pt-12 text-lg leading-relaxed text-light-muted dark:border-border-subtle dark:text-gray-400">
+        <p className="mt-14 max-w-[68ch] border-t border-light-border pt-12 text-lg leading-relaxed text-light-muted dark:border-border-subtle dark:text-text-muted">
           That is where the habit came from. The rest of this page is what it turned into:
           the shape every project moves through, and the year of actually moving them.
         </p>
