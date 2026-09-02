@@ -80,15 +80,15 @@ const CommandRow = ({ label, command }: { label: string; command: string }) => {
       {state === "failed" && (
         <p className="mt-1.5 text-xs text-light-muted dark:text-text-muted">
           Clipboard is blocked here. The command is selected, so press{" "}
-          <kbd className="rounded border border-light-border px-1 font-mono text-[11px] dark:border-border-subtle">
+          <kbd className="rounded-sm border border-light-border px-1 font-mono text-[11px] dark:border-border-subtle">
             Ctrl
           </kbd>{" "}
           or{" "}
-          <kbd className="rounded border border-light-border px-1 font-mono text-[11px] dark:border-border-subtle">
+          <kbd className="rounded-sm border border-light-border px-1 font-mono text-[11px] dark:border-border-subtle">
             Cmd
           </kbd>{" "}
           +{" "}
-          <kbd className="rounded border border-light-border px-1 font-mono text-[11px] dark:border-border-subtle">
+          <kbd className="rounded-sm border border-light-border px-1 font-mono text-[11px] dark:border-border-subtle">
             C
           </kbd>
           .
@@ -247,7 +247,7 @@ const DebugBox = () => {
                   {v.sizeMB} MB
                 </span>
                 {v.isDefault && (
-                  <span className="ml-2 rounded bg-teal-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none text-teal-accent">
+                  <span className="ml-2 rounded-sm bg-teal-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none text-teal-accent">
                     default
                   </span>
                 )}

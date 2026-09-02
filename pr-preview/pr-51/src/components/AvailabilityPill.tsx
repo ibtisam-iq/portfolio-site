@@ -86,7 +86,7 @@ const AvailabilityPill = ({ variant = "pill" }: { variant?: Variant } = {}) => {
             <span
               className={
                 status
-                  ? "font-mono text-[11px] uppercase leading-snug tracking-[0.1em] text-light-muted dark:text-text-faint"
+                  ? "font-mono text-[11px] uppercase leading-snug tracking-widest text-light-muted dark:text-text-faint"
                   : "text-[13px] font-semibold leading-snug text-green-700 dark:text-green-300"
               }
             >
@@ -105,7 +105,7 @@ const AvailabilityPill = ({ variant = "pill" }: { variant?: Variant } = {}) => {
             <span
               className={`font-mono text-[11px] leading-snug ${
                 status
-                  ? "uppercase tracking-[0.1em] text-light-muted dark:text-text-faint"
+                  ? "uppercase tracking-widest text-light-muted dark:text-text-faint"
                   : "text-light-muted dark:text-text-muted"
               }`}
             >

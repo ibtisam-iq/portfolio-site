@@ -29,9 +29,9 @@ export interface Stats {
 }
 
 export const stats: Stats = {
-  "dockerPulls": 11570,
+  "dockerPulls": 11584,
   "dockerImages": 11,
-  "debugboxPulls": 1938,
+  "debugboxPulls": 1946,
   "publicRepos": 34,
   "githubStars": 21,
   "starsByRepo": {
@@ -43,10 +43,10 @@ export const stats: Stats = {
   },
   "lastShipped": {
     "repo": "portfolio-site",
-    "pushedAt": "2026-09-01T02:11:56Z",
+    "pushedAt": "2026-09-02T20:32:56Z",
     "url": "https://github.com/ibtisam-iq/portfolio-site/commits"
   },
-  "measuredAt": "2026-09-01"
+  "measuredAt": "2026-09-02"
 }
 
 /** 10882 renders as "10,882". Kept here so every surface formats it the same way. */
