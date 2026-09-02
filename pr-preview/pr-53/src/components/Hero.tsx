@@ -126,7 +126,7 @@ const Hero = () => {
                   href={publicStats.lastShipped.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-[0.1em] text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
+                  className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-widest text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
                   {...t}
                 >
               <span className="relative flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
@@ -183,7 +183,7 @@ const Hero = () => {
 
           <p
             style={s(250)}
-            className="text-lg leading-relaxed max-w-2xl text-light-muted dark:text-gray-300 mb-10"
+            className="text-lg leading-relaxed max-w-2xl text-light-muted dark:text-text-muted mb-10"
           >
             CKA and CKAD certified. I build Kubernetes clusters, CI/CD
             pipelines, and cloud infrastructure from first principles. Every

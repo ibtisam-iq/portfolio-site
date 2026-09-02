@@ -210,10 +210,9 @@ portfolio-site/
 │   ├── lib/  hooks/     small pieces with no opinion about appearance
 │   ├── context/         the theme
 │   ├── App.tsx          the router, and the only definition of what pages exist
-│   └── index.css        surfaces, containers, label roles
+│   └── index.css        the Tailwind @theme palette, surfaces, containers, label roles
 ├── Dockerfile           three stages, ending in nginx with no Node
 ├── nginx.conf           headers, caching and the SPA fallback, container only
-├── tailwind.config.js   the palette, with its measured contrast ratios
 └── REFERENCE.md         what everything is, and why it was built this way
 ```
 

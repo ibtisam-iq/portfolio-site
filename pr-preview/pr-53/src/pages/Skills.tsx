@@ -221,7 +221,7 @@ const Skills = () => {
                     if (!hereHas && anywhere) setActive(ALL);
                   }
                 }}
-                className="well well-edge w-full px-3.5 py-2.5 text-sm text-light-text placeholder:text-light-faint focus:outline-none focus:ring-2 focus:ring-teal-accent/40 dark:text-text-primary dark:placeholder:text-text-faint"
+                className="well well-edge w-full px-3.5 py-2.5 text-sm text-light-text placeholder:text-light-faint focus:outline-hidden focus:ring-2 focus:ring-teal-accent/40 dark:text-text-primary dark:placeholder:text-text-faint"
               />
 
               <div className="my-3.5 h-px bg-light-border dark:bg-border-subtle" />
@@ -252,7 +252,7 @@ const Skills = () => {
                        */
                       className={`relative flex shrink-0 items-center justify-between gap-2.5 overflow-hidden rounded-lg px-3 py-2.5 text-left text-sm transition-colors lg:w-full ${
                         isActive
-                          ? "bg-teal-accent/[0.08] font-semibold text-teal-accent before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:rounded-full before:bg-teal-accent before:content-['']"
+                          ? "bg-teal-accent/8 font-semibold text-teal-accent before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:rounded-full before:bg-teal-accent before:content-['']"
                           : empty
                             ? "cursor-not-allowed text-light-faint dark:text-text-faint"
                             : "text-light-muted hover:bg-light-surface-2 hover:text-light-text dark:text-text-muted dark:hover:bg-surface-2 dark:hover:text-white"
@@ -377,7 +377,7 @@ const Tile = ({
       </span>
 
       {cert && (
-        <span className="shrink-0 rounded bg-teal-accent/15 px-1.5 py-0.5 text-[10px] font-bold leading-none text-teal-accent">
+        <span className="shrink-0 rounded-sm bg-teal-accent/15 px-1.5 py-0.5 text-[10px] font-bold leading-none text-teal-accent">
           {cert}
         </span>
       )}
