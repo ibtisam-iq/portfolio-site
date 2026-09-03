@@ -11,6 +11,7 @@ import { StatBand, StatFigure } from "./StatFigure";
 import { relativeTime } from "../lib/relativeTime";
 import { source, longDate, shortDate } from "../lib/provenance";
 import { useNow } from "../lib/useNow";
+import { useLatestPush } from "../hooks/useLatestPush";
 import AvailabilityPill from "./AvailabilityPill";
 import AmbientCanvas from "./AmbientCanvas";
 import { Tooltip } from "./Tooltip";
@@ -49,6 +50,9 @@ const Hero = () => {
   // `relativeTime` prints, so ticking faster would redraw for nothing.
   const now = useNow(60000);
 
+  // Live from GitHub, not the build: this line shows an age, and an age from an old build
+  // is wrong. Falls back to the build-time value. See src/hooks/useLatestPush.ts.
+  const lastShipped = useLatestPush();
 
   // Ordered by what a stranger cannot fake over a weekend. The first two were counted by
   // Docker and GitHub rather than by this site, which is why both link out to the page
@@ -119,11 +123,11 @@ const Hero = () => {
             className="mb-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-b border-light-border pb-4 dark:border-border-subtle"
           >
             <Tooltip
-              text={`Newest push across all public repos \u00b7 ${longDate(publicStats.lastShipped.pushedAt)}`}
+              text={`Newest push across all public repos \u00b7 ${longDate(lastShipped.pushedAt)}`}
             >
               {(t) => (
                 <a
-                  href={publicStats.lastShipped.url}
+                  href={lastShipped.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-widest text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
@@ -135,9 +139,9 @@ const Hero = () => {
               </span>
               shipped
               <span className="font-semibold text-light-text dark:text-text-primary">
-                {publicStats.lastShipped.repo}
+                {lastShipped.repo}
               </span>
-                  {relativeTime(publicStats.lastShipped.pushedAt, now)}
+                  {relativeTime(lastShipped.pushedAt, now)}
                 </a>
               )}
             </Tooltip>

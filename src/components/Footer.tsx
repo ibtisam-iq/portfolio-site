@@ -2,10 +2,10 @@
 
 import { Link } from "react-router-dom";
 import { FaGithub, FaLinkedin, FaDocker } from "react-icons/fa";
-import { stats } from "../data/stats";
 import { relativeTime } from "../lib/relativeTime";
 import { longDate } from "../lib/provenance";
 import { useNow } from "../lib/useNow";
+import { useLatestPush } from "../hooks/useLatestPush";
 
 // Ibtisam works from Islamabad, so the clock shows his time rather than the reader's.
 // Naming the zone matters: a reader in another country should see that this is
@@ -24,7 +24,9 @@ const timeFormat = new Intl.DateTimeFormat("en-US", {
 const LiveStatus = () => {
   const now = useNow(1000);
 
-  const { lastShipped } = stats;
+  // The same live reading the hero uses, so the two "shipped" lines on a page never
+  // disagree. See src/hooks/useLatestPush.ts.
+  const lastShipped = useLatestPush();
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-xs text-light-faint dark:text-text-faint">
