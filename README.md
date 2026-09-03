@@ -22,6 +22,9 @@ inspect, written into a file at build time, and shown alongside a note saying wh
 from and when it was measured. Most of what is unusual about this repository follows from
 that one decision.
 
+The one exception is the "shipped" timestamp, read live in the browser because an age from
+an old build is wrong, not just stale.
+
 For how any of it works and why it was built this way, see **[REFERENCE.md](./REFERENCE.md)**.
 
 ---

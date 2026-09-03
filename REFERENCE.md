@@ -69,8 +69,32 @@ The generated files are committed as well as generated. A fresh clone type-check
 and a change upstream arrives as a diff somebody can review rather than as a silent
 difference between two builds of the same commit.
 
+Those committed copies lag what the sources return, and the local copies lag further, until
+someone builds and commits. That is harmless: the runner regenerates them before every
+deploy and the daily schedule redeploys with no push, so the live site is current whatever
+is in git. They exist for the offline build and the reviewable diff, not to feed the deploy.
+
 Three data files are maintained by hand, because nothing measures what they hold:
 `src/data/availability.ts`, `src/data/certificates.ts` and `src/data/terminal.ts`.
+
+### One line is read live, not at build time
+
+The "shipped" status in the hero and the footer names the most recently pushed public
+repository and how long ago, and the "how long ago" keeps counting while the page is open.
+Every other number is measured once and shown with the date it was measured, which stays
+honest however old it gets. An age does not: a build from three days ago has this line say
+a push happened three days ago, whatever the repositories have done since.
+
+So this one value is read from the GitHub API when the page loads, by
+`src/hooks/useLatestPush.ts`. That API allows a page to read it directly, which Docker Hub
+and the contribution fragment do not, so it needs no proxy and no token.
+`scripts/generate-stats.js` still writes the value into `src/data/stats.ts`, and that copy
+is what shows until the read returns and what stays if the reader is offline or GitHub
+refuses the request. The hero and the footer share the one hook, so they cannot disagree.
+
+The terminal's `stats` command used to print this too, from the build-time file. It was
+dropped rather than wired to the hook: that command lists counts, a push date is not one,
+and a second reading of the same fact is a second thing that can be wrong.
 
 ### The tools page draws its own boundary
 
@@ -356,7 +380,7 @@ the CV is missing.
 `nginx.conf` applies only to the container. GitHub Pages serves the same `dist/` with its
 own headers, so a rule added there changes one of the two deployments and not the other.
 The policy there permits exactly what the page uses: the analytics tag's host in
-`script-src`, its beacon in `connect-src`, and Google Fonts. It permits no inline script,
+`script-src`, its beacon and the GitHub API in `connect-src`, and Google Fonts. It permits no inline script,
 and `index.html` contains none, because the two scripts that were inline are now
 `public/theme.js` and `public/analytics.js`.
 
