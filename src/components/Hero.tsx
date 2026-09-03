@@ -130,18 +130,23 @@ const Hero = () => {
                   href={lastShipped.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-widest text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
+                  className="inline-flex items-start gap-x-2 font-mono text-[11px] uppercase tracking-widest text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
                   {...t}
                 >
-              <span className="relative flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
-                <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
-              </span>
-              shipped
-              <span className="font-semibold text-light-text dark:text-text-primary">
-                {lastShipped.repo}
-              </span>
-                  {relativeTime(lastShipped.pushedAt, now)}
+                  {/* The dot is its own column, outside the wrapping text: in the row it
+                      made a wrapped line start under itself, so kept out a long repo name
+                      wraps the trailing time under "shipped". `mt` centres it on line one. */}
+                  <span className="relative mt-[3px] flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
+                    <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
+                  </span>
+                  <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                    shipped
+                    <span className="font-semibold text-light-text dark:text-text-primary">
+                      {lastShipped.repo}
+                    </span>
+                    {relativeTime(lastShipped.pushedAt, now)}
+                  </span>
                 </a>
               )}
             </Tooltip>
