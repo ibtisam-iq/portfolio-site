@@ -118,9 +118,6 @@ const commands: Command[] = [
       row("projects", String(PROJECT_COUNT)),
       row("tools listed", `${TOTAL_TOOLS} (${EVIDENCED_COUNT} evidenced, ${TRAINED_COUNT} trained)`),
       row("tech entries", `${TECH_COUNT}, ${HIDDEN_TECH_COUNT} not shown on the tools page`),
-      blank(),
-      row("last push", `${stats.lastShipped.repo}, ${stats.lastShipped.pushedAt.slice(0, 10)}`),
-      dim(`fetched ${stats.measuredAt} at build time, not live`),
     ],
   },
   {
