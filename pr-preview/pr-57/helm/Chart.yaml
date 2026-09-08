@@ -1,0 +1,16 @@
+# The chart that deploys ibtisam-iq.com into a Kubernetes cluster: the nginx image built by
+# .github/workflows/ci.yml, behind a Service and either an Ingress or a Gateway API route.
+
+apiVersion: v2
+name: ibtisam-iq
+description: The portfolio site of Muhammad Ibtisam Iqbal, served from a hardened nginx image
+type: application
+
+# The chart's own version, in semantic versioning. Raise it for any change to these
+# templates or values, including a change to appVersion below.
+version: 0.1.0
+
+# Stamped onto every object as app.kubernetes.io/version, and used as the image tag when
+# helm/values.yaml sets none. The site is published continuously and carries no release
+# number, so the honest value is the tag the image actually has.
+appVersion: "latest"
