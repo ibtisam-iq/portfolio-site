@@ -5,14 +5,14 @@ name: CI Build & Push
 # serve a stale one.
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - '**/*.md'
-      - '**/LICENSE'
-      - 'docs/**'
-      - 'helm/**'
-      - '.github/**'
+  # push:
+  #   branches: [main]
+  #   paths-ignore:
+  #     - '**/*.md'
+  #     - '**/LICENSE'
+  #     - 'docs/**'
+  #     - 'helm/**'
+  #     - '.github/**'
   pull_request:
     branches: [main]
     paths-ignore:
