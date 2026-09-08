@@ -29,9 +29,9 @@ export interface Stats {
 }
 
 export const stats: Stats = {
-  "dockerPulls": 12094,
+  "dockerPulls": 12265,
   "dockerImages": 11,
-  "debugboxPulls": 2085,
+  "debugboxPulls": 2089,
   "publicRepos": 34,
   "githubStars": 21,
   "starsByRepo": {
@@ -43,7 +43,7 @@ export const stats: Stats = {
   },
   "lastShipped": {
     "repo": "portfolio-site",
-    "pushedAt": "2026-09-08T03:54:27Z",
+    "pushedAt": "2026-09-08T08:22:03Z",
     "url": "https://github.com/ibtisam-iq/portfolio-site/commits"
   },
   "measuredAt": "2026-09-08"
