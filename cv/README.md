@@ -427,6 +427,34 @@ skills list lands in every CV at once.
 Worth doing when the second CV exists. Not before: one variant does not need a variant
 system, and building it early would be guessing at what the variants need to differ on.
 
+## Wording rules for the CV itself
+
+Set on 2026-09-21 after an AI-written rewrite was reviewed line by line. Full list of what
+was kept and rejected is in `status.md`. The rules that came out of it:
+
+- **Never overstate, never understate.** A claim goes in only if the CV or a repository can
+  back it. Interviewers probe, and a reference check confirms titles.
+- **Titles describe the work, not a rank.** "Operations Specialist" is fine for research,
+  sourcing and listings. "Lead" was never true. He did some advisory work, but "Consultant"
+  stays off the CV: it invites questions the CV has no room to answer.
+- **"Independent Infrastructure Lab" stays.** The projects were built and run on iximiuz Labs
+  microVMs, KodeKloud labs and AWS, and the public iximiuz profile lets an interviewer open
+  them. Leaving the word out raises "where did you do this?" instead.
+- **"Projects", not "production environments".** The eight builds follow production
+  practice. Some ran in lab accounts, and the CV says so.
+- **No apologetic parentheticals** such as "(Self-Driven)". State the fact plainly.
+- **No technology he has not used.** Logstash and ArgoCD on bare metal were both suggested
+  and both wrong. Check `src/data/generated.ts` before adding a tool.
+- **One line per Experience bullet.** About 120 characters at this font. Long bullets wrap
+  by a few words and cost a line each. Projects bullets are denser evidence and stay longer.
+- **Section order:** Summary, Certifications, Technical Skills, Experience, Projects,
+  Education. Verifiable evidence first, because the employment history is short.
+- **Two pages, both forms.** The public build carries an extra line, so check
+  `pdfinfo public/cv.pdf` as well as the private PDF. Adding one bullet once pushed the
+  public form to a third page while the private one still fitted.
+- **The phone number never enters `cv.html`.** Pasting a full CV into a chat or an AI
+  rewrite can carry it back in.
+
 ## Keep the public CV wide
 
 With no employment history to anchor a specialisation, narrowing the public document
