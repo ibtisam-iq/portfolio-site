@@ -439,7 +439,7 @@ was kept and rejected is in `status.md`. The rules that came out of it:
   stays off the CV: it invites questions the CV has no room to answer.
 - **"Independent Infrastructure Lab" stays.** The projects were built and run on iximiuz Labs
   microVMs, KodeKloud labs and AWS, and the public iximiuz profile lets an interviewer open
-  them. Leaving the word out raises "where did you do this?" instead.
+  them. Leaving the word out leaves the question of where the work was done unanswered.
 - **"Projects", not "production environments".** The eight builds follow production
   practice. Some ran in lab accounts, and the CV says so.
 - **No apologetic parentheticals** such as "(Self-Driven)". State the fact plainly.
@@ -452,7 +452,7 @@ was kept and rejected is in `status.md`. The rules that came out of it:
 - **Two pages, both forms.** The public build carries an extra line, so check
   `pdfinfo public/cv.pdf` as well as the private PDF. Adding one bullet once pushed the
   public form to a third page while the private one still fitted.
-- **The phone number never enters `cv.html`.** Pasting a full CV into a chat or an AI
+- **The phone number never enters `cv/cv.html`.** Pasting a full CV into a chat or an AI
   rewrite can carry it back in.
 
 ## Keep the public CV wide
