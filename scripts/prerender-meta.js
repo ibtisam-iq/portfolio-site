@@ -111,7 +111,11 @@ writeFileSync('dist/index.html', template)
 const rewrites = (m) => {
   const title = attr(m.title + SUFFIX)
   const description = attr(m.description)
-  const url = `${SITE}${m.path}`
+  // Trailing slash, because every route ships as a directory and that is the only form a
+  // static host answers with 200: the bare path redirects. Naming the redirecting form here
+  // cost `/tools` its place in the index, and left Google two canonicals to choose between,
+  // since src/hooks/useCanonical.ts rewrites this tag to the slashed URL after load.
+  const url = `${SITE}${m.path}/`
   return [
     [/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`],
     [/<meta\s+name="description"[^>]*>/, `<meta name="description" content="${description}" />`],
@@ -175,7 +179,7 @@ writeFileSync('dist/404.html', notFound)
 // From the same `routes` array as the shells, so the two cannot disagree. No <lastmod>:
 // it would be the build date on every entry.
 const urls = ['/', ...routes.map((m) => m.path)]
-  .map((p) => `  <url><loc>${SITE}${p}</loc></url>`)
+  .map((p) => `  <url><loc>${SITE}${p === '/' ? '/' : `${p}/`}</loc></url>`)
   .join('\n')
 writeFileSync(
   'dist/sitemap.xml',
