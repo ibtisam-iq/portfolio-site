@@ -122,7 +122,7 @@ jobs:
                 failed = true
                 continue
               }
-              if (!html.includes(`og:url" content="https://ibtisam-iq.com/${route}"`)) {
+              if (!html.includes(`og:url" content="https://ibtisam-iq.com/${route}/"`)) {
                 console.log(`::error file=${file}::og:url does not point at /${route}`)
                 failed = true
               }
@@ -131,8 +131,9 @@ jobs:
             process.exit(failed ? 1 : 0)
           '
 
-      # The colour system publishes its ratios in tailwind.config.js. This is what checks
-      # them, in a real browser, on the build that is about to be deployed.
+      # The colour system publishes its ratios in REFERENCE.md, and the palette lives in
+      # src/index.css. This is what checks them, in a real browser, on the build that is
+      # about to be deployed.
       - name: Check contrast
         run: npm run check:contrast
 
