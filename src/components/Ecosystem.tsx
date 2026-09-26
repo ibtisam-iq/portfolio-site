@@ -87,7 +87,7 @@ const Ecosystem = () => {
             {/* Was a plain anchor, which tore down and rebooted the whole app to move
                 between two pages of it. */}
             <Link
-              to="/about"
+              to="/about/"
               className="group inline-flex items-center gap-2 rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-muted transition-colors hover:border-teal-accent/50 hover:text-teal-accent dark:border-border-subtle dark:text-text-muted"
             >
               How that pipeline works
