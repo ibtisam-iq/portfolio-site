@@ -86,7 +86,7 @@ const Hero = () => {
       value: "2",
       label: "CNCF certifications",
       sub: "CKA and CKAD",
-      href: "/certificates",
+      href: "/certificates/",
       // The only figure here nothing counts, so it names where to check instead.
       title: "Credential IDs on the certifications page",
     },
@@ -221,7 +221,7 @@ const Hero = () => {
               View the projects &#8599;
             </a>
             <Link
-              to="/contact"
+              to="/contact/"
               className="rounded-lg border border-light-border px-7 py-3.5 text-center text-base font-semibold text-light-text transition-colors hover:border-teal-accent hover:text-teal-accent dark:border-border-subtle dark:text-text-primary dark:hover:border-teal-accent dark:hover:text-teal-accent"
             >
               Get in touch
