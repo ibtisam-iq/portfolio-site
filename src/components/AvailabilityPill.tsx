@@ -44,7 +44,7 @@ const AvailabilityPill = ({ variant = "pill" }: { variant?: Variant } = {}) => {
   const wrap = (inner: ReactNode, t: Record<string, unknown>) =>
     status ? (
       <Link
-        to="/contact"
+        to="/contact/"
         className={`${shared} transition-colors hover:text-teal-accent`}
         {...t}
       >
