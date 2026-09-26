@@ -55,9 +55,14 @@ const routesFromRouter = async () => {
   return [...new Set(paths)]
 }
 
+// The sitemap names every route with a trailing slash, because that is what the host
+// serves; the router declares them without one. Comparing the two is a check on which
+// pages exist, not on how they are spelled, so the slash comes off first.
 const sitemapRoutes = async () => {
   const xml = await readFile(join(DIST, 'sitemap.xml'), 'utf8')
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname)
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map((m) => new URL(m[1]).pathname)
+    .map((p) => (p !== '/' && p.endsWith('/') ? p.slice(0, -1) : p))
 }
 
 /**
