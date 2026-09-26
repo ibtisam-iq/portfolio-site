@@ -11,7 +11,10 @@ export function useCanonical() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const url = `${SITE}${pathname === "/" ? "" : pathname}`;
+    // One trailing slash, always: that is the form the host serves with 200 and the form
+    // scripts/prerender-meta.js writes into the shell, so the tag never changes value
+    // between the HTML and the running app.
+    const url = `${SITE}${pathname.replace(/\/*$/, "/")}`;
 
     document
       .querySelector<HTMLLinkElement>('link[rel="canonical"]')
