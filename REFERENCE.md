@@ -362,6 +362,32 @@ JavaScript would otherwise resolve every page back to the site root.
 `scripts/profile.js` is the single place identity, credentials and sites are edited.
 Everything in the list above is derived from it, and none of those outputs is committed.
 
+### One address per page, with the trailing slash
+
+Every route is published as a directory, so `/tools/index.html` is what a static host
+serves, and `/tools` is answered with a 301 to it. GitHub Pages, Cloudflare Pages and the
+container's nginx all behave that way.
+
+For months the sitemap, the canonical tag and `og:url` all named the redirecting form while
+`src/hooks/useCanonical.ts` rewrote the same tag to the slashed form once the app had
+booted, so a crawler was handed two different canonicals for one page. Google's index shows
+what that cost: `/about`, `/certificates` and `/contact` were eventually crawled through the
+redirect, and `/tools` was not. On 26 September 2026 it sat in Search Console's "Discovered,
+currently not indexed" list as `https://ibtisam-iq.com/tools`, the only address from this
+site in that list, alongside a "Page with redirect" report naming the sitemap.
+
+The rule that came out of it: **the address a page advertises is the one the host answers
+with 200, and it is spelled the same way everywhere.** That covers the sitemap, the
+canonical, `og:url`, the in-browser canonical and every internal link, so nothing the site
+publishes about itself points at a redirect.
+
+Two checks read those addresses and both allow for the slash rather than restating it.
+`.github/workflows/pages.yml` asserts each shell's `og:url` ends in one.
+`scripts/check-contrast.mjs` compares the sitemap against the router, which declares routes
+without a slash, so it trims before comparing: the comparison is about which pages exist,
+not how they are spelled. `src/components/Navbar.tsx` trims for the same reason, so a
+visitor arriving on a bare path from an older link still sees the right tab highlighted.
+
 ### The two deployments
 
 `.github/workflows/pages.yml` builds and publishes to GitHub Pages, which is the live site.
