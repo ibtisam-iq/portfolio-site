@@ -29,24 +29,24 @@ export interface Stats {
 }
 
 export const stats: Stats = {
-  "dockerPulls": 11829,
+  "dockerPulls": 13224,
   "dockerImages": 11,
-  "debugboxPulls": 1954,
-  "publicRepos": 34,
-  "githubStars": 21,
+  "debugboxPulls": 2240,
+  "publicRepos": 35,
+  "githubStars": 23,
   "starsByRepo": {
     "debugbox": 10,
     "nectar": 5,
+    "certification-practice-vault": 3,
     "silver-stack": 3,
-    "certification-practice-vault": 2,
-    "platform-engineering-systems": 1
+    "microservices-demo": 1
   },
   "lastShipped": {
-    "repo": "ibtisam-iq",
-    "pushedAt": "2026-09-03T11:50:42Z",
-    "url": "https://github.com/ibtisam-iq/ibtisam-iq/commits"
+    "repo": "nectar",
+    "pushedAt": "2026-09-24T13:19:53Z",
+    "url": "https://github.com/ibtisam-iq/nectar/commits"
   },
-  "measuredAt": "2026-09-03"
+  "measuredAt": "2026-09-26"
 }
 
 /** 10882 renders as "10,882". Kept here so every surface formats it the same way. */
