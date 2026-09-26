@@ -48,14 +48,14 @@ const CvLink = ({ onAction }: { onAction?: () => void }) => (
 const navItems: { label: string; to: string; external?: boolean }[] = [
   { label: "Home", to: "/" },
   { label: "Projects", to: "https://projects.ibtisam-iq.com", external: true },
-  { label: "Tools", to: "/tools" },
-  { label: "Certifications", to: "/certificates" },
-  { label: "About", to: "/about" },
+  { label: "Tools", to: "/tools/" },
+  { label: "Certifications", to: "/certificates/" },
+  { label: "About", to: "/about/" },
 ];
 
 // Not in the list above, deliberately: six equal links offer no next step. This is the one
 // thing the bar asks for, so it is the one thing shaped like a button.
-const CONTACT = { label: "Contact", to: "/contact" };
+const CONTACT = { label: "Contact", to: "/contact/" };
 
 // This site's own source, not the GitHub profile. The profile is already linked from the
 // hero figure and the footer; the page itself is not linked anywhere else.
@@ -104,8 +104,15 @@ const Navbar = () => {
     return () => document.removeEventListener("keydown", onKey);
   }, [mobileOpen]);
 
-  const isActive = (to: string) =>
-    to === "/" ? pathname === "/" : pathname.startsWith(to);
+  // Compared without the trailing slash. The links carry one so that a crawler following
+  // them never lands on a redirect, but a visitor can still arrive on the bare path from
+  // an older link, and the tab has to light up either way.
+  const bare = (p: string) => (p !== "/" && p.endsWith("/") ? p.slice(0, -1) : p);
+  const isActive = (to: string) => {
+    const here = bare(pathname);
+    const target = bare(to);
+    return target === "/" ? here === "/" : here === target || here.startsWith(`${target}/`);
+  };
 
   return (
     <header
