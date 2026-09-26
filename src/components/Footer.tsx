@@ -94,10 +94,10 @@ const resources = [
 ];
 
 const siteLinks = [
-  { label: "About", to: "/about" },
-  { label: "Tools", to: "/tools" },
-  { label: "Certifications", to: "/certificates" },
-  { label: "Contact", to: "/contact" },
+  { label: "About", to: "/about/" },
+  { label: "Tools", to: "/tools/" },
+  { label: "Certifications", to: "/certificates/" },
+  { label: "Contact", to: "/contact/" },
 ];
 
 const Footer = () => {
