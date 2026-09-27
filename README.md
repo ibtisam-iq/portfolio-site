@@ -82,13 +82,16 @@ still builds, because every generated file is committed alongside the code.
 npm run lint             # ESLint
 npm run check:prose      # the writing rules for every comment and document here
 npm run check:contrast   # colour contrast, in a real browser, against dist/
+npm run check:hydration  # that every route's rendered HTML survives the browser
 ```
 
 `check:contrast` measures every text node against its composited background, with the
 node's own `opacity` and colour alpha folded in, plus the generated tool marks and overflow
 at 375px. It waits for the page to stop animating before it measures. It reads `dist/`, so
-build first. `check:prose` enforces the rules the comments here follow. Both run in CI on
-every push.
+build first. `check:hydration` loads every route in both themes and fails if React threw
+the rendered markup away, which costs the whole of pre-rendering and shows no symptom.
+`check:prose` enforces the rules the comments here follow. All three run in CI on every
+push.
 
 ### The CV
 
@@ -153,7 +156,8 @@ The chart is in [helm/](./helm), with its own [README](./helm/README.md).
 | Styling | Tailwind CSS 4, PostCSS |
 | Typography | Inter and JetBrains Mono, variable, served from the site |
 | Routing | React Router 7 |
-| Quality | ESLint 10 flat config, typescript-eslint, two project-specific checkers |
+| Rendering | Pre-rendered per route at build time, hydrated in the browser |
+| Quality | ESLint 10 flat config, typescript-eslint, three project-specific checkers |
 | Runtime for the build | Node 24 |
 | CI/CD | GitHub Actions, four workflows |
 | Container | Multi-stage Docker, nginx:alpine, rootless |
@@ -169,7 +173,7 @@ Four workflows, each scoped to the paths it needs.
 
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
-| [.github/workflows/pages.yml](./.github/workflows/pages.yml) | push to `main`, a daily schedule, or manually | Lint, prose check, generate, build, verify every route's metadata, contrast check, then upload to Cloudflare Pages, which serves the site, and to GitHub Pages, which is the rollback. Pull requests run the same gates and deploy nothing. |
+| [.github/workflows/pages.yml](./.github/workflows/pages.yml) | push to `main`, a daily schedule, or manually | Lint, prose check, generate, build, verify every route's metadata, contrast and hydration checks, then upload to Cloudflare Pages, which serves the site, and to GitHub Pages, which is the rollback. Pull requests run the same gates and deploy nothing. |
 | [.github/workflows/ci.yml](./.github/workflows/ci.yml) | manually | Generate on the runner, then a multi-architecture image build pushed to GHCR and Docker Hub. |
 | [.github/workflows/cv.yml](./.github/workflows/cv.yml) | pull requests touching `cv/**` | Renders the public CV and fails if it is blank, if it lost a required line, or if a phone number reached it. Commits nothing. |
 | [.github/workflows/helm-release.yml](./.github/workflows/helm-release.yml) | push to `main` touching `helm/**` | Lint, package, and push the chart to GHCR as an OCI artifact. |
@@ -208,8 +212,9 @@ portfolio-site/
 │   ├── generate-stats.js            Docker Hub and GitHub    → src/data/stats.ts
 │   ├── generate-contributions.js    the contribution year    → src/data/contributions.ts
 │   ├── profile.js                   identity, credentials and sites, edited only here
-│   ├── prerender-meta.js            per-route shells, sitemap, robots, llms, profile
+│   ├── prerender-meta.js            renders every route, sitemap, robots, llms, profile
 │   ├── check-contrast.mjs           contrast, in a real browser
+│   ├── check-hydration.mjs          that the rendered markup is adopted, not discarded
 │   └── check-prose.mjs              the writing rules
 ├── src/
 │   ├── components/      the parts a page is assembled from
@@ -218,6 +223,8 @@ portfolio-site/
 │   ├── lib/  hooks/     small pieces with no opinion about appearance
 │   ├── context/         the theme
 │   ├── App.tsx          the router, and the only definition of what pages exist
+│   ├── main.tsx         hydrates the rendered page in the browser
+│   ├── entry-server.tsx renders one route to HTML at build time
 │   └── index.css        the Tailwind @theme palette, surfaces, containers, label roles
 ├── Dockerfile           three stages, ending in nginx with no Node
 ├── nginx.conf           headers, caching and the SPA fallback, container only

@@ -358,13 +358,15 @@ a theme toggle that throws is worse than one that forgets.
 
 ### The build
 
-`npm run build` compiles the TypeScript, has Vite bundle the site into `dist/`, and then
-runs `scripts/prerender-meta.js`. That last step writes a separate HTML shell for each
-route with its own title, description and canonical URL, plus `404.html`, `sitemap.xml`,
-`robots.txt`, `llms.txt` and `profile.json`.
+`npm run build` runs four things in order. It compiles the TypeScript. Vite bundles the
+site into `dist/`. Vite runs a second time over `src/entry-server.tsx` to produce
+`dist-ssr/entry-server.js`, a copy of the application that runs under Node. Then
+`scripts/prerender-meta.js` uses that copy to render every route, and writes a separate
+HTML shell for each one with its own markup, title, description and canonical URL, plus
+`404.html`, `sitemap.xml`, `robots.txt`, `llms.txt` and `profile.json`.
 
-The shells matter because this is a single-page application. A crawler that does not run
-JavaScript would otherwise resolve every page back to the site root.
+`dist-ssr/` is a build artifact and is in `.gitignore`. It is never published: it exists
+for the length of one build, so the rendering can happen without a browser.
 
 `scripts/profile.js` is the single place identity, credentials and sites are edited.
 Everything in the list above is derived from it, and none of those outputs is committed.
@@ -390,6 +392,73 @@ desktop one.
 It also narrows the policy. `font-src` is `'self'` alone and `style-src` names no host at
 all, so a Google host reappearing in `nginx.conf` means the fonts have quietly moved back.
 
+`scripts/prerender-meta.js` preloads the sans, reading its fingerprinted name out of the
+build rather than restating it. That became necessary with pre-rendering: text now paints
+before the stylesheet naming the font has been reached, so the face arrived late and moved
+the header when it landed. Preloading the mono as well was measured and rejected, since it
+cost 0.4s of first paint on a throttled phone to fix a shift it was not causing.
+
+### Pre-rendering, and the four things that stood in its way
+
+Every route's HTML is written into its shell at build time, so the page arrives readable
+and the browser's only job is to take over the markup that is already there. With
+JavaScript switched off the landing page shows 601 words and its heading; before this it
+showed none.
+
+`src/entry-server.tsx` renders a route, `src/main.tsx` calls `hydrateRoot` on what it
+finds, and the two wrap the application in the same tree down to `StrictMode`, because a
+structural difference between them is a mismatch waiting to happen.
+
+Hydration is an agreement about markup. React renders the page a second time in the
+browser and compares; where the two disagree it throws away everything the build produced
+and starts again. Four things here disagreed, and each was fixed rather than worked
+around.
+
+**The hero's entrance** was an opacity fade gated on a mounted flag, so the server would
+have written the first screen into the HTML at zero opacity. It is a slide now, with no
+fade, driven by `.hero-rise` in `src/index.css` and a per element delay. The markup is
+identical before and after hydration and the text is readable from the first frame.
+
+**The counting figures** would have shipped as `0`. They show their measured values.
+
+**The live shipped strip** depends on a clock, which the build does not have. The row is
+always rendered and only the age inside it waits, so the heading below does not move when
+the browser takes over.
+
+**The theme button** chose its icon from React state, and the build has no theme to read.
+Both icons ship now and the `dark` class on the root element decides between them, each
+with its own label, so the icon is right before any JavaScript runs and correct for a
+screen reader.
+
+One thing is marked rather than fixed. The footer's year comes from the clock, so a build
+in December and a visit in January disagree. It carries `suppressHydrationWarning`, which
+is React's escape hatch for exactly that, because otherwise one turn of the year would
+make React rebuild the entire page.
+
+### Measuring this, and the trap in measuring it
+
+Lighthouse has two throttling methods and they disagree completely about pre-rendering.
+
+The default, `simulate`, loads the page at full speed and models a slow connection
+afterwards. Against a local server everything arrives in milliseconds, so the model treats
+the JavaScript bundle as part of the path to first paint whether the page needed it or
+not. Measured that way, pre-rendering scored **78 against 80**, which is to say it looked
+like a regression.
+
+`--throttling-method=devtools` throttles the connection for real and measures what
+happens. Same two builds, same machine, same minute:
+
+| | Before | After |
+|---|---|---|
+| Phone score | 72 | **94** |
+| Phone first paint | 3.7s | **2.3s** |
+| Phone largest paint | 5.1s | **2.3s** |
+| Desktop largest paint | 0.7s | **0.1s** |
+
+Applied throttling is the method to use for anything that changes what has to arrive
+before a page can paint. The simulated one is fine for comparing two builds that load the
+same things in the same order, which is what every earlier measurement here was doing.
+
 ### Analytics waits for the page
 
 The Google tag is 176KB of script that measures the page rather than building it. It used
@@ -404,17 +473,21 @@ The cost is worth stating rather than hiding: a visitor who leaves within the fi
 or two is no longer counted. That trade was taken deliberately, because the alternative is
 making every visitor wait for a script whose only job is to watch them.
 
-### The hero's counting figures set the largest paint
+### The hero's figures, and why they stopped counting
 
-The three figures in the hero count up from zero. The Docker pulls figure is the largest
-piece of text painted on the first screen, so Chrome treats the frame it stops moving on as
-the moment the page finished. At 2200ms that single animation was reported as a 2.0s
-largest contentful paint on a desktop connection, and it held the desktop score at 90 while
-every other measurement on that run had improved.
+The three figures in the hero used to count up from zero over as much as 2200ms. The Docker
+pulls figure is the largest piece of text painted on the first screen, so Chrome treated
+the frame it stopped moving on as the moment the page finished, and reported a 2.0s largest
+contentful paint on a desktop connection. That single animation held the desktop score at
+90 while every other measurement on the same run had improved.
 
-They run for about a second now and the desktop score is 97. The rule that came out of it:
-an animation over the largest element on the first screen is not decoration, it is the
-page's loading time as every measuring tool will report it.
+Shortening them to about a second put the score back. Pre-rendering then removed them
+entirely, because a page whose HTML is written at build time would have shipped `0` in it,
+and the real figure is the entire point of the band.
+
+The rule that came out of the first half of that: an animation over the largest element on
+the first screen is not decoration, it is the page's loading time as every measuring tool
+will report it.
 
 ### One address per page, with the trailing slash
 
@@ -572,7 +645,7 @@ produce, before writing its own. Without that a rotated-away CV stays on disk an
 
 ## 7. The checks
 
-Three scripts, all runnable locally and all run by CI.
+Four scripts, all runnable locally and all run by CI.
 
 `npm run lint` is ESLint.
 
@@ -608,6 +681,23 @@ still fading, so a node caught mid-transition reports a ratio no visitor is ever
 run now waits past the 1200ms reveal fallback in `src/hooks/useInView.ts` and drains every
 finite animation first, which also raised coverage: the landing page went from 126 text
 nodes measured to 174.
+
+`npm run check:hydration` loads every route in both themes and fails if the rendered
+markup did not survive. It exists because pre-rendering breaks without looking broken:
+React finds markup it did not expect, discards it, rebuilds the page in the browser, and
+the visitor sees the right thing a moment later. Nothing on screen says the build's work
+was thrown away.
+
+It watches for that directly. A `MutationObserver` installed before anything on the page
+runs records whether the mount point ever had children removed, which is the difference
+between React adopting the markup and React starting again. It also reads the shells off
+disk first and fails if two routes rendered the same heading, which is what a broken route
+list looks like.
+
+Its limit is worth stating. A production build recovers from a text or structure
+difference by discarding the tree, and that is what this catches. A differing attribute is
+patched in place and passes here. Both negative cases were run against it before it was
+trusted: bypassing hydration entirely, and a genuine text mismatch. It failed on both.
 
 `npm run check:prose` enforces the writing rules described in the next section.
 
@@ -664,7 +754,7 @@ in a document like this one instead.
 cv/                   the CV source, its renderer, and cv/README.md on how the links work
 helm/                 the Kubernetes chart that deploys the image
 public/               static files copied verbatim into dist/
-scripts/              the five generators and the two checkers
+scripts/              the five generators, the renderer and the three checkers
 src/data/             what the generators write, plus three hand-maintained files
 src/lib/  src/hooks/  small pieces with no opinion about appearance
 src/components/       the parts a page is assembled from
