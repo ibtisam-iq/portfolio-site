@@ -429,6 +429,19 @@ reads the GitHub and Docker Hub APIs and renders the CV through Puppeteer. The r
 install a system font cannot reproduce that. One build definition, on the runner that already
 satisfies it, is the whole reason for this shape.
 
+### The rollback, and the one thing still resting on GitHub Pages
+
+The apex is a proxied CNAME to the Pages project. **Rollback is that single record**: point
+`ibtisam-iq.com` back at `ibtisam-iq.github.io` as DNS only. GitHub Pages still receives every
+build, so the fallback is current rather than whatever was last deployed before the move.
+
+`www.ibtisam-iq.com` is still a CNAME to `ibtisam-iq.github.io`, and the 301 to the apex it
+answers with is served by GitHub Pages, not by Cloudflare. It works because GitHub Pages is
+deliberately still deployed. Turning GitHub Pages off therefore breaks `www` and nothing
+else, and the replacement is a Cloudflare redirect rule, not a second custom domain: two
+hostnames serving the same pages is a duplicate, which is the problem the canonical rule in
+section 6 exists to avoid.
+
 ### The two Cloudflare secrets
 
 `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are GitHub repository secrets, read in one
