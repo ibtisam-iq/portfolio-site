@@ -38,6 +38,11 @@ COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
 COPY vite.config.ts postcss.config.js eslint.config.js ./
 COPY index.html ./
 
+# The response headers for both deployments. scripts/prerender-meta.js reads it to write
+# dist/_headers, so the build fails without it. Its absence here broke this stage for a
+# day, unnoticed, because .github/workflows/ci.yml only runs when it is started by hand.
+COPY nginx-security-headers.conf ./
+
 # scripts/ before src/: scripts/prerender-meta.js is part of `npm run build`, and it
 # changes less often than the site source does
 COPY scripts ./scripts
@@ -75,6 +80,10 @@ LABEL org.opencontainers.image.title="portfolio-site" \
 # Drop nginx defaults before injecting hardened config
 RUN rm -rf /usr/share/nginx/html/* \
     && rm /etc/nginx/conf.d/default.conf
+
+# Outside conf.d on purpose: nginx loads every .conf in that directory as a server
+# configuration, and this one is a fragment meant to be included.
+COPY --chown=nginx:nginx nginx-security-headers.conf /etc/nginx/security-headers.conf
 
 COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
 

@@ -46,7 +46,7 @@ vitest.config.*
 jest.config.*
 
 # Docker build files, self-referential and not needed inside the image
-# nginx.conf is intentionally absent: COPY in Stage 3 requires it in context
+# nginx.conf and nginx-security-headers.conf are intentionally absent: both are copied
 Dockerfile
 Dockerfile.*
 .dockerignore

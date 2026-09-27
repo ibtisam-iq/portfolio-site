@@ -325,21 +325,50 @@ writeFileSync('dist/profile.json', JSON.stringify(profile, null, 2) + '\n')
 // The response headers for the static host. Cloudflare Pages reads this file and GitHub
 // Pages ignores it, which is why the live site carried none of these until the host changed.
 
-// Parsed out of nginx.conf rather than restated: two copies of a policy drift, and the
-// drift is silent until a page is blocked in one deployment and not the other.
-const nginxConf = readFileSync('nginx.conf', 'utf8')
-const securityBlock = nginxConf.slice(
-  nginxConf.indexOf('# -- Security headers'),
-  nginxConf.indexOf('# -- Compression')
-)
-const securityHeaders = [...securityBlock.matchAll(/add_header\s+([\w-]+)\s+"([\s\S]*?)"\s+always;/g)].map(
+// Parsed out of the container's own policy rather than restated: two copies drift, and
+// the drift is silent until a page is blocked in one deployment and not the other. The
+// file holds nothing else, which is why this reads all of it.
+const POLICY = 'nginx-security-headers.conf'
+let policySrc
+try {
+  policySrc = readFileSync(POLICY, 'utf8')
+} catch {
+  throw new Error(
+    `prerender-meta: ${POLICY} is not here. It is the single source for both deployments' ` +
+      'headers, so a build without it would publish a site carrying none. Inside Docker ' +
+      'this means the builder stage is not copying it.'
+  )
+}
+const securityHeaders = [...policySrc.matchAll(/add_header\s+([\w-]+)\s+"([\s\S]*?)"\s+always;/g)].map(
   ([, name, value]) => [name, value.replace(/\s+/g, ' ').trim()]
 )
 if (securityHeaders.length < 6) {
   throw new Error(
-    `prerender-meta: parsed ${securityHeaders.length} security headers from nginx.conf, expected at least 6. ` +
+    `prerender-meta: parsed ${securityHeaders.length} security headers from ${POLICY}, expected at least 6. ` +
       'The add_header block changed shape; update this parser or the static host silently loses its policy.'
   )
+}
+
+// nginx drops every inherited header from a location that adds one of its own, so each
+// one has to include the policy again. That is invisible in the file and was wrong for
+// months. Checked here because this runs on every build, which is where the file is edited.
+
+// The container's nginx.conf is not in the Docker build context, and does not need to be.
+// This is a check on the configuration as written, not on the image.
+if (existsSync('nginx.conf')) {
+  const conf = readFileSync('nginx.conf', 'utf8')
+  const INCLUDE = 'include /etc/nginx/security-headers.conf;'
+  // Split rather than parsed: the locations here are sequential and never nested, so each
+  // chunk runs to the start of the next one.
+  const blocks = conf.split(/^\s*location\s/m).slice(1)
+  const bare = blocks.filter((b) => !b.includes(INCLUDE)).map((b) => b.split('{')[0].trim())
+  if (bare.length > 0) {
+    throw new Error(
+      `prerender-meta: ${bare.length} location block(s) in nginx.conf do not include the ` +
+        `policy: ${bare.join(', ')}. nginx would serve those paths with no security ` +
+        `headers at all. Add "${INCLUDE}" to each.`
+    )
+  }
 }
 
 // Appended, not written fresh: cv/build-pdf.mjs has already put the private CV tree's
@@ -367,6 +396,6 @@ writeFileSync(
 console.log(
   `✅ ${routes.length} routes rendered, 404.html, sitemap.xml (${urls.split('\n').length} URLs), ` +
     `robots.txt (${sitemaps.length} sitemaps), llms.txt, profile.json, ` +
-    `_headers (${securityHeaders.length} security headers from nginx.conf), ` +
+    `_headers (${securityHeaders.length} security headers from ${POLICY}), ` +
     `${fonts.length} preloaded font, all from scripts/profile.js`
 )
