@@ -1,12 +1,17 @@
 // The last step of `npm run build`. Reads dist/index.html and writes one shell per route
-// with its own metadata, plus 404.html, the sitemap, robots.txt, llms.txt and profile.json.
-// A crawler that does not run JavaScript would otherwise see the site root on every page.
-//
+// with its own metadata and its own rendered HTML, plus 404.html, the sitemap, robots.txt,
+// llms.txt and profile.json.
+
+// The rendering comes from dist-ssr/entry-server.js, which `npm run build` produces from
+// src/entry-server.tsx in a second Vite pass. Without it a crawler, and the first paint,
+// would see an empty div on every page.
+
 // The `routes` array below has to track src/App.tsx. The Pages workflow derives its own
 // list from that router and fails if a route here is missing.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'fs'
 import { profile } from './profile.js'
+import { render } from '../dist-ssr/entry-server.js'
 
 const SITE = profile.site
 const SUFFIX = ` | ${profile.name}`
@@ -99,10 +104,45 @@ if (!LD_PATTERN.test(shell)) {
     'prerender-meta: no ld+json block in dist/index.html. Restore the placeholder in index.html.'
   )
 }
-const template = shell.replace(
+let template = shell.replace(
   LD_PATTERN,
   `<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n    </script>`
 )
+
+// A font is only discovered once the stylesheet naming it has been parsed, which on a
+// prerendered page is after the first text has painted in a fallback face. Measured: that
+// swap was the whole of the page's layout shift, and asking up front removes it.
+
+// The sans only. Preloading both cost 0.4s of first paint on a throttled phone to remove
+// a shift the mono face was not causing, so the mono keeps its ordinary discovery.
+
+// The name is read from the build rather than written here: Vite fingerprints it, so any
+// name in this file would be stale after the next change to the font.
+const fonts = readdirSync('dist/assets').filter(
+  (f) => f.endsWith('.woff2') && f.startsWith('inter-')
+)
+if (fonts.length === 0) {
+  throw new Error(
+    'prerender-meta: no inter .woff2 in dist/assets. The @font-face rules in src/index.css ' +
+      'no longer point at a bundled file, and the site is fetching its fonts elsewhere.'
+  )
+}
+const CHARSET = '<meta charset="UTF-8" />'
+if (!template.includes(CHARSET)) {
+  throw new Error('prerender-meta: no charset meta in dist/index.html to anchor the preloads to.')
+}
+template = template.replace(
+  CHARSET,
+  [
+    CHARSET,
+    '',
+    ...fonts.map(
+      (f) =>
+        `    <link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin />`
+    ),
+  ].join('\n')
+)
+
 writeFileSync('dist/index.html', template)
 
 // Each entry replaces exactly one tag in the built shell. Patterns tolerate the
@@ -147,11 +187,37 @@ const apply = (html, pairs) => {
   return html
 }
 
+// The mount point Vite emits is empty. Filling it is the whole of the pre-rendering: the
+// markup React would have built on the client is already there, and src/main.tsx adopts
+// it instead of building it again.
+const ROOT_PATTERN = /<div id="root"><\/div>/
+const withBody = (html, path) => {
+  if (!ROOT_PATTERN.test(html)) {
+    throw new Error(
+      'prerender-meta: no empty <div id="root"></div> in the shell. ' +
+        'index.html changed, or a previous pass already filled it.'
+    )
+  }
+  const body = render(path)
+  if (body.length < 1000) {
+    throw new Error(
+      `prerender-meta: ${path} rendered ${body.length} characters, which is an empty or ` +
+        'broken page. The route would ship as a blank shell.'
+    )
+  }
+  return html.replace(ROOT_PATTERN, `<div id="root">${body}</div>`)
+}
+
 for (const m of routes) {
-  const html = apply(template, rewrites(m))
+  const html = withBody(apply(template, rewrites(m)), m.path)
   mkdirSync(`dist${m.path}`, { recursive: true })
   writeFileSync(`dist${m.path}/index.html`, html)
 }
+
+// The root shell is the template every other route was cloned from, so it is filled last
+// and written back over itself. Filling it earlier would put the landing page's markup
+// into all four of them.
+writeFileSync('dist/index.html', withBody(template, '/'))
 
 // Built here, never copied from index.html: a copy would give every dead URL the home
 // page's title, canonical and `index, follow`. Own title, no canonical, noindex.
@@ -174,7 +240,9 @@ const notFound = apply(template, [
     `<meta name="twitter:title" content="Page Not Found${attr(SUFFIX)}" />`,
   ],
 ])
-writeFileSync('dist/404.html', notFound)
+// A path no route claims, so the router falls through to the same NotFound page a
+// visitor reaches. The literal below is never a real route by construction.
+writeFileSync('dist/404.html', withBody(notFound, '/__not-found__'))
 
 // From the same `routes` array as the shells, so the two cannot disagree. No <lastmod>:
 // it would be the build date on every entry.
@@ -297,7 +365,8 @@ writeFileSync(
 )
 
 console.log(
-  `✅ ${routes.length} routes, 404.html, sitemap.xml (${urls.split('\n').length} URLs), ` +
+  `✅ ${routes.length} routes rendered, 404.html, sitemap.xml (${urls.split('\n').length} URLs), ` +
     `robots.txt (${sitemaps.length} sitemaps), llms.txt, profile.json, ` +
-    `_headers (${securityHeaders.length} security headers from nginx.conf), all from scripts/profile.js`
+    `_headers (${securityHeaders.length} security headers from nginx.conf), ` +
+    `${fonts.length} preloaded font, all from scripts/profile.js`
 )

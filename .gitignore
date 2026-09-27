@@ -39,3 +39,6 @@ cv/private.local.json
 # build, so a stray `git add .` should not be able to commit one.
 cv/* copy*.html
 cv/*.local.html
+
+# The server bundle the prerender step imports. Built by npm run build, never shipped.
+dist-ssr
