@@ -1,5 +1,6 @@
-# Builds the site and publishes it to GitHub Pages, and builds a preview for every pull
-# request. This is the workflow that puts ibtisam-iq.com on the internet.
+# Builds the site and publishes it. This is the workflow that puts ibtisam-iq.com on the
+# internet: Cloudflare Pages serves the domain, and the same build is also uploaded to
+# GitHub Pages, which stays current as a rollback one DNS record away.
 
 name: GitHub Pages
 
@@ -14,7 +15,7 @@ on:
       - 'plans/**'
       - '.github/**'
   pull_request:
-    types: [opened, reopened, synchronize, closed]
+    branches: [main]
     paths-ignore:
       - '**/*.md'
       - '**/LICENSE'
@@ -25,8 +26,8 @@ on:
   workflow_dispatch:
 
   # The site reads four sources it does not own, two of which change with no commit at all,
-  # so without a schedule the published numbers only refresh when this repository is pushed.
-  # See REFERENCE.md.
+  # so without a schedule the published numbers only refresh when this workflow is run by
+  # hand. This is the only automatic deploy. See REFERENCE.md.
 
   # The offset minute is deliberate: GitHub delays runs queued on the hour. It also disables
   # schedules in a repository with no push activity for 60 days, which is the first thing to
@@ -34,9 +35,9 @@ on:
   schedule:
     - cron: '17 3 * * *'
 
-# One production deploy at a time, plus one preview per pull request. Every production
-# trigger shares a group on purpose: with the event name in the key a scheduled run and a
-# push would race each other for the single Pages deployment slot.
+# One deploy at a time, plus one check per pull request. Every publishing trigger shares a
+# group on purpose: with the event name in the key, a scheduled run and a push would race
+# each other for the same deployment.
 concurrency:
   group: pages-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
   cancel-in-progress: true
@@ -144,71 +145,42 @@ jobs:
       # 404.html is emitted by scripts/prerender-meta.js during the build, with
       # its own title and noindex. Copying index.html here would overwrite that.
 
+      # Skipped on a pull request: the gates above are the point there, and a fork or a
+      # Dependabot branch cannot read the secrets a deploy needs anyway.
       - name: Upload Pages artifact
-        if: ${{ env.ACT != 'true' }}
+        if: ${{ env.ACT != 'true' && github.event_name != 'pull_request' }}
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 
-  # JOB 2: PR preview, on pull_request only. Served at /pr-preview/pr-<number>/, removed
-  # when the pull request closes, and posted back as a comment on it.
-  pr-preview:
-    name: Deploy PR Preview
-    # Runs on all PR events; rossjrw/pr-preview-action handles deploy vs cleanup
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+      # The host that serves ibtisam-iq.com. Cloudflare builds nothing: the project is
+      # Direct Upload and this hands it the directory built above, so the CV render keeps
+      # the runner that satisfies it. See REFERENCE.md.
 
-    permissions:
-      contents: write       # gh-pages branch push
-      pull-requests: write  # post preview URL comment via marocchino/sticky-pull-request-comment
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        if: github.event.action != 'closed'
-        uses: actions/setup-node@v7
+      # The two secrets are read here and nowhere else. Neither reaches the site, the
+      # container or the browser.
+      - name: Deploy to Cloudflare Pages
+        if: ${{ env.ACT != 'true' && github.event_name != 'pull_request' }}
+        uses: cloudflare/wrangler-action@v3
         with:
-          node-version: 24
-          cache: npm
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=portfolio-site --branch=main
 
-      - name: Install dependencies
-        if: github.event.action != 'closed'
-        run: npm ci
-
-      # Scopes every asset path and the router's basename to the sub-path the preview is
-      # served from. This must equal `umbrella_dir` below plus `pr-<number>`: when the two
-      # disagreed, every asset in a preview resolved to a path with nothing at it.
-      - name: Build
-        if: github.event.action != 'closed'
-        run: npm run build
-        env:
-          VITE_BASE_PATH: /pr-preview/pr-${{ github.event.pull_request.number }}/
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # No CNAME here: it would redirect away from /pr-preview/pr-N.
-      # 404.html comes from scripts/prerender-meta.js, same as the deploy job.
-
-      # token: required, because rossjrw calls marocchino/sticky-pull-request-comment
-      # internally; without explicit token it falls back to a read-only default
-      - name: Deploy PR preview
-        if: ${{ env.ACT != 'true' }}
-        uses: rossjrw/pr-preview-action@v1.8.1
-        with:
-          source_dir: ./dist
-          umbrella_dir: pr-preview
-          action: auto
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # The pull-request preview job that used to live here is gone: it published to a
+      # gh-pages branch this deployment no longer uses. Cloudflare Pages offers branch
+      # previews natively if one is wanted again.
 
   # ────────────────────────────────────────────────────────────────
-  # JOB 3: Production Deploy (runs ONLY on push to main)
+  # JOB 2: GitHub Pages, kept as the rollback
   # ────────────────────────────────────────────────────────────────
+
+  # Cloudflare Pages serves the domain. This publishes the same build to GitHub Pages as
+  # well, so the fallback is a current site rather than whatever was last deployed before
+  # the move: going back is one DNS record, pointing the apex at ibtisam-iq.github.io again.
   deploy-production:
     name: Deploy to GitHub Pages
     needs: build-and-quality
-    # Scheduled and manual runs must deploy too. Gating on `push` alone meant a cron
-    # run would build the fresh numbers and then throw them away without publishing.
     if: >-
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' ||
