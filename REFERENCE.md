@@ -14,7 +14,7 @@ The root `README.md` introduces the project. This file explains it.
 ## 1. What this is
 
 A portfolio site at `ibtisam-iq.com`, built with React, TypeScript, Vite and Tailwind CSS,
-and published two ways from the same output: as a static site on GitHub Pages, and as an
+and published two ways from the same output: as a static site on Cloudflare Pages, and as an
 nginx container image.
 
 Its governing idea is that every claim on it can be checked. The number of Docker pulls,
@@ -390,11 +390,74 @@ visitor arriving on a bare path from an older link still sees the right tab high
 
 ### The two deployments
 
-`.github/workflows/pages.yml` builds and publishes to GitHub Pages, which is the live site.
-It also builds a preview for every pull request, served under a sub-path.
+`.github/workflows/pages.yml` builds the site and publishes it. **Cloudflare Pages serves
+`ibtisam-iq.com`.** The same build is also published to GitHub Pages, which served the domain
+until 27 September 2026 and is now kept only as the rollback.
 
 `.github/workflows/ci.yml` builds and pushes a container image for two architectures. The
 `Dockerfile` has three stages and the final one is nginx with no Node in it.
+
+### When a deploy happens, and when it does not
+
+| Trigger | What happens |
+| --- | --- |
+| `push` to `main` | Gates, build, publish. Markdown, `helm/` and `.github/` are among the `paths-ignore` entries, so editing only those publishes nothing |
+| `pull_request` | Gates and build only. **Nothing is deployed**, which is also why a fork or a Dependabot branch never needs a deployment secret |
+| `workflow_dispatch` | A deploy asked for by hand, from the Actions tab |
+| `schedule`, 03:17 UTC daily | The deploy nothing else can replace. Four of the site's figures are read from GitHub and Docker Hub at build time, so without it they freeze at whatever the last build measured |
+
+The publishing step is the upload to Cloudflare. It needs no Pages environment, no artifact
+handover and no deployment slot, which removed the part of the old arrangement that could
+fail after a green build.
+
+`.github/workflows/ci.yml` is manual only, and that is a separate decision: a
+multi-architecture image build on every push or pull request cost minutes and published
+nothing that was wanted.
+
+### Why Cloudflare does not build the site
+
+The Pages project is **Direct Upload**: the workflow hands it a finished `dist/` and
+Cloudflare runs no build of its own. A Pages project is either connected to Git or accepting
+uploads, not both, so the Git connection was removed on 27 September 2026.
+
+Letting Cloudflare build was tried and is not viable, which is worth recording because the
+project's own history suggests otherwise: its last green build, on 26 August 2026, ran
+`tsc -b && vite build && node scripts/prerender-meta.js` and nothing else, because the
+`prebuild` hook did not exist yet. Today `npm run build` also runs `npm run generate`, which
+reads the GitHub and Docker Hub APIs and renders the CV through Puppeteer. The runner installs
+`fonts-liberation` first or the CV's pagination moves, and a build environment that cannot
+install a system font cannot reproduce that. One build definition, on the runner that already
+satisfies it, is the whole reason for this shape.
+
+### The two Cloudflare secrets
+
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are GitHub repository secrets, read in one
+place: the `Deploy to Cloudflare Pages` step of `.github/workflows/pages.yml`. They authorise
+that upload and nothing else. Neither appears in the site, the container, the image or the
+browser, and neither is in this repository. The token needs one permission, Cloudflare Pages:
+Edit.
+
+The `CV_PHONE` and `CV_SECRET` values also set in the Cloudflare project are now inert: they
+were build variables, and Cloudflare no longer builds. The pair that matters are the GitHub
+secrets of the same name, which the runner uses.
+
+### Response headers, generated from the container's policy
+
+`dist/_headers` is how a static host is told what to send. Cloudflare Pages reads it; GitHub
+Pages ignores it, which is why the live site carried no security headers and a fixed
+ten-minute cache for as long as it was served there.
+
+`scripts/prerender-meta.js` writes that file, and **parses the policy out of `nginx.conf`
+rather than restating it**. Two copies of a content security policy drift, and the drift is
+silent until something a page needs is blocked in one deployment and not the other. The
+parser fails the build if it finds fewer than six headers, because a policy that quietly
+disappears is worse than a build that stops.
+
+It appends rather than overwrites: `cv/build-pdf.mjs` has already written the private CV
+tree's `noindex` block into that file whenever a CV secret was present, and that rule has to
+survive. `/assets/*` gets a year of `immutable` caching, safe because Vite content-hashes
+every filename there; nothing else does, since `index.html` names those hashed URLs and a
+stale copy points at files that no longer exist.
 
 The image builds with data generation disabled, and that is deliberate. The CV renderer
 needs a browser that does not run on the Alpine base at all; the data scripts need network
@@ -403,9 +466,10 @@ So generation happens once, outside, and the build stage compiles what it produc
 workflow does that on the runner before calling `docker build`, and refuses to continue if
 the CV is missing.
 
-`nginx.conf` applies only to the container. GitHub Pages serves the same `dist/` with its
-own headers, so a rule added there changes one of the two deployments and not the other.
-The policy there permits exactly what the page uses: the analytics tag's host in
+`nginx.conf` is where the policy is written, and since the move it is the source for both
+deployments: the container reads it directly, and the static host gets it through the
+generated `dist/_headers` described above. A rule added there now changes both.
+The policy permits exactly what the page uses: the analytics tag's host in
 `script-src`, its beacon and the GitHub API in `connect-src`, and Google Fonts. It permits no inline script,
 and `index.html` contains none, because the two scripts that were inline are now
 `public/theme.js` and `public/analytics.js`.
