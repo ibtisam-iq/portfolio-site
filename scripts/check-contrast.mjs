@@ -242,13 +242,17 @@ const assertTheme = async (page, theme) => {
 const settle = async (page) => {
   await new Promise((r) => setTimeout(r, 1400))
   for (let i = 0; i < 10; i++) {
-    // The availability pill and the scroll cue loop forever, so `finished` on those never
-    // resolves. Only the one-shot transitions are waited on.
+    // Two exclusions, both learned here. The availability pill and the scroll cue loop
+    // forever, so `finished` on those never resolves. A filled animation stays in the
+    // list after it ends, holding its last frame, so waiting for the list to empty hangs.
     const running = await page.evaluate(async () => {
-      const finite = () =>
-        document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity)
-      await Promise.all(finite().map((a) => a.finished.catch(() => {})))
-      return finite().length
+      const pending = () =>
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+          .filter((a) => a.playState !== 'finished')
+      await Promise.all(pending().map((a) => a.finished.catch(() => {})))
+      return pending().length
     })
     if (running === 0) return
   }

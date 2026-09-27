@@ -138,6 +138,12 @@ jobs:
       - name: Check contrast
         run: npm run check:contrast
 
+      # Pre-rendering is the one thing here that breaks without looking broken: React
+      # quietly rebuilds a page whose markup it did not expect, and the site still works.
+      # See scripts/check-hydration.mjs.
+      - name: Check hydration
+        run: npm run check:hydration
+
       # CNAME: tells GitHub Pages which custom domain to serve
       - name: Write CNAME
         run: echo "ibtisam-iq.com" > dist/CNAME
