@@ -13,14 +13,14 @@ on:
   #     - 'docs/**'
   #     - 'helm/**'
   #     - '.github/**'
-  pull_request:
-    branches: [main]
-    paths-ignore:
-      - '**/*.md'
-      - '**/LICENSE'
-      - 'docs/**'
-      - 'helm/**'
-      - '.github/**'
+  # pull_request:
+  #   branches: [main]
+  #   paths-ignore:
+  #     - '**/*.md'
+  #     - '**/LICENSE'
+  #     - 'docs/**'
+  #     - 'helm/**'
+  #     - '.github/**'
   workflow_dispatch:
 
 concurrency:
