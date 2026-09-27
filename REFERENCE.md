@@ -587,11 +587,11 @@ secrets of the same name, which the runner uses.
 Pages ignores it, which is why the live site carried no security headers and a fixed
 ten-minute cache for as long as it was served there.
 
-`scripts/prerender-meta.js` writes that file, and **parses the policy out of `nginx.conf`
-rather than restating it**. Two copies of a content security policy drift, and the drift is
-silent until something a page needs is blocked in one deployment and not the other. The
-parser fails the build if it finds fewer than six headers, because a policy that quietly
-disappears is worse than a build that stops.
+`scripts/prerender-meta.js` writes that file, and **parses the policy out of
+`nginx-security-headers.conf` rather than restating it**. Two copies of a content security
+policy drift, and the drift is silent until something a page needs is blocked in one
+deployment and not the other. The parser fails the build if it finds fewer than six
+headers, because a policy that quietly disappears is worse than a build that stops.
 
 It appends rather than overwrites: `cv/build-pdf.mjs` has already written the private CV
 tree's `noindex` block into that file whenever a CV secret was present, and that rule has to
@@ -606,9 +606,9 @@ So generation happens once, outside, and the build stage compiles what it produc
 workflow does that on the runner before calling `docker build`, and refuses to continue if
 the CV is missing.
 
-`nginx.conf` is where the policy is written, and since the move it is the source for both
-deployments: the container reads it directly, and the static host gets it through the
-generated `dist/_headers` described above. A rule added there now changes both.
+`nginx-security-headers.conf` is where the policy is written, and it is the source for
+both deployments: the container includes it, and the static host gets it through the
+generated `dist/_headers` described above. A rule added there changes both.
 The policy permits exactly what the page uses: the analytics tag's host in
 `script-src`, and its beacon and the GitHub API in `connect-src`. `font-src` is `'self'`
 and `style-src` names no host, both narrowed on 27 September 2026 when the two families
@@ -619,6 +619,54 @@ That is deliberate and is the reason those files exist. The alternative to a sel
 file is a hash of the inline text in the policy, and a hash breaks on any whitespace edit,
 silently, in one deployment out of two. Widening `script-src` to `'unsafe-inline'` is not an
 option at all, since it defeats the policy it would be written into.
+
+### The container declared a policy it was not sending
+
+nginx does not inherit `add_header` into a `location` that adds a header of its own. Both
+locations in `nginx.conf` set caching, so both dropped the entire inherited set. Read top
+to bottom the file looked hardened; what it actually served was this:
+
+| | Before | After |
+|---|---|---|
+| Security headers on every HTML page | **0 of 7** | 7 of 7 |
+| Security headers on assets | 1 of 7 | 7 of 7 |
+
+The pages are the only place a content security policy does anything, and they were the
+ones getting none of it. The headers now live in `nginx-security-headers.conf` and every
+location includes it. `scripts/prerender-meta.js` fails the build if any location does
+not, because the mistake is invisible in the file and this is the one thing that reads it
+on every build.
+
+Three more things were wrong in the same file, all found by running the image rather than
+reading it.
+
+**The one-year cache matched on file extension**, so `public/theme.js`,
+`public/analytics.js` and every favicon were served `immutable` for a year despite
+carrying no hash in their names. A change to any of them would have reached nobody.
+Caching is scoped to `/assets/` now, which is the only directory Vite fingerprints, and
+the unhashed files get the four hours Cloudflare Pages gives them.
+
+**That scoping did not work at first.** nginx tries regex locations before a plain prefix
+match, so the extension block kept winning `/assets/` and the hashed files were being
+served with the four-hour rule. `location ^~ /assets/` is what stops it, and only running
+the container showed the difference.
+
+**Unknown paths answered 200 with the home page.** The old fallback sent everything to
+`index.html`, which was a soft 404 already and got worse once the build started rendering
+routes: a dead address served the landing page's own content. It is `try_files ... =404`
+with `error_page 404 /404.html` now, which is what Cloudflare Pages does.
+
+**Redirects leaked the container's port.** nginx builds an absolute redirect from its own
+listen port, so `/tools` answered with a `Location` on port 8080: right inside the
+container, wrong through anything publishing it elsewhere. `absolute_redirect off` sends
+a path instead.
+
+One gap is worth stating plainly. `.github/workflows/ci.yml` only runs when it is started
+by hand, so nothing builds this image automatically. When `scripts/prerender-meta.js`
+began reading the policy file on 27 September 2026, the builder stage was not copying it
+and **the image stopped building entirely for a day** with nobody to notice. The Dockerfile
+copies it now, and the error names the cause, but the image is still only as verified as
+the last time somebody ran that workflow.
 
 ### What must never ship
 
@@ -760,6 +808,7 @@ src/lib/  src/hooks/  small pieces with no opinion about appearance
 src/components/       the parts a page is assembled from
 src/pages/            the five routes
 Dockerfile            three stages, ending in nginx with no Node
-nginx.conf            headers, caching and the single-page fallback, container only
+nginx.conf            caching, redirects and real 404s, container only
+nginx-security-headers.conf   the policy, included by nginx and read by the build
 status.md             the dated record of every structural change
 ```

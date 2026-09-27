@@ -186,15 +186,19 @@ Nothing is committed by a workflow. No PDF and no generated artifact is written 
 repository, so a deploy always reflects the source rather than whatever was last committed
 by a robot.
 
-### Per-route metadata
+### Per-route rendering and metadata
 
-The site is client-rendered, so a crawler that does not execute JavaScript would otherwise
-resolve every deep link back to the root.
-[scripts/prerender-meta.js](./scripts/prerender-meta.js) writes a shell per route with its
-own metadata, plus `404.html`, a sitemap, `robots.txt`, `llms.txt`, `profile.json` and the
-`_headers` file the host turns into response headers, all derived from
-[scripts/profile.js](./scripts/profile.js) and [nginx.conf](./nginx.conf), and none of it
-committed.
+Every route is rendered to HTML at build time, so the page arrives readable and a crawler
+that does not execute JavaScript sees the whole of it.
+[scripts/prerender-meta.js](./scripts/prerender-meta.js) writes a shell per route with
+that markup and its own metadata, plus `404.html`, a sitemap, `robots.txt`, `llms.txt`,
+`profile.json` and the `_headers` file the host turns into response headers, all derived
+from [scripts/profile.js](./scripts/profile.js) and
+[nginx-security-headers.conf](./nginx-security-headers.conf), and none of it committed.
+
+The browser adopts that markup rather than rebuilding it.
+[scripts/check-hydration.mjs](./scripts/check-hydration.mjs) is what makes sure it does,
+because React discarding the rendered page costs the whole gain and looks like nothing.
 
 ---
 
@@ -227,7 +231,8 @@ portfolio-site/
 │   ├── entry-server.tsx renders one route to HTML at build time
 │   └── index.css        the Tailwind @theme palette, surfaces, containers, label roles
 ├── Dockerfile           three stages, ending in nginx with no Node
-├── nginx.conf           headers, caching and the SPA fallback, container only
+├── nginx.conf           caching, redirects and real 404s, container only
+├── nginx-security-headers.conf   the policy, for the container and the static host
 └── REFERENCE.md         what everything is, and why it was built this way
 ```
 
