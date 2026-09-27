@@ -72,6 +72,10 @@ const sitemapRoutes = async () => {
  * The background walk composites alpha rather than stopping at the first non-transparent
  * ancestor: most surfaces here are translucent, and stopping early passes what fails.
  * `aria-hidden` subtrees are skipped, because WCAG applies to text that informs.
+ *
+ * The foreground composites too. A colour carrying its own alpha, or an `opacity` anywhere
+ * above the text, reaches the eye weaker than the declared value; measuring the declared
+ * value passes text nobody can read.
  */
 const SWEEP = () => {
   const toRgb = (c) => {
@@ -110,6 +114,18 @@ const SWEEP = () => {
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
   }
   const blend = (fg, bg, a) => fg.map((v, i) => v * a + bg[i] * (1 - a))
+  const rgbStr = (c) => `rgb(${c.map((v) => Math.round(v)).join(',')})`
+
+  // `opacity` fades a whole subtree, so it multiplies down the ancestor chain rather than
+  // being read off the text element alone. A utility class on a span lands here.
+  const fadeOf = (el) => {
+    let f = 1
+    for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+      f *= Number(getComputedStyle(n).opacity)
+    }
+    return f
+  }
+
   const bgOf = (el) => {
     let n = el
     const stack = []
@@ -127,7 +143,7 @@ const SWEEP = () => {
     const base = toRgb(getComputedStyle(document.body).backgroundColor)
     let cur = base ? base.slice(0, 3) : [255, 255, 255]
     for (let i = stack.length - 1; i >= 0; i--) cur = blend(stack[i][0], cur, stack[i][1])
-    return `rgb(${cur.join(',')})`
+    return cur
   }
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05) }
 
@@ -143,7 +159,11 @@ const SWEEP = () => {
     if (!el || SKIP.includes(el.tagName)) continue
     if (el.closest('[aria-hidden="true"]')) continue
     const cs = getComputedStyle(el)
-    if (cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) < 0.5) continue
+    if (cs.visibility === 'hidden' || cs.display === 'none') continue
+    // Under half strength the node is mid-reveal or deliberately ghosted. WCAG has nothing
+    // to say about text nobody is being asked to read yet, and the reveals all settle.
+    const fade = fadeOf(el)
+    if (fade < 0.5) continue
     const r = el.getBoundingClientRect()
     // Width 1px is the clip-rect idiom for visually-hidden SEO copy, which is read aloud
     // rather than looked at, so it has no contrast to fail.
@@ -152,8 +172,12 @@ const SWEEP = () => {
     const px = parseFloat(cs.fontSize)
     const large = px >= 24 || (px >= 18.66 && Number(cs.fontWeight) >= 700)
     const need = large ? 3 : 4.5
-    const cr = ratio(cs.color, bgOf(el))
-    if (cr < need) out.push({ t: t.slice(0, 34), px, ratio: +cr.toFixed(2), need, color: cs.color, bg: bgOf(el) })
+    const bg = bgOf(el)
+    const ink = blend(toRgb(cs.color), bg, Math.min(1, alphaOf(cs.color) * fade))
+    const cr = ratio(rgbStr(ink), rgbStr(bg))
+    if (cr < need) {
+      out.push({ t: t.slice(0, 34), px, ratio: +cr.toFixed(2), need, color: cs.color, fade: +fade.toFixed(2), bg: rgbStr(bg) })
+    }
   }
   return { checked, failures: out }
 }
@@ -212,6 +236,25 @@ const assertTheme = async (page, theme) => {
   if (dark !== (theme === 'dark')) throw new Error(`page is not in ${theme} mode`)
 }
 
+// A quiet network is not a finished page. The reveal fallback in src/hooks/useInView.ts
+// fires 1200ms after mount and starts a fresh wave of fades, so measuring at networkidle0
+// reads text at partial opacity and reports a ratio no visitor is ever shown.
+const settle = async (page) => {
+  await new Promise((r) => setTimeout(r, 1400))
+  for (let i = 0; i < 10; i++) {
+    // The availability pill and the scroll cue loop forever, so `finished` on those never
+    // resolves. Only the one-shot transitions are waited on.
+    const running = await page.evaluate(async () => {
+      const finite = () =>
+        document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity)
+      await Promise.all(finite().map((a) => a.finished.catch(() => {})))
+      return finite().length
+    })
+    if (running === 0) return
+  }
+  throw new Error('transitions were still running after 10 attempts')
+}
+
 const { server, port } = await serve()
 const base = `http://127.0.0.1:${port}`
 const routes = await routesFromRouter()
@@ -245,6 +288,7 @@ for (const route of routes) {
     // check that catches a renamed route whose prerendered shell was left behind.
     if (res.status() !== 200) { problem(`${route} is in the router but returned ${res.status()} from the build`); continue }
     await assertTheme(page, theme)
+    await settle(page)
     const { checked, failures: bad } = await page.evaluate(SWEEP)
     const tag = `${route} ${theme}`.padEnd(26)
     if (bad.length === 0) {
@@ -253,7 +297,7 @@ for (const route of routes) {
       problem(`${tag} ${bad.length} of ${checked} nodes below AA`)
       for (const f of bad.slice(0, 6)) {
         console.log(`          ${f.ratio} (needs ${f.need})  ${f.px}px  "${f.t}"`)
-        console.log(`          ${f.color} on ${f.bg}`)
+        console.log(`          ${f.color} on ${f.bg}${f.fade < 1 ? `, faded to ${f.fade}` : ''}`)
       }
     }
   }
@@ -265,7 +309,7 @@ for (const theme of ['dark', 'light']) {
   await page.goto(`${base}/tools`, { waitUntil: 'networkidle0' })
   await assertTheme(page, theme)
   await page.evaluate(() => [...document.querySelectorAll('[role=tab]')].find((t) => t.textContent.startsWith('All'))?.click())
-  await new Promise((r) => setTimeout(r, 250))
+  await settle(page)
   const m = await page.evaluate(MARKS)
   if (m.belowAA || m.blank) problem(`marks ${theme}: ${m.belowAA} below AA, ${m.blank} blank`)
   else console.log(`  ok    ${theme.padEnd(26)} ${m.count} marks, worst ${m.worst}, none blank`)

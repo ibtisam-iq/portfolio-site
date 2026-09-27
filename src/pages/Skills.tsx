@@ -260,9 +260,11 @@ const Skills = () => {
                     >
                       <span className="truncate">{item.title}</span>
                       <span
+                        // Full strength for the same reason as the DebugBox size labels:
+                        // the accent at 70% reads 3.3:1 on the light theme at 11px.
                         className={`font-mono text-[11px] tabular-nums ${
                           isActive
-                            ? "text-teal-accent/70"
+                            ? "text-teal-accent"
                             : "text-light-faint dark:text-text-faint"
                         }`}
                       >
