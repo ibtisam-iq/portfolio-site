@@ -42,9 +42,9 @@ export const stats: Stats = {
     "microservices-demo": 1
   },
   "lastShipped": {
-    "repo": "debugbox",
-    "pushedAt": "2026-09-27T10:24:02Z",
-    "url": "https://github.com/ibtisam-iq/debugbox/commits"
+    "repo": "portfolio-site",
+    "pushedAt": "2026-09-27T14:59:31Z",
+    "url": "https://github.com/ibtisam-iq/portfolio-site/commits"
   },
   "measuredAt": "2026-09-27"
 }
