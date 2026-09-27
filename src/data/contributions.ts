@@ -25,16 +25,9 @@ export interface Contributions {
 }
 
 export const contributions: Contributions = {
-  "total": 3203,
-  "start": "2025-09-21",
+  "total": 3143,
+  "start": "2025-09-28",
   "counts": [
-    15,
-    10,
-    4,
-    1,
-    7,
-    14,
-    22,
     7,
     23,
     8,
@@ -398,19 +391,13 @@ export const contributions: Contributions = {
     1,
     18,
     0,
-    0
+    0,
+    13
   ],
   "levels": [
     1,
     1,
     1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
     2,
     2,
     1,
@@ -771,13 +758,14 @@ export const contributions: Contributions = {
     1,
     1,
     0,
-    0
+    0,
+    1
   ],
-  "activeDays": 272,
-  "longestStreak": 44,
+  "activeDays": 266,
+  "longestStreak": 37,
   "busiestDay": {
     "date": "2026-07-07",
     "count": 115
   },
-  "measuredAt": "2026-09-26"
+  "measuredAt": "2026-09-27"
 }
