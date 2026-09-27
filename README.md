@@ -13,7 +13,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 Source for **[ibtisam-iq.com](https://ibtisam-iq.com)**, the portfolio of Muhammad Ibtisam
-Iqbal. One codebase, published two ways: a static site on GitHub Pages, and a rootless
+Iqbal. One codebase, published two ways: a static site on Cloudflare Pages, and a rootless
 nginx image for self-hosting, with a Helm chart to install it.
 
 **Every number on the site is derived, not typed.** Docker pulls, GitHub contributions,
@@ -145,17 +145,17 @@ The chart is in [helm/](./helm), with its own [README](./helm/README.md).
 
 | Layer | Choice |
 | --- | --- |
-| Language | TypeScript 5.9 |
+| Language | TypeScript 6.0 |
 | UI | React 19, react-icons |
 | Build | Vite 8 |
-| Styling | Tailwind CSS 3, PostCSS |
+| Styling | Tailwind CSS 4, PostCSS |
 | Routing | React Router 7 |
 | Quality | ESLint 10 flat config, typescript-eslint, two project-specific checkers |
 | Runtime for the build | Node 24 |
 | CI/CD | GitHub Actions, four workflows |
 | Container | Multi-stage Docker, nginx:alpine, rootless |
 | Packaging | Helm chart, published to GHCR as an OCI artifact |
-| Hosting | GitHub Pages |
+| Hosting | Cloudflare Pages, with GitHub Pages kept as the rollback |
 | DNS | Cloudflare |
 
 ---
@@ -166,8 +166,8 @@ Four workflows, each scoped to the paths it needs.
 
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
-| [.github/workflows/pages.yml](./.github/workflows/pages.yml) | push to `main`, a daily schedule, or manually | Lint, prose check, generate, build, verify every route's metadata, contrast check, deploy to GitHub Pages. Pull requests get an isolated preview. |
-| [.github/workflows/ci.yml](./.github/workflows/ci.yml) | push to `main` | Generate on the runner, then a multi-architecture image build pushed to GHCR and Docker Hub. Pull requests build without pushing. |
+| [.github/workflows/pages.yml](./.github/workflows/pages.yml) | push to `main`, a daily schedule, or manually | Lint, prose check, generate, build, verify every route's metadata, contrast check, then upload to Cloudflare Pages, which serves the site, and to GitHub Pages, which is the rollback. Pull requests run the same gates and deploy nothing. |
+| [.github/workflows/ci.yml](./.github/workflows/ci.yml) | manually | Generate on the runner, then a multi-architecture image build pushed to GHCR and Docker Hub. |
 | [.github/workflows/cv.yml](./.github/workflows/cv.yml) | pull requests touching `cv/**` | Renders the public CV and fails if it is blank, if it lost a required line, or if a phone number reached it. Commits nothing. |
 | [.github/workflows/helm-release.yml](./.github/workflows/helm-release.yml) | push to `main` touching `helm/**` | Lint, package, and push the chart to GHCR as an OCI artifact. |
 
@@ -184,8 +184,10 @@ by a robot.
 The site is client-rendered, so a crawler that does not execute JavaScript would otherwise
 resolve every deep link back to the root.
 [scripts/prerender-meta.js](./scripts/prerender-meta.js) writes a shell per route with its
-own metadata, plus `404.html`, a sitemap, `robots.txt`, `llms.txt` and `profile.json`, all
-derived from [scripts/profile.js](./scripts/profile.js) and none of it committed.
+own metadata, plus `404.html`, a sitemap, `robots.txt`, `llms.txt`, `profile.json` and the
+`_headers` file the host turns into response headers, all derived from
+[scripts/profile.js](./scripts/profile.js) and [nginx.conf](./nginx.conf), and none of it
+committed.
 
 ---
 
