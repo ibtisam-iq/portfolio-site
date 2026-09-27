@@ -269,7 +269,10 @@ of them. Every example in this file is fake.
 **Neither is written into `robots.txt`.** robots.txt is public, so listing a secret path
 there is how secret paths get discovered. `public/_headers` is generated at build
 time rather than committed for the same reason; it sets `X-Robots-Tag: noindex` on the
-directory, which Cloudflare and Netlify honour and GitHub Pages ignores.
+directory. Cloudflare Pages honours that file and has served the site since 27 September
+2026, so the rule is live; while GitHub Pages served the domain it was ignored, and the
+header never reached a crawler. `scripts/prerender-meta.js` appends the site-wide headers to
+the same file, so both parts are generated and neither is committed.
 
 ## Why nothing is committed
 
