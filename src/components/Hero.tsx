@@ -1,9 +1,8 @@
 // The homepage hero: the live strip, the claim, and the four figures that support it.
 
-import { useState, useEffect, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
-import { useCountUp } from "../hooks/useCountUp";
 import { PROJECT_COUNT, TOTAL_TOOLS, EVIDENCED_COUNT } from "../data/generated";
 import { stats as publicStats, formatCount } from "../data/stats";
 import { contributions } from "../data/contributions";
@@ -20,34 +19,15 @@ const DOCKER_HUB_URL = "https://hub.docker.com/u/mibtisam";
 const GITHUB_URL = "https://github.com/ibtisam-iq";
 const PROJECTS_SITE = "https://projects.ibtisam-iq.com";
 
-const hidden = (delay: number): CSSProperties => ({
-  opacity: 0,
-  transform: "translateY(20px)",
-  transition: "opacity 0.7s ease, transform 0.7s ease",
-  transitionDelay: `${delay}ms`,
-});
+// The stagger, and nothing else. `.hero-rise` in src/index.css owns the movement, so the
+// markup is identical before and after hydration.
 
-const shown = (delay: number): CSSProperties => ({
-  opacity: 1,
-  transform: "translateY(0)",
-  transition: "opacity 0.7s ease, transform 0.7s ease",
-  transitionDelay: `${delay}ms`,
-});
+// This was a mounted flag gating opacity, which a prerendered page cannot use: it would
+// ship the one screen pre-rendering exists to deliver early, invisible.
+const rise = (delay: number): CSSProperties => ({ animationDelay: `${delay}ms` });
 
 const Hero = () => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Around a second, not the two it was. The pulls figure is the largest thing painted
-  // in the hero, so Chrome treats the frame it stops moving on as the moment the page
-  // finished: at 2200ms that alone read as a 2.0s largest paint on a desktop connection.
-  const projectCount = useCountUp(PROJECT_COUNT, 900, mounted);
-  const pullCount = useCountUp(publicStats.dockerPulls, 1100, mounted);
-  const contributionCount = useCountUp(contributions.total, 1000, mounted);
-  const s = (d: number) => (mounted ? shown(d) : hidden(d));
+  const s = rise;
 
   // Ages the shipping line while the tab is open. A minute is the smallest unit
   // `relativeTime` prints, so ticking faster would redraw for nothing.
@@ -60,26 +40,27 @@ const Hero = () => {
   // Ordered by what a stranger cannot fake over a weekend. The first two were counted by
   // Docker and GitHub rather than by this site, which is why both link out to the page
   // that proves them.
+
+  // Their real values, not a count from zero. A prerendered page would ship "0" in the
+  // HTML, and the animation was also the largest thing painted on the first screen, so
+  // its duration was the page's reported loading time. See REFERENCE.md.
   const heroStats = [
     {
-      value: formatCount(pullCount),
-      widthOf: formatCount(publicStats.dockerPulls),
+      value: formatCount(publicStats.dockerPulls),
       label: "Docker pulls",
       sub: `${publicStats.dockerImages} images \u00b7 ${shortDate(publicStats.measuredAt)}`,
       href: DOCKER_HUB_URL,
       title: source("Docker Hub", publicStats.measuredAt),
     },
     {
-      value: formatCount(contributionCount),
-      widthOf: formatCount(contributions.total),
+      value: formatCount(contributions.total),
       label: "GitHub contributions",
       sub: `${contributions.activeDays} active days`,
       href: GITHUB_URL,
       title: source("GitHub", contributions.measuredAt),
     },
     {
-      value: String(projectCount),
-      widthOf: String(PROJECT_COUNT),
+      value: String(PROJECT_COUNT),
       label: "Documented projects",
       sub: `${TOTAL_TOOLS} tools, ${EVIDENCED_COUNT} evidenced`,
       href: PROJECTS_SITE,
@@ -120,45 +101,47 @@ const Hero = () => {
         {/* The live strip, and the first line on the page. It holds the two facts here
             that are true right now rather than at build time, which is why they share a
             row and why nothing else on this screen is allowed into it. */}
-        {now !== null && (
-          <div
-            style={s(0)}
-            className="mb-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-b border-light-border pb-4 dark:border-border-subtle"
-          >
-            <Tooltip
-              text={`Newest push across all public repos \u00b7 ${longDate(lastShipped.pushedAt)}`}
-            >
-              {(t) => (
-                <a
-                  href={lastShipped.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-start gap-x-2 font-mono text-[11px] uppercase tracking-widest text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
-                  {...t}
-                >
-                  {/* The dot is its own column, outside the wrapping text: in the row it
-                      made a wrapped line start under itself, so kept out a long repo name
-                      wraps the trailing time under "shipped". `mt` centres it on line one. */}
-                  <span className="relative mt-[3px] flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
-                    <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
-                  </span>
-                  <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                    shipped
-                    <span className="font-semibold text-light-text dark:text-text-primary">
-                      {lastShipped.repo}
-                    </span>
-                    {relativeTime(lastShipped.pushedAt, now)}
-                  </span>
-                </a>
-              )}
-            </Tooltip>
 
-            {/* `status`, not the badge: at the top of the page a tinted panel would take
-                the fold ahead of the h1. See src/components/AvailabilityPill.tsx. */}
-            <AvailabilityPill variant="status" />
-          </div>
-        )}
+        {/* The row is always rendered, and only the age inside it waits for a clock. It
+            used to be the whole strip, which on a prerendered page means the heading
+            below it moves down the moment the browser takes over. */}
+        <div
+          style={s(0)}
+          className="hero-rise mb-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-b border-light-border pb-4 dark:border-border-subtle"
+        >
+          <Tooltip
+            text={`Newest push across all public repos \u00b7 ${longDate(lastShipped.pushedAt)}`}
+          >
+            {(t) => (
+              <a
+                href={lastShipped.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-start gap-x-2 font-mono text-[11px] uppercase tracking-widest text-light-muted transition-colors hover:text-teal-accent dark:text-text-faint dark:hover:text-teal-accent"
+                {...t}
+              >
+                {/* The dot is its own column, outside the wrapping text: in the row it
+                    made a wrapped line start under itself, so kept out a long repo name
+                    wraps the trailing time under "shipped". `mt` centres it on line one. */}
+                <span className="relative mt-[3px] flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
+                  <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
+                </span>
+                <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                  shipped
+                  <span className="font-semibold text-light-text dark:text-text-primary">
+                    {lastShipped.repo}
+                  </span>
+                  {now === null ? "" : relativeTime(lastShipped.pushedAt, now)}
+                </span>
+              </a>
+            )}
+          </Tooltip>
+
+          {/* `status`, not the badge: at the top of the page a tinted panel would take
+              the fold ahead of the h1. See src/components/AvailabilityPill.tsx. */}
+          <AvailabilityPill variant="status" />
+        </div>
 
         {/*
          * Claim left, the figures backing it right. The ratio is measured against this
@@ -170,14 +153,14 @@ const Hero = () => {
           <div className="min-w-0">
           <p
             style={s(0)}
-            className="eyebrow"
+            className="eyebrow hero-rise"
           >
             DevOps & Cloud Engineer
           </p>
 
           <h1
             style={s(100)}
-            className="text-5xl md:text-6xl font-bold mb-5 text-light-text dark:text-white leading-tight"
+            className="hero-rise text-5xl md:text-6xl font-bold mb-5 text-light-text dark:text-white leading-tight"
           >
             I think in{" "}
             <span className="text-teal-accent">
@@ -188,14 +171,14 @@ const Hero = () => {
 
           <p
             style={s(180)}
-            className="font-mono text-sm tracking-wide text-teal-accent mb-6"
+            className="hero-rise font-mono text-sm tracking-wide text-teal-accent mb-6"
           >
             kubernetes · aws · ci/cd · gitops
           </p>
 
           <p
             style={s(250)}
-            className="text-lg leading-relaxed max-w-2xl text-light-muted dark:text-text-muted mb-10"
+            className="hero-rise text-lg leading-relaxed max-w-2xl text-light-muted dark:text-text-muted mb-10"
           >
             CKA and CKAD certified. I build Kubernetes clusters, CI/CD
             pipelines, and cloud infrastructure from first principles. Every
@@ -213,7 +196,7 @@ const Hero = () => {
               now, and the leftover space would end this box below its last visible pixel. */}
           <div
             style={s(330)}
-            className="flex flex-col items-stretch gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+            className="hero-rise flex flex-col items-stretch gap-4 sm:flex-row sm:flex-wrap sm:items-center"
           >
             <a
               href={PROJECTS_SITE}
@@ -235,7 +218,7 @@ const Hero = () => {
 
           {/* Two across on a phone, where this is the full frame; one from `lg`, where it
               is a 412px column. See the `column` entry in StatFigure's `COLUMNS`. */}
-          <div style={s(450)}>
+          <div className="hero-rise" style={s(450)}>
             <StatBand columns="column">
               {heroStats.map((stat) => (
                 <StatFigure key={stat.label} tier="headline" {...stat} />

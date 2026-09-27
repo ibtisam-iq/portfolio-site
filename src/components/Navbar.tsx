@@ -61,6 +61,25 @@ const CONTACT = { label: "Contact", to: "/contact/" };
 // hero figure and the footer; the page itself is not linked anywhere else.
 const SOURCE_REPO = "https://github.com/ibtisam-iq/portfolio-site";
 
+// Both icons ship, and the `dark` class on the root element chooses between them. The
+// branch used to be on React state, which a prerendered page cannot resolve: the server
+// has no theme to read, so the wrong icon lands in the HTML and hydration disagrees.
+
+// `hidden` removes the other one from the accessibility tree as well as the page, so the
+// label read aloud is always the one that matches the icon on screen.
+const ThemeToggle = ({ onClick, className }: { onClick: () => void; className: string }) => (
+  <button onClick={onClick} className={className}>
+    <span className="hidden dark:inline-flex">
+      <FiSun size={18} aria-hidden="true" />
+      <span className="sr-only">Switch to light mode</span>
+    </span>
+    <span className="inline-flex dark:hidden">
+      <FiMoon size={18} aria-hidden="true" />
+      <span className="sr-only">Switch to dark mode</span>
+    </span>
+  </button>
+);
+
 const SourceLink = ({ className = "" }: { className?: string }) => (
   <a
     href={SOURCE_REPO}
@@ -80,7 +99,7 @@ const SourceLink = ({ className = "" }: { className?: string }) => (
 );
 
 const Navbar = () => {
-  const { isDark, toggle } = useTheme();
+  const { toggle } = useTheme();
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -168,13 +187,10 @@ const Navbar = () => {
             )
           )}
 
-          <button
+          <ThemeToggle
             onClick={toggle}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             className="rounded-md p-2 text-light-muted transition-colors hover:bg-light-surface-2 hover:text-light-text dark:text-text-muted dark:hover:bg-surface-2 dark:hover:text-white"
-          >
-            {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
-          </button>
+          />
 
           <SourceLink />
 
@@ -194,13 +210,10 @@ const Navbar = () => {
         {/* Mobile and tablet controls. See the note on the desktop bar for why `lg`. */}
         <div className="flex items-center gap-1 lg:hidden">
           <SourceLink className="p-2.5" />
-          <button
+          <ThemeToggle
             onClick={toggle}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             className="rounded-md p-2.5 text-light-muted dark:text-text-muted"
-          >
-            {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
-          </button>
+          />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}

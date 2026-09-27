@@ -25,11 +25,11 @@ export interface StatFigureProps {
   tier?: FigureTier;
   href?: string;
   title?: string;
-  /** The final value, while `value` counts up to it. Its width is held open so the row
-   *  cannot reflow mid-animation. */
-  widthOf?: string;
 }
 
+// The width reservation this used to carry is gone with the count-up it existed for. A
+// figure renders its final value from the first frame now, so there is no interim width
+// to hold open. See REFERENCE.md.
 export const StatFigure = ({
   value,
   label,
@@ -37,21 +37,12 @@ export const StatFigure = ({
   tier = "section",
   href,
   title,
-  widthOf,
 }: StatFigureProps) => {
   const figure = (
     <span
       className={`relative block font-mono font-bold leading-none tracking-tight tabular-nums text-light-text transition-colors group-hover:text-teal-accent dark:text-text-primary ${SIZE[tier]}`}
     >
-      {/* Holds the final width open while the visible value counts up to it. */}
-      {widthOf && widthOf !== value && (
-        <span aria-hidden="true" className="invisible">
-          {widthOf}
-        </span>
-      )}
-      <span className={widthOf && widthOf !== value ? "absolute inset-0" : undefined}>
-        {value}
-      </span>
+      {value}
     </span>
   );
 

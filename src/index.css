@@ -80,6 +80,19 @@
     }
   }
 
+  /* The hero's entrance. A slide and no fade: the page now arrives with its content
+     already in the HTML, and starting that content at zero opacity would hide the one
+     screen pre-rendering exists to deliver early. */
+  @keyframes heroRise {
+    from {
+      transform: translateY(20px);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
   @keyframes slideInLeft {
     from {
       opacity: 0;
@@ -389,6 +402,21 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Each hero line rises into place, staggered by an inline animation-delay. The delay is
+   the only per-element value, so the markup is identical on the server and in the
+   browser and the entrance costs no hydration state. */
+.hero-rise {
+  animation: heroRise 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* The global reduced-motion rule shortens every animation to one 0.01ms pass and leaves
+   delays alone, which would park each line 20px low until its own delay elapsed. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise {
+    animation-delay: 0ms !important;
+  }
 }
 
 .scrollbar-hide {

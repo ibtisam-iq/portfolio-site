@@ -228,7 +228,13 @@ const Footer = () => {
 
         <div className="mt-10 flex flex-col items-center gap-4 border-t border-light-border pt-6 dark:border-border-subtle">
           <LiveStatus />
-          <p className="text-center font-mono text-xs text-light-faint dark:text-text-faint tracking-wide">
+          {/* The year is read from the clock, so the build writes one value into the
+              HTML and the browser may compute another. Marked, or React treats a single
+              turn of the year as a broken page and rerenders the whole tree. */}
+          <p
+            suppressHydrationWarning
+            className="text-center font-mono text-xs text-light-faint dark:text-text-faint tracking-wide"
+          >
             &copy; {year} Muhammad Ibtisam &middot; Built with React + TypeScript
             + Tailwind + Vite
           </p>
