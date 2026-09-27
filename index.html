@@ -8,9 +8,9 @@
     <script src="%BASE_URL%theme.js"></script>
 
     <!-- Google tag. The config lives in a file rather than inline, so the container's
-         content security policy needs no script hash. -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XP2J3MPRYJ"></script>
-    <script src="%BASE_URL%analytics.js"></script>
+         content security policy needs no script hash. The 170 KB tag itself is not
+         requested here: public/analytics.js asks for it once the page has loaded. -->
+    <script defer src="%BASE_URL%analytics.js"></script>
 
     <!-- Page Title -->
     <title>Muhammad Ibtisam Iqbal | DevOps & Cloud Engineer</title>
@@ -21,13 +21,12 @@
       content="Muhammad Ibtisam Iqbal, CKA and CKAD certified DevOps & Cloud Engineer. Kubernetes, EKS, Terraform, GitOps with ArgoCD, DevSecOps on Jenkins and GitHub Actions."
     />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts are declared in src/index.css and served from this origin, so there is
+         nothing to fetch from Google and no handshake to pay for before text can paint. -->
+
+    <!-- The hero's live "newest push" read, which cannot start until the bundle runs.
+         Opening the connection now takes the handshake off that critical path. -->
+    <link rel="preconnect" href="https://api.github.com" crossorigin />
 
     <!-- Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
