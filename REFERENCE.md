@@ -205,6 +205,13 @@ paragraph containing a link was never measured, which was about 12% of the text 
 site. The script walks text nodes now, and the value is dark enough that no surface can
 take it below 4.5:1.
 
+A second blind spot outlasted that one. The script read the declared colour and ignored
+what `opacity` and an alpha channel do to it, so a DebugBox size label at 70% opacity and
+the active tool count declared as `text-teal-accent/70` both passed while sitting at 3.3:1
+on the light theme. Both are at full strength now. The mono face at that size already
+separates a figure from its label, so the fade was buying nothing that the type did not
+already do.
+
 ### Three surface levels, and one frame
 
 Sunk, raised and the page are the whole scale, named as `.well`, `.panel` and the page
@@ -362,6 +369,53 @@ JavaScript would otherwise resolve every page back to the site root.
 `scripts/profile.js` is the single place identity, credentials and sites are edited.
 Everything in the list above is derived from it, and none of those outputs is committed.
 
+### The fonts ship with the build
+
+Inter and JetBrains Mono are served from this origin, not from Google. One variable file
+per family covers every weight the site uses, the `@font-face` rules live in
+`src/index.css`, and Vite fingerprints both files into `dist/assets/`, where they inherit
+the year of `immutable` caching described further down.
+
+Only the latin ranges are declared, which is why the build emits two font files rather than
+twelve. The packages carry cyrillic, greek and vietnamese as well, nothing on this site is
+written in them, and every range declared is another file to emit and cache.
+
+What the move bought, measured locally against a simulated phone. The Google version needed
+a stylesheet from `fonts.googleapis.com` and then a font file from `fonts.gstatic.com`, two
+handshakes in sequence before any text could be painted in its real face, and the font
+landed at 700ms. From this origin the connection is already open and the font lands at
+80ms. First paint went from 4.4s to 3.6s on the phone profile, and from 0.9s to 0.7s on the
+desktop one.
+
+It also narrows the policy. `font-src` is `'self'` alone and `style-src` names no host at
+all, so a Google host reappearing in `nginx.conf` means the fonts have quietly moved back.
+
+### Analytics waits for the page
+
+The Google tag is 176KB of script that measures the page rather than building it. It used
+to be requested from the document head, where it competed with the bundle for the same
+connection and the same main thread.
+
+`public/analytics.js` appends the tag on the window `load` event instead. The `gtag` calls
+run immediately and queue on `dataLayer`, and the tag replays that queue when it arrives,
+so nothing is lost by asking late.
+
+The cost is worth stating rather than hiding: a visitor who leaves within the first second
+or two is no longer counted. That trade was taken deliberately, because the alternative is
+making every visitor wait for a script whose only job is to watch them.
+
+### The hero's counting figures set the largest paint
+
+The three figures in the hero count up from zero. The Docker pulls figure is the largest
+piece of text painted on the first screen, so Chrome treats the frame it stops moving on as
+the moment the page finished. At 2200ms that single animation was reported as a 2.0s
+largest contentful paint on a desktop connection, and it held the desktop score at 90 while
+every other measurement on that run had improved.
+
+They run for about a second now and the desktop score is 97. The rule that came out of it:
+an animation over the largest element on the first screen is not decoration, it is the
+page's loading time as every measuring tool will report it.
+
 ### One address per page, with the trailing slash
 
 Every route is published as a directory, so `/tools/index.html` is what a static host
@@ -483,9 +537,10 @@ the CV is missing.
 deployments: the container reads it directly, and the static host gets it through the
 generated `dist/_headers` described above. A rule added there now changes both.
 The policy permits exactly what the page uses: the analytics tag's host in
-`script-src`, its beacon and the GitHub API in `connect-src`, and Google Fonts. It permits no inline script,
-and `index.html` contains none, because the two scripts that were inline are now
-`public/theme.js` and `public/analytics.js`.
+`script-src`, and its beacon and the GitHub API in `connect-src`. `font-src` is `'self'`
+and `style-src` names no host, both narrowed on 27 September 2026 when the two families
+moved to this origin. It permits no inline script, and `index.html` contains none, because
+the two scripts that were inline are now `public/theme.js` and `public/analytics.js`.
 
 That is deliberate and is the reason those files exist. The alternative to a self-hosted
 file is a hash of the inline text in the policy, and a hash breaks on any whitespace edit,
@@ -526,7 +581,7 @@ node on every route in both themes, and measures the contrast of each against it
 background. It also checks the generated tool marks and looks for horizontal overflow at
 375px.
 
-Four things about it were wrong in earlier versions and are worth stating.
+Five things about it were wrong in earlier versions and are worth stating.
 
 It runs in a real browser rather than an embedded preview pane. A hidden pane does not
 composite, so style recalculation is deferred and the computed style comes back from before
@@ -542,6 +597,17 @@ a restatement, not a check: the sitemap and the prerendered shells come from one
 when the router was renamed from `/skills` to `/tools` and that array was not, the sitemap
 did not merely miss the page, it advertised a route the application does not have. Both
 halves were wrong together, so nothing derived from them could notice.
+
+It composites the foreground, and it waits for the page to stop animating before measuring
+anything. Reading `color` on its own flattered every faded value on the site: a size label
+at 70% opacity reported 6.1:1 and was actually 3.3:1, and an accent declared with a `/70`
+alpha reported the same way. Both were live and both were below AA.
+
+Waiting turned out to matter as much as compositing. At `networkidle0` the reveals are
+still fading, so a node caught mid-transition reports a ratio no visitor is ever shown. The
+run now waits past the 1200ms reveal fallback in `src/hooks/useInView.ts` and drains every
+finite animation first, which also raised coverage: the landing page went from 126 text
+nodes measured to 174.
 
 `npm run check:prose` enforces the writing rules described in the next section.
 

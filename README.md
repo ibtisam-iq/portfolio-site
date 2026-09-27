@@ -84,9 +84,11 @@ npm run check:prose      # the writing rules for every comment and document here
 npm run check:contrast   # colour contrast, in a real browser, against dist/
 ```
 
-`check:contrast` measures every text node against its composited background, plus the
-generated tool marks and overflow at 375px. It reads `dist/`, so build first. `check:prose`
-enforces the rules the comments here follow. Both run in CI on every push.
+`check:contrast` measures every text node against its composited background, with the
+node's own `opacity` and colour alpha folded in, plus the generated tool marks and overflow
+at 375px. It waits for the page to stop animating before it measures. It reads `dist/`, so
+build first. `check:prose` enforces the rules the comments here follow. Both run in CI on
+every push.
 
 ### The CV
 
@@ -149,6 +151,7 @@ The chart is in [helm/](./helm), with its own [README](./helm/README.md).
 | UI | React 19, react-icons |
 | Build | Vite 8 |
 | Styling | Tailwind CSS 4, PostCSS |
+| Typography | Inter and JetBrains Mono, variable, served from the site |
 | Routing | React Router 7 |
 | Quality | ESLint 10 flat config, typescript-eslint, two project-specific checkers |
 | Runtime for the build | Node 24 |
