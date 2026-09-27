@@ -29,9 +29,9 @@ export interface Stats {
 }
 
 export const stats: Stats = {
-  "dockerPulls": 13224,
+  "dockerPulls": 13227,
   "dockerImages": 11,
-  "debugboxPulls": 2240,
+  "debugboxPulls": 2241,
   "publicRepos": 35,
   "githubStars": 23,
   "starsByRepo": {
@@ -42,11 +42,11 @@ export const stats: Stats = {
     "microservices-demo": 1
   },
   "lastShipped": {
-    "repo": "nectar",
-    "pushedAt": "2026-09-24T13:19:53Z",
-    "url": "https://github.com/ibtisam-iq/nectar/commits"
+    "repo": "debugbox",
+    "pushedAt": "2026-09-27T10:24:02Z",
+    "url": "https://github.com/ibtisam-iq/debugbox/commits"
   },
-  "measuredAt": "2026-09-26"
+  "measuredAt": "2026-09-27"
 }
 
 /** 10882 renders as "10,882". Kept here so every surface formats it the same way. */
