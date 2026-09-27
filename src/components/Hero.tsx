@@ -41,9 +41,12 @@ const Hero = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const projectCount = useCountUp(PROJECT_COUNT, 1400, mounted);
-  const pullCount = useCountUp(publicStats.dockerPulls, 2200, mounted);
-  const contributionCount = useCountUp(contributions.total, 2000, mounted);
+  // Around a second, not the two it was. The pulls figure is the largest thing painted
+  // in the hero, so Chrome treats the frame it stops moving on as the moment the page
+  // finished: at 2200ms that alone read as a 2.0s largest paint on a desktop connection.
+  const projectCount = useCountUp(PROJECT_COUNT, 900, mounted);
+  const pullCount = useCountUp(publicStats.dockerPulls, 1100, mounted);
+  const contributionCount = useCountUp(contributions.total, 1000, mounted);
   const s = (d: number) => (mounted ? shown(d) : hidden(d));
 
   // Ages the shipping line while the tab is open. A minute is the smallest unit

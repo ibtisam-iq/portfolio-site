@@ -127,9 +127,6 @@ const AmbientCanvas = () => {
       frame = requestAnimationFrame(draw);
     };
 
-    resize();
-    run();
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         onScreen = entry.isIntersecting;
@@ -143,7 +140,13 @@ const AmbientCanvas = () => {
     const onVisibility = () => (document.hidden ? stop() : run());
     document.addEventListener("visibilitychange", onVisibility);
 
-    const resizeObserver = new ResizeObserver(resize);
+    // The loop starts from here rather than from a call on this line. A ResizeObserver
+    // delivers the element's first size on its own, so measuring it here as well is a
+    // second layout for an answer already on its way. `run` will not double-schedule.
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+      run();
+    });
     resizeObserver.observe(canvas);
 
     return () => {

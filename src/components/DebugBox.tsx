@@ -201,15 +201,19 @@ const DebugBox = () => {
                   </span>
                   <div className="flex flex-1 items-center gap-3">
                     <div className="h-2 flex-1 rounded-full bg-light-surface-2 dark:bg-surface-2">
+                      {/* The width is final from the first frame and the growth is a
+                          scale, so the browser hands the animation to the graphics chip
+                          instead of re-laying out the row sixty times a second. */}
                       <div
-                        className={`h-2 rounded-full ${
+                        className={`h-2 origin-left rounded-full ${
                           row.mine
                             ? "bg-teal-accent"
                             : "bg-light-muted/50 dark:bg-text-faint"
                         }`}
                         style={{
-                          width: inView ? `${(row.mb / maxMB) * 100}%` : "0%",
-                          transition: "width 0.8s ease-out",
+                          width: `${(row.mb / maxMB) * 100}%`,
+                          transform: inView ? "scaleX(1)" : "scaleX(0)",
+                          transition: "transform 0.8s ease-out",
                         }}
                       />
                     </div>
@@ -243,7 +247,9 @@ const DebugBox = () => {
                 }`}
               >
                 {v.label}
-                <span className="ml-2 font-mono text-xs tabular-nums opacity-70">
+                {/* Full strength. At 70% this dropped to 3.3:1 on the light theme, and
+                    the mono face at text-xs already separates the figure from the name. */}
+                <span className="ml-2 font-mono text-xs tabular-nums">
                   {v.sizeMB} MB
                 </span>
                 {v.isDefault && (
