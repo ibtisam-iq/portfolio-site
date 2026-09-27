@@ -5,7 +5,7 @@
 // The `routes` array below has to track src/App.tsx. The Pages workflow derives its own
 // list from that router and fails if a route here is missing.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
 import { profile } from './profile.js'
 
 const SITE = profile.site
@@ -254,7 +254,50 @@ writeFileSync(
 // read these facts without vendoring them.
 writeFileSync('dist/profile.json', JSON.stringify(profile, null, 2) + '\n')
 
+// The response headers for the static host. Cloudflare Pages reads this file and GitHub
+// Pages ignores it, which is why the live site carried none of these until the host changed.
+
+// Parsed out of nginx.conf rather than restated: two copies of a policy drift, and the
+// drift is silent until a page is blocked in one deployment and not the other.
+const nginxConf = readFileSync('nginx.conf', 'utf8')
+const securityBlock = nginxConf.slice(
+  nginxConf.indexOf('# -- Security headers'),
+  nginxConf.indexOf('# -- Compression')
+)
+const securityHeaders = [...securityBlock.matchAll(/add_header\s+([\w-]+)\s+"([\s\S]*?)"\s+always;/g)].map(
+  ([, name, value]) => [name, value.replace(/\s+/g, ' ').trim()]
+)
+if (securityHeaders.length < 6) {
+  throw new Error(
+    `prerender-meta: parsed ${securityHeaders.length} security headers from nginx.conf, expected at least 6. ` +
+      'The add_header block changed shape; update this parser or the static host silently loses its policy.'
+  )
+}
+
+// Appended, not written fresh: cv/build-pdf.mjs has already put the private CV tree's
+// noindex block in this file whenever a CV secret was present, and that rule has to survive.
+// `/*` matches those paths too, so they gain the policy and keep their own rules.
+const existingHeaders = existsSync('dist/_headers')
+  ? readFileSync('dist/_headers', 'utf8').replace(/\n*$/, '\n\n')
+  : ''
+writeFileSync(
+  'dist/_headers',
+  existingHeaders +
+    [
+      '/*',
+      ...securityHeaders.map(([name, value]) => `  ${name}: ${value}`),
+      '',
+      // Vite content-hashes every filename here, so the URL changes whenever the bytes do
+      // and a year is safe. Nothing else gets a long cache: index.html names those hashed
+      // URLs, and a stale copy of it points at files that no longer exist.
+      '/assets/*',
+      '  Cache-Control: public, max-age=31536000, immutable',
+      '',
+    ].join('\n')
+)
+
 console.log(
   `✅ ${routes.length} routes, 404.html, sitemap.xml (${urls.split('\n').length} URLs), ` +
-    `robots.txt (${sitemaps.length} sitemaps), llms.txt, profile.json, all from scripts/profile.js`
+    `robots.txt (${sitemaps.length} sitemaps), llms.txt, profile.json, ` +
+    `_headers (${securityHeaders.length} security headers from nginx.conf), all from scripts/profile.js`
 )
