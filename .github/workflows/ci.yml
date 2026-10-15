@@ -176,7 +176,7 @@ jobs:
 
       - name: Upload digest artifact
         if: ${{ !env.ACT && github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: digest-${{ steps.slug.outputs.value }}
           path: /tmp/digests/*
