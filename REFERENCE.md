@@ -14,7 +14,7 @@ The root `README.md` introduces the project. This file explains it.
 ## 1. What this is
 
 A portfolio site at `ibtisam-iq.com`, built with React, TypeScript, Vite and Tailwind CSS,
-and published two ways from the same output: as a static site on Cloudflare Pages, and as an
+and published two ways from the same output: as a static site on GitHub Pages, and as an
 nginx container image.
 
 Its governing idea is that every claim on it can be checked. The number of Docker pulls,
@@ -517,9 +517,10 @@ visitor arriving on a bare path from an older link still sees the right tab high
 
 ### The two deployments
 
-`.github/workflows/pages.yml` builds the site and publishes it. **Cloudflare Pages serves
-`ibtisam-iq.com`.** The same build is also published to GitHub Pages, which served the domain
-until 27 September 2026 and is now kept only as the rollback.
+`.github/workflows/pages.yml` builds the site and publishes it to both hosts. **GitHub Pages
+serves `ibtisam-iq.com`.** Cloudflare Pages receives the identical build and serves nobody:
+it held the domain from 27 September to 15 October 2026 and is kept current as the standby,
+the two having swapped roles. Why is in "The move to Cloudflare, and the move back" below.
 
 `.github/workflows/ci.yml` builds and pushes a container image for two architectures. The
 `Dockerfile` has three stages and the final one is nginx with no Node in it.
@@ -533,9 +534,9 @@ until 27 September 2026 and is now kept only as the rollback.
 | `workflow_dispatch` | A deploy asked for by hand, from the Actions tab |
 | `schedule`, 03:17 UTC daily | The deploy nothing else can replace. Four of the site's figures are read from GitHub and Docker Hub at build time, so without it they freeze at whatever the last build measured |
 
-The publishing step is the upload to Cloudflare. It needs no Pages environment, no artifact
-handover and no deployment slot, which removed the part of the old arrangement that could
-fail after a green build.
+Both publishing steps run on every deploy. The Cloudflare upload needs no Pages environment,
+no artifact handover and no deployment slot; the GitHub Pages one does, and that is the part
+of the arrangement that can fail after a green build.
 
 `.github/workflows/ci.yml` is manual only, and that is a separate decision: a
 multi-architecture image build on every push or pull request cost minutes and published
@@ -556,24 +557,53 @@ reads the GitHub and Docker Hub APIs and renders the CV through Puppeteer. The r
 install a system font cannot reproduce that. One build definition, on the runner that already
 satisfies it, is the whole reason for this shape.
 
-### The rollback, and the one thing still resting on GitHub Pages
+### The move to Cloudflare, and the move back
 
-The apex is a proxied CNAME to the Pages project. **Rollback is that single record**: point
-`ibtisam-iq.com` back at `ibtisam-iq.github.io` as DNS only. GitHub Pages still receives every
-build, so the fallback is current rather than whatever was last deployed before the move.
+Cloudflare Pages served the domain from 27 September to 15 October 2026. The move bought
+seven security headers, a year of caching on fingerprinted assets, and the `noindex` header
+on the private CV, none of which GitHub Pages can serve. It was reverted anyway, because
+from Pakistan the site frequently would not load at all.
 
-`www.ibtisam-iq.com` is still a CNAME to `ibtisam-iq.github.io`, and the 301 to the apex it
-answers with is served by GitHub Pages, not by Cloudflare. It works because GitHub Pages is
-deliberately still deployed. Turning GitHub Pages off therefore breaks `www` and nothing
-else, and the replacement is a Cloudflare redirect rule, not a second custom domain: two
-hostnames serving the same pages is a duplicate, which is the problem the canonical rule in
-section 6 exists to avoid.
+The symptoms, over about two weeks: `ERR_QUIC_PROTOCOL_ERROR` first, then
+`ERR_CONNECTION_RESET` in Chromium browsers and `PR_CONNECT_RESET_ERROR` in Firefox,
+typically on the first load with a later attempt succeeding. The same site on a phone was
+fine. Command-line requests from the same machine on the same network never failed once, in
+over a hundred attempts across several days, which is what made it slow to pin down: every
+tool that could be scripted said the site was healthy.
+
+Two causes were found and only one was fixed. **HTTP/3 was on**, which is a Cloudflare
+default, and the first error is by definition a HTTP/3 failure. Turning it off removed that
+error and nothing else. **ECH, Encrypted Client Hello, remained**, which hides the hostname
+inside the TLS handshake; equipment that filters on hostname commonly answers by resetting
+the connection, and `curl` never triggers it because it does not implement ECH. Cloudflare
+exposes no setting for ECH anywhere in the dashboard, only the API, so it was never
+disabled and never confirmed.
+
+Reverting removes both candidates at once, because ECH exists only on proxied records and
+Cloudflare's addresses stop being involved. That is the honest reason for the revert: not
+that the cause was proven, but that the fix did not depend on proving it, and two weeks of
+a portfolio that would not open had already cost more than the headers were worth.
+
+What survived the revert is everything that lives in the build rather than the host:
+pre-rendering, the trailing-slash canonical fix that got `/tools` indexed, self-hosted
+fonts, deferred analytics, and the phone score. What was lost is the three things in the
+first paragraph. `dist/_headers` is still generated and still correct; GitHub Pages ignores
+it.
+
+**Going back is one DNS record**, pointing the apex at the Pages project as a proxied CNAME,
+and the Pages project still receives every build. Anyone doing that should disable ECH over
+the API first, and treat the result as untested until somebody on a Pakistani connection has
+loaded the site repeatedly from a cold browser profile.
+
+`www.ibtisam-iq.com` is a CNAME to `ibtisam-iq.github.io` and always was, so its 301 to the
+apex was unaffected by both moves.
 
 ### The two Cloudflare secrets
 
 `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are GitHub repository secrets, read in one
 place: the `Deploy to Cloudflare Pages` step of `.github/workflows/pages.yml`. They authorise
-that upload and nothing else. Neither appears in the site, the container, the image or the
+that upload and nothing else, and they are still in use: the upload continues so the standby
+stays current, even though nothing is served from it. Neither appears in the site, the container, the image or the
 browser, and neither is in this repository. The token needs one permission, Cloudflare Pages:
 Edit.
 
@@ -584,8 +614,12 @@ secrets of the same name, which the runner uses.
 ### Response headers, generated from the container's policy
 
 `dist/_headers` is how a static host is told what to send. Cloudflare Pages reads it; GitHub
-Pages ignores it, which is why the live site carried no security headers and a fixed
-ten-minute cache for as long as it was served there.
+Pages ignores it.
+
+**So the live site has no security headers today**, and a fixed ten-minute cache, which is
+the state it was in before 27 September 2026 and is again after the revert. The file is
+still generated and still correct. It takes effect in the container, and it would take
+effect again the moment the domain went back to Cloudflare.
 
 `scripts/prerender-meta.js` writes that file, and **parses the policy out of
 `nginx-security-headers.conf` rather than restating it**. Two copies of a content security
